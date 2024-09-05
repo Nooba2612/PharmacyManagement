@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import pharmacy.views.LoginFrame;
 
 public class App {
 
@@ -28,6 +29,8 @@ public class App {
 
 	/**
 	 * Create the application.
+	 * 
+	 * @wbp.parser.entryPoint
 	 */
 	public App() {
 		initialize();
@@ -35,11 +38,11 @@ public class App {
 
 	/**
 	 * Initialize the contents of the frame.
+	 * 
+	 * @wbp.parser.entryPoint
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame = new LoginFrame();
 	}
 
 }
