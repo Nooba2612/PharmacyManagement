@@ -1,145 +1,238 @@
 package pharmacy.views;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
+import javafx.animation.*;
+
+import java.io.IOException;
 import java.sql.SQLException;
 
-import javax.swing.border.*;
-
 import pharmacy.controllers.AuthController;
+import pharmacy.utils.FrameUtil;
 
-@SuppressWarnings("serial")
-public class LoginFrame extends JFrame {
-	private JLabel pharmacyIcon;
-	private JTextField usernameField;
-	private JPasswordField passwordField;
+public class LoginFrame extends Application {
+	private Parent root;
+	private Scene scene;
+	private ImageView showPasswordIcon;
+	private ImageView hidePasswordIcon;
+	private TextField usernameField;
+	private Text forgotPasswordBtnText;
+	private PasswordField passwordField;
+	private TextField passwordTextField;
+	private Button submitBtn;
+	private ProgressBar progressBar;
+	private Text progressStatus;
 
-	public LoginFrame() {
-		setTitle("Pharmacy Management System - Login");
-		getContentPane().setBackground(new Color(51, 153, 51));
-		setExtendedState(JFrame.MAXIMIZED_BOTH); // window full screen
-		setUndecorated(false); // remove window decorations
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
-		// center the text horizontally
-		setVisible(true);
-		JLabel label = new JLabel();
-		label.setBounds(379, 15, 0, 0);
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		root = FXMLLoader.load(getClass().getResource("/fxml/LoginFrame.fxml"));
+		scene = new Scene(root);
+		showPasswordIcon = (ImageView) root.lookup("#showPasswordBtn");
+		hidePasswordIcon = (ImageView) root.lookup("#hidePasswordBtn");
+		usernameField = (TextField) root.lookup("#usernameField");
+		passwordField = (PasswordField) root.lookup("#passwordField");
+		passwordTextField = (TextField) root.lookup("#passwordTextField");
+		forgotPasswordBtnText = (Text) root.lookup("#forgotPasswordBtn");
+		submitBtn = (Button) root.lookup("#submitBtn");
+		progressBar = (ProgressBar) root.lookup("#progressBar");
+		progressStatus = (Text) root.lookup("#progressStatus");
 
-		JPanel panel = new JPanel();
-		panel.setBorder(null);
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(821, 239, 471, 408);
-		panel.setLayout(null);
+		primaryStage.setTitle("Login");
+		primaryStage.setScene(scene);
+		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/pharmacy-icon.png")));
+		primaryStage.setResizable(false);
+		primaryStage.show();
 
-		JLabel usernameLabel = new JLabel("Username:");
-		usernameLabel.setForeground(new Color(0, 102, 0));
-		usernameLabel.setBounds(30, 133, 143, 17);
-		usernameLabel.setFont(new Font("Tahoma", Font.BOLD, 19));
-		panel.add(usernameLabel);
+		progressBar.setVisible(false);
+		progressStatus.setVisible(false);
 
-		usernameField = new JTextField(15);
-		usernameField.setBackground(new Color(167, 207, 177));
-		usernameField.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		usernameField.setBounds(162, 128, 238, 32);
-		panel.add(usernameField);
+		handleShowAndHidePassword();
 
-		passwordField = new JPasswordField(15);
-		passwordField.setBackground(new Color(167, 207, 177));
-		passwordField.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		passwordField.setBounds(162, 195, 238, 32);
-		panel.add(passwordField);
+		handleEnterKeyPress();
 
-		JLabel passwordLabel = new JLabel("Password:");
-		passwordLabel.setForeground(new Color(51, 102, 0));
-		passwordLabel.setBounds(30, 198, 122, 17);
-		passwordLabel.setFont(new Font("Tahoma", Font.BOLD, 19));
-		panel.add(passwordLabel);
+		handleSubmitBtnAction();
 
-		JButton loginButton = new JButton("Tiếp tục");
-		loginButton.setBounds(202, 263, 143, 29);
-		loginButton.setForeground(new Color(255, 255, 255));
-		loginButton.setFont(new Font("Tahoma", Font.BOLD, 17));
-		loginButton.setBackground(new Color(51, 102, 0));
-		panel.add(loginButton);
+	}
 
-		JLabel title = new JLabel("Pharmacy Management System");
-		title.setBounds(684, 43, 746, 92);
-		title.setForeground(new Color(255, 255, 255));
-		title.setFont(new Font("Tahoma", Font.BOLD, 45));
-		getContentPane().setLayout(null);
-		getContentPane().add(label);
-		getContentPane().add(panel);
+	public void showAndHidePasswordBtnClickAnimation(Node node) {
+		TranslateTransition moveDownTransition = new TranslateTransition();
+		moveDownTransition.setNode(node);
+		moveDownTransition.setFromY(0);
+		moveDownTransition.setToY(5);
+		moveDownTransition.setDuration(Duration.millis(150));
 
-		JLabel loginTitle = new JLabel("Đăng Nhập");
-		loginTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		loginTitle.setFont(new Font("Tahoma", Font.BOLD, 25));
-		loginTitle.setBackground(new Color(255, 255, 255));
-		loginTitle.setForeground(new Color(51, 153, 51));
-		loginTitle.setBounds(91, 40, 276, 32);
-		panel.add(loginTitle);
-		getContentPane().add(title);
+		TranslateTransition moveUpTransition = new TranslateTransition();
+		moveUpTransition.setNode(node);
+		moveUpTransition.setFromY(5);
+		moveUpTransition.setToY(0);
+		moveUpTransition.setDuration(Duration.millis(150));
 
-		JPanel pharmacyIconPanel = new JPanel();
-		pharmacyIconPanel.setBorder(new LineBorder(new Color(51, 153, 51), 30, true));
-		pharmacyIconPanel.setBackground(new Color(255, 255, 255));
-		pharmacyIconPanel.setBounds(0, -11, 611, 816);
-		getContentPane().add(pharmacyIconPanel);
-		pharmacyIconPanel.setLayout(new BorderLayout(0, 0));
+		SequentialTransition sequentialTransition = new SequentialTransition(moveDownTransition, moveUpTransition);
 
-		pharmacyIcon = new JLabel();
-		pharmacyIcon.setHorizontalAlignment(SwingConstants.CENTER);
-		pharmacyIcon.setBackground(new Color(255, 255, 255));
-		pharmacyIcon.setIcon(new ImageIcon(LoginFrame.class.getResource("/images/pharmacy-icon.png")));
-		pharmacyIconPanel.add(pharmacyIcon);
+		sequentialTransition.setOnFinished(e -> {
+			node.setVisible(false);
+			if (node == hidePasswordIcon) {
+				showPasswordIcon.setVisible(true);
+			} else {
+				hidePasswordIcon.setVisible(true);
+			}
+		});
 
-		// handle login button click
-		loginButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					handleLogin();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
+		// Play the animations
+		sequentialTransition.play();
+	}
+
+	public void handleShowAndHidePassword() {
+		passwordTextField.setVisible(false);
+		hidePasswordIcon.setVisible(false);
+
+		showPasswordIcon.setOnMouseClicked(event -> {
+			showAndHidePasswordBtnClickAnimation(showPasswordIcon);
+			passwordTextField.setText(passwordField.getText());
+			passwordField.setVisible(false);
+			passwordTextField.setVisible(true);
+		});
+
+		hidePasswordIcon.setOnMouseClicked(event -> {
+			showAndHidePasswordBtnClickAnimation(hidePasswordIcon);
+			passwordField.setText(passwordTextField.getText());
+			passwordField.setVisible(true);
+			passwordTextField.setVisible(false);
+		});
+	}
+
+	public void handleEnterKeyPress() {
+		usernameField.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				if (passwordField.getText().length() != 0 && usernameField.getText().length() != 0) {
+					handleAuthenticate();
+				} else if (passwordField.getText().length() == 0) {
+					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền mật khẩu.");
+				} else if (usernameField.getText().length() == 0) {
+					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền tên người dùng.");
 				}
 			}
 		});
 
-		usernameField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					handleLogin();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
+		passwordField.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				if (passwordField.getText().length() != 0 && usernameField.getText().length() != 0) {
+					handleAuthenticate();
+				} else if (passwordField.getText().length() == 0) {
+					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền mật khẩu.");
+				} else if (usernameField.getText().length() == 0) {
+					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền tên người dùng.");
 				}
 			}
 		});
 
-		passwordField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					handleLogin();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
+		passwordTextField.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				if (passwordField.getText().length() != 0 && usernameField.getText().length() != 0) {
+					handleAuthenticate();
+				} else if (passwordField.getText().length() == 0) {
+					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền mật khẩu.");
+				} else if (usernameField.getText().length() == 0) {
+					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền tên người dùng.");
 				}
 			}
 		});
 	}
 
-	protected void handleLogin() throws SQLException {
-		String username = usernameField.getText();
-		String password = new String(passwordField.getPassword());
-		AuthController authController = new AuthController();
-		
-		if (authController.authenticateUser(username, password)) {
-			new DashboardFrame();
-			LoginFrame.this.setVisible(false);
-		} else {
-			JOptionPane.showMessageDialog(LoginFrame.this, "Thông tin người dùng không hợp lệ", "Đăng nhập thất bại",
-					JOptionPane.ERROR_MESSAGE);
+	public void handleSubmitBtnAction() {
+		FadeTransition fadeIn = new FadeTransition(Duration.millis(300), submitBtn);
+		fadeIn.setFromValue(1.0);
+		fadeIn.setToValue(0.7);
+		fadeIn.setCycleCount(1);
+
+		FadeTransition fadeOut = new FadeTransition(Duration.millis(300), submitBtn);
+		fadeOut.setFromValue(0.7);
+		fadeOut.setToValue(1.0);
+		fadeOut.setCycleCount(1);
+
+		// button hover animation
+		submitBtn.setOnMouseEntered(event -> {
+			fadeIn.play();
+		});
+
+		submitBtn.setOnMouseExited(event -> {
+			fadeOut.play();
+		});
+
+		submitBtn.setOnMouseClicked(event -> {
+			if (passwordField.getText().length() != 0 && usernameField.getText().length() != 0) {
+				handleAuthenticate();
+			} else if (passwordField.getText().length() == 0) {
+				showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền mật khẩu.");
+			} else if (usernameField.getText().length() == 0) {
+				showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền tên người dùng.");
+			}
+		});
+	}
+
+	public void handleAuthenticate() {
+		try {
+			handleProgressBarAction();
+			AuthController authController = new AuthController();
+			boolean isAuthencated = authController.authenticateUser(usernameField.getText(), passwordField.getText());
+			PauseTransition pause = new PauseTransition(Duration.seconds(2));
+			pause.setOnFinished(event -> {
+				if (isAuthencated) {
+					Stage stage = (Stage) usernameField.getScene().getWindow();
+					stage.hide();
+					try {
+						FrameUtil.switchScreen(stage, "/fxml/DashboardFrame.fxml");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					System.out.println("\n\nLogin Successfully.");
+				} else {
+					System.out.println("\n\nLogin Failed.");
+					showErrorAlert("Lỗi", "Đăng nhập thất bại.", "Kiểm tra lại thông tin đăng nhập.");
+				}
+			});
+			pause.play();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
+
+	public void showErrorAlert(String title, String headerText, String alertContent) {
+		Alert errorAlert = new Alert(AlertType.ERROR);
+		errorAlert.setTitle(title);
+		errorAlert.setHeaderText(headerText);
+		errorAlert.setContentText(alertContent);
+		Stage stage = (Stage) errorAlert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image("/images/alert-icon.png"));
+		errorAlert.showAndWait();
+	}
+
+	public void handleProgressBarAction() {
+		progressBar.setVisible(true);
+		progressStatus.setVisible(true);
+
+		progressBar.setStyle("-fx-accent: #339933;");
+
+		Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 0)),
+				new KeyFrame(Duration.seconds(2), new KeyValue(progressBar.progressProperty(), 1)));
+
+		timeline.setOnFinished(event -> {
+			progressStatus.setText("Đăng nhập thành công.");
+			progressBar.setVisible(false);
+		});
+
+		timeline.play();
+	}
+
 }

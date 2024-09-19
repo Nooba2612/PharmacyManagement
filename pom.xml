@@ -8,10 +8,11 @@
 	<name>PharmacyManagement</name>
 	<description>Pharmacy management application</description>
 
-	<!-- Biên dịch mã nguồn Java. -->
 	<properties>
 		<maven.compiler.target>22</maven.compiler.target>
 		<maven.compiler.source>22</maven.compiler.source>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<javafx.version>22</javafx.version>
 	</properties>
 
 	<build>
@@ -25,7 +26,19 @@
 					<target>22</target>
 				</configuration>
 			</plugin>
-			<!--  Tạo file JAR từ mã nguồn. -->
+
+			<!--
+			https://mvnrepository.com/artifact/org.openjfx/javafx-maven-plugin -->
+			<plugin>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>0.0.8</version>
+				<configuration>
+					<mainClass>pharmacy.App</mainClass>
+				</configuration>
+			</plugin>
+
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -39,14 +52,7 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- Chạy các bài kiểm tra đơn vị. -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
-			</plugin>
-			<!-- Tạo một file JAR duy nhất bao gồm tất cả các thư viện phụ
-			thuộc.-->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -60,44 +66,43 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!--  Xóa các file build được tạo ra. -->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.2.0</version>
 			</plugin>
-			<!-- Cài đặt artifact vào local repository. -->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<version>2.5.2</version>
 			</plugin>
-			<!-- Tạo báo cáo và tài liệu cho dự án. -->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<version>3.3.0</version>
 			</plugin>
-			<!-- Xử lý và sao chép các tài nguyên dự án. -->
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.2.0</version>
 			</plugin>
 		</plugins>
+
 	</build>
 
 	<dependencies>
-		<!--
-		https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+		<!-- SQL Server JDBC driver -->
 		<dependency>
 			<groupId>com.microsoft.sqlserver</groupId>
 			<artifactId>mssql-jdbc</artifactId>
 			<version>12.8.1.jre11</version>
 		</dependency>
 
-
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<!-- JUnit for testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -105,7 +110,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-core -->
+		<!-- Hamcrest for assertions -->
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-core</artifactId>
@@ -113,21 +118,47 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/io.github.cdimascio/dotenv-java -->
+		<!-- Dotenv for environment variables -->
 		<dependency>
 			<groupId>io.github.cdimascio</groupId>
 			<artifactId>dotenv-java</artifactId>
 			<version>3.0.1</version>
 		</dependency>
 
-		<!--
-		https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+		<!-- Spring Security Core -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>6.3.3</version>
 		</dependency>
 
+		<!-- JavaFX Controls -->
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>22.0.2</version>
+		</dependency>
 
+		<!-- JavaFX FXML -->
+		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
+			<version>22.0.2</version>
+		</dependency>
+
+		<!-- SLF4J API -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.36</version>
+		</dependency>
+
+		<!-- SLF4J Binding for Logback -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.11</version>
+		</dependency>
 	</dependencies>
 </project>

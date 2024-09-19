@@ -2,14 +2,10 @@ package pharmacy;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-
-import io.github.cdimascio.dotenv.Dotenv;
+import javafx.application.Application;
 import pharmacy.views.LoginFrame;
 
 public class App {
-
-	private JFrame frame;
 
 	/**
 	 * Launch the application.
@@ -18,8 +14,7 @@ public class App {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					App window = new App();
-					window.frame.setVisible(true);
+					new App(args);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -32,8 +27,8 @@ public class App {
 	 * 
 	 * @wbp.parser.entryPoint
 	 */
-	public App() {
-		initialize();
+	public App(String[] args) {
+		initialize(args);
 	}
 
 	/**
@@ -41,8 +36,8 @@ public class App {
 	 * 
 	 * @wbp.parser.entryPoint
 	 */
-	private void initialize() {
-		frame = new LoginFrame();
+	private void initialize(String[] args) {
+		Application.launch(LoginFrame.class, args);
 	}
 
 }

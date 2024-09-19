@@ -96,6 +96,8 @@ CREATE TABLE SupplierMedicines (
 
 
 INSERT INTO Users
-VALUES ('ajhdahdahsd', 'admin', 'admin123', N'Đặng Phúc Nguyên', 'admin', '', '', null, null);
+VALUES ('ajhdahdahsd', 'admin', '$2a$10$lcF8e6E46hbGBxkaBKe7GuBD3p5E0CDZH8I7D732EJwkQRItlSEaq', N'Đặng Phúc Nguyên', 'admin', '', '', null, null);
+
+DELETE FROM Users WHERE username='admin';
 
 select * from Users
