@@ -3,7 +3,7 @@ package pharmacy;
 import java.awt.EventQueue;
 
 import javafx.application.Application;
-import pharmacy.views.LoginFrame;
+import pharmacy.gui.*;
 
 public class App {
 
@@ -37,7 +37,7 @@ public class App {
 	 * @wbp.parser.entryPoint
 	 */
 	private void initialize(String[] args) {
-		Application.launch(LoginFrame.class, args);
+		Application.launch(MainLayout_GUI.class, args);
 	}
 
 }

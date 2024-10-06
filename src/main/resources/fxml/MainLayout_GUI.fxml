@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<Pane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1498.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+	<BorderPane id="wrapper" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1498.0">
+		<top>
+			<Pane id="header" prefHeight="75.0" prefWidth="898.0" style="-fx-background-color: #339933;" BorderPane.alignment="CENTER">
+				<children>
+					<Label id="logoLabel" fx:id="logo" alignment="CENTER" contentDisplay="CENTER" layoutX="254.0" layoutY="-3.0" prefHeight="81.0" prefWidth="988.0" text="MEDKIT" textFill="WHITE">
+						<font>
+							<Font name="System Bold" size="25.0" />
+						</font>
+					</Label>
+					<HBox id="headerRightBox" alignment="CENTER_RIGHT" layoutX="1242.0" layoutY="2.0" maxWidth="1.7976931348623157E308" prefHeight="72.0" prefWidth="253.0">
+						<children>
+							<Pane id="userInfo" focusTraversable="true" prefHeight="72.0" prefWidth="255.0">
+								<children>
+									<Label id="username" layoutX="74.0" layoutY="16.0" style="-fx-max-width: 150px;" text="Đặng Phúc Nguyên" textFill="WHITE">
+										<font>
+											<Font name="System Bold" size="14.0" />
+										</font>
+									</Label>
+									<ImageView id="avatar" fitHeight="54.0" fitWidth="51.0" layoutX="23.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+										<image>
+											<Image url="@../images/user-icon.png" />
+										</image>
+									</ImageView>
+									<ImageView id="moreProfileIcon" fitHeight="9.0" fitWidth="21.0" layoutX="216.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+										<image>
+											<Image url="@../images/chevron-down-icon.png" />
+										</image>
+									</ImageView>
+									<Text id="userRole" fill="#455bd7" layoutX="74.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin">
+										<font>
+											<Font name="System Bold" size="14.0" />
+										</font>
+									</Text>
+								</children>
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+							</Pane>
+						</children>
+					</HBox>
+					<Pane id="categoryBtnPane" layoutY="2.0" prefHeight="67.0" prefWidth="256.0">
+						<children>
+							<Button id="categoryBtn" layoutX="23.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" style="-fx-background-color: transparent;">
+								<graphic>
+									<ImageView fitHeight="25.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+										<image>
+											<Image url="@../images/menu-icon.png" />
+										</image>
+									</ImageView>
+								</graphic>
+								<cursor>
+									<Cursor fx:constant="HAND" />
+								</cursor>
+							</Button>
+						</children>
+					</Pane>
+				</children>
+			</Pane>
+		</top>
+		<left>
+			<VBox id="category" prefHeight="565.0" prefWidth="255.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER_LEFT">
+				<children>
+					<Pane id="homeBtn" prefHeight="70.0" style="-fx-background-color: #fff;">
+						<children>
+							<ImageView fitHeight="42.0" fitWidth="46.0" layoutX="14.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+								<image>
+									<Image url="@../images/home-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="65.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Trang chủ" wrappingWidth="161.33676147460938">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+						<styleClass>
+							<String fx:value="categoryItem" />
+							<String fx:value="active-category-item" />
+						</styleClass>
+					</Pane>
+					<Pane id="statisticBtn" prefHeight="70.0" styleClass="categoryItem">
+						<children>
+							<ImageView fitHeight="48.0" fitWidth="77.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+								<image>
+									<Image url="@../images/dashboard-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="65.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thống kê" wrappingWidth="161.33676147460938">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+					</Pane>
+					<Pane id="medicinesBtn" prefHeight="70.0" styleClass="categoryItem">
+						<children>
+							<ImageView fitHeight="45.0" fitWidth="47.0" layoutX="14.0" layoutY="13.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+								<image>
+									<Image url="@../images/pills-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="64.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thuốc" wrappingWidth="84.53671264648438">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+					</Pane>
+					<Pane id="equipmentsBtn" prefHeight="70.0" styleClass="categoryItem">
+						<children>
+							<ImageView fitHeight="42.0" fitWidth="39.0" layoutX="14.0" layoutY="13.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+								<image>
+									<Image url="@../images/medical-equipment-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="61.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thiết bị y tế" wrappingWidth="146.13671875">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+					</Pane>
+					<Pane id="employeesBtn" prefHeight="70.0" styleClass="categoryItem">
+						<children>
+							<ImageView id="employeesBtn" fitHeight="39.0" fitWidth="39.0" layoutX="14.0" layoutY="15.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+								<image>
+									<Image url="@../images/employee-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="65.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Nhân viên" wrappingWidth="84.53671264648438">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+					</Pane>
+					<Pane id="customersBtn" prefHeight="70.0" styleClass="categoryItem">
+						<children>
+							<ImageView fitHeight="43.0" fitWidth="40.0" layoutX="14.0" layoutY="15.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+								<image>
+									<Image url="@../images/customers-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="66.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Khách hàng" wrappingWidth="182.93670654296875">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+					</Pane>
+					<Pane id="workScheduleBtn" prefHeight="70.0" styleClass="categoryItem">
+						<children>
+							<ImageView id="employeesBtn" fitHeight="57.0" fitWidth="53.0" layoutY="9.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon" translateX="5.0">
+								<image>
+									<Image url="@../images/calendar-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="64.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Lịch làm việc" wrappingWidth="127.73672485351562">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+					</Pane>
+					<Pane id="suppliersBtn" fx:id="supplierBtn" prefHeight="70.0" styleClass="categoryItem">
+						<children>
+							<ImageView fitHeight="42.0" fitWidth="47.0" layoutX="14.0" layoutY="16.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+								<image>
+									<Image url="@../images/supplier-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="65.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Nhà cung cấp" wrappingWidth="150.93667602539062">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+					</Pane>
+					<Pane id="invoicesBtn" prefHeight="70.0" styleClass="categoryItem">
+						<children>
+							<ImageView fitHeight="46.0" fitWidth="43.0" layoutX="14.0" layoutY="14.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+								<image>
+									<Image url="@../images/invoice-icon.png" />
+								</image>
+							</ImageView>
+							<Text fill="#616961" layoutX="64.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Hóa đơn" wrappingWidth="84.53671264648438">
+								<font>
+									<Font size="17.0" />
+								</font>
+							</Text>
+						</children>
+						<cursor>
+							<Cursor fx:constant="HAND" />
+						</cursor>
+					</Pane>
+				</children>
+			</VBox>
+		</left>
+		<center>
+			<ScrollPane id="mainContentPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="634.0" prefWidth="1247.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #72C972; -fx-border-width: 0 0 0 2px;" BorderPane.alignment="CENTER">
+				<content>
+
+				</content>
+			</ScrollPane>
+		</center>
+	</BorderPane>
+	<VBox id="profilePopover" alignment="CENTER" layoutX="817.0" layoutY="80.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="229.0" style="-fx-background-color: #fff; -fx-border-color: #f0f0f0;" visible="false">
+		<children>
+			<Pane prefHeight="200.0" prefWidth="230.0">
+				<children>
+					<Text layoutX="87.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" wrappingWidth="55.73681640625">
+						<font>
+							<Font size="14.0" />
+						</font>
+					</Text>
+					<ImageView fitHeight="24.0" fitWidth="21.0" layoutX="50.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true">
+						<image>
+							<Image url="@../images/gear-icon.png" />
+						</image>
+					</ImageView>
+				</children>
+				<cursor>
+					<Cursor fx:constant="HAND" />
+				</cursor>
+			</Pane>
+			<Pane prefHeight="200.0" prefWidth="200.0">
+				<children>
+					<Text layoutX="88.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log Out" wrappingWidth="53.336669921875">
+						<font>
+							<Font size="14.0" />
+						</font>
+					</Text>
+					<ImageView fitHeight="26.0" fitWidth="20.0" layoutX="50.0" layoutY="9.0" opacity="0.6" pickOnBounds="true" preserveRatio="true">
+						<image>
+							<Image url="@../images/logout-icon.png" />
+						</image>
+					</ImageView>
+				</children>
+				<cursor>
+					<Cursor fx:constant="HAND" />
+				</cursor>
+			</Pane>
+		</children>
+		<effect>
+			<DropShadow offsetX="-1.0" offsetY="2.0">
+				<color>
+					<Color red="0.6000000238418579" green="0.6000000238418579" blue="0.6000000238418579" />
+				</color>
+			</DropShadow>
+		</effect>
+	</VBox>
+</Pane>
