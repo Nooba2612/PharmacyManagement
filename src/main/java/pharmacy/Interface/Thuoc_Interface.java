@@ -28,4 +28,8 @@ public interface Thuoc_Interface {
 	List<Thuoc> getThuocDaHetHan();
 
 	int countThuocDaHetHan();
+
+	List<Thuoc> getTopSaleThuocByDate(String date);
+
+	int getSoldQuantityById(String maThuoc,String date);
 }

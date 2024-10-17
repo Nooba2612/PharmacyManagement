@@ -90,8 +90,8 @@ public class HoaDon_GUI {
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("maHoaDon"));
 		createDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngayTao"));
 		amountPaidColumn.setCellValueFactory(new PropertyValueFactory<>("tienKhachDua"));
-//		changeColumn.setCellValueFactory(new PropertyValueFactory<>("changeAmount"));
-//		totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
+		// changeColumn.setCellValueFactory(new PropertyValueFactory<>("changeAmount"));
+		// totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
 		paymentMethodColumn.setCellValueFactory(new PropertyValueFactory<>("loaiThanhToan"));
 		customerNameColumn.setCellValueFactory(cellData -> {
 			KhachHang khachHang = cellData.getValue().getKhachHang();
@@ -142,13 +142,13 @@ public class HoaDon_GUI {
 					detailButton.setVisible(false);
 
 					detailButton.setOnMouseEntered(event -> {
-						NodeUtil.applyFadeTransiton(detailButton, 1, 0.7, 300, () -> {
+						NodeUtil.applyFadeTransition(detailButton, 1, 0.7, 300, () -> {
 						});
 						NodeUtil.applyScaleTransition(detailButton, 1, 1.1, 1, 1.1, 300, () -> {
 						});
 					});
 					detailButton.setOnMouseExited(event -> {
-						NodeUtil.applyFadeTransiton(detailButton, 0.7, 1, 300, () -> {
+						NodeUtil.applyFadeTransition(detailButton, 0.7, 1, 300, () -> {
 						});
 						NodeUtil.applyScaleTransition(detailButton, 1.1, 1, 1.1, 1, 300, () -> {
 						});
@@ -175,11 +175,11 @@ public class HoaDon_GUI {
 
 						currentRow.setOnMouseEntered(event -> {
 							detailButton.setVisible(true);
-							NodeUtil.applyFadeTransiton(detailButton, 0, 1, 300, () -> {
+							NodeUtil.applyFadeTransition(detailButton, 0, 1, 300, () -> {
 							});
 						});
 						currentRow
-								.setOnMouseExited(event -> NodeUtil.applyFadeTransiton(detailButton, 1, 0, 300, () -> {
+								.setOnMouseExited(event -> NodeUtil.applyFadeTransition(detailButton, 1, 0, 300, () -> {
 									detailButton.setVisible(false);
 								}));
 					}
@@ -208,12 +208,12 @@ public class HoaDon_GUI {
 		});
 
 		addInvoiceBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(addInvoiceBtn, 1, 0.7, 200, () -> {
+			NodeUtil.applyFadeTransition(addInvoiceBtn, 1, 0.7, 200, () -> {
 			});
 		});
 
 		addInvoiceBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(addInvoiceBtn, 0.7, 1, 200, () -> {
+			NodeUtil.applyFadeTransition(addInvoiceBtn, 0.7, 1, 200, () -> {
 			});
 		});
 	}

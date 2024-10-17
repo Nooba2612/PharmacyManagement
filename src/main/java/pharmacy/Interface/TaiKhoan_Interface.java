@@ -12,4 +12,8 @@ public interface TaiKhoan_Interface {
 	boolean deleteAccount(String tenDangNhap);
 
 	int countAccounts();
+
+	TaiKhoan getCurrentAccount();
+
+	void logoutAccount(String tenDangNhap);
 }

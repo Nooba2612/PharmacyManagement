@@ -34,7 +34,7 @@ public class NhaCungCap_GUI {
 
 	@FXML
 	private TableColumn<NhaCungCap, String> idColumn;
-	
+
 	@FXML
 	private TableColumn<NhaCungCap, String> addressColumn;
 
@@ -124,13 +124,13 @@ public class NhaCungCap_GUI {
 					deleteButton.setVisible(false);
 
 					deleteButton.setOnMouseEntered(event -> {
-						NodeUtil.applyFadeTransiton(deleteButton, 1, 0.7, 300, () -> {
+						NodeUtil.applyFadeTransition(deleteButton, 1, 0.7, 300, () -> {
 						});
 						NodeUtil.applyScaleTransition(deleteButton, 1, 1.1, 1, 1.1, 300, () -> {
 						});
 					});
 					deleteButton.setOnMouseExited(event -> {
-						NodeUtil.applyFadeTransiton(deleteButton, 0.7, 1, 300, () -> {
+						NodeUtil.applyFadeTransition(deleteButton, 0.7, 1, 300, () -> {
 						});
 						NodeUtil.applyScaleTransition(deleteButton, 1.1, 1, 1.1, 1, 300, () -> {
 						});
@@ -156,11 +156,11 @@ public class NhaCungCap_GUI {
 						TableRow<NhaCungCap> currentRow = getTableRow();
 						currentRow.setOnMouseEntered(event -> {
 							deleteButton.setVisible(true);
-							NodeUtil.applyFadeTransiton(deleteButton, 0, 1, 300, () -> {
+							NodeUtil.applyFadeTransition(deleteButton, 0, 1, 300, () -> {
 							});
 						});
 						currentRow
-								.setOnMouseExited(event -> NodeUtil.applyFadeTransiton(deleteButton, 1, 0, 300, () -> {
+								.setOnMouseExited(event -> NodeUtil.applyFadeTransition(deleteButton, 1, 0, 300, () -> {
 									deleteButton.setVisible(false);
 								}));
 					}
@@ -189,25 +189,24 @@ public class NhaCungCap_GUI {
 			NhaCungCap supplier = event.getRowValue();
 			supplier.setSoDienThoai(event.getNewValue());
 		});
-		
+
 		addressColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		addressColumn.setOnEditCommit(event -> {
 			NhaCungCap supplier = event.getRowValue();
 			supplier.setDiaChi(event.getNewValue());
 		});
-		
+
 		idColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		idColumn.setOnEditCommit(event -> {
 			NhaCungCap supplier = event.getRowValue();
 			supplier.setMaNCC(event.getNewValue());
 		});
-		
+
 		emailColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		emailColumn.setOnEditCommit(event -> {
 			NhaCungCap supplier = event.getRowValue();
 			supplier.setEmail(event.getNewValue());
 		});
-		
 
 	}
 
@@ -225,12 +224,12 @@ public class NhaCungCap_GUI {
 		});
 
 		addSupplierBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(addSupplierBtn, 1, 0.7, 200, () -> {
+			NodeUtil.applyFadeTransition(addSupplierBtn, 1, 0.7, 200, () -> {
 			});
 		});
 
 		addSupplierBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(addSupplierBtn, 0.7, 1, 200, () -> {
+			NodeUtil.applyFadeTransition(addSupplierBtn, 0.7, 1, 200, () -> {
 			});
 		});
 	}

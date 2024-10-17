@@ -27,4 +27,6 @@ public class ChiTietHoaDon_BUS {
 	public boolean deleteChiTietHoaDon(String maHoaDon) {
 		return chiTietHoaDonDAO.deleteChiTietHoaDon(maHoaDon);
 	}
+
+
 }

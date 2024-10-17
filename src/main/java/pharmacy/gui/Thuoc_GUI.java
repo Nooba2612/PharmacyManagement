@@ -1,31 +1,72 @@
 package pharmacy.gui;
 
 import java.beans.PropertyDescriptor;
+import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+
+import com.itextpdf.commons.utils.Base64.InputStream;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Table;
+
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.print.PrinterJob;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
+import pharmacy.bus.Thuoc_BUS;
 import pharmacy.entity.*;
 import pharmacy.utils.NodeUtil;
+import pharmacy.utils.PDFUtil;
 
 public class Thuoc_GUI {
 
@@ -49,7 +90,7 @@ public class Thuoc_GUI {
 
 	@FXML
 	private TableColumn<Thuoc, LocalDate> manufactureDateColumn;
-	
+
 	@FXML
 	private TableColumn<Thuoc, LocalDate> idColumn;
 
@@ -78,27 +119,46 @@ public class Thuoc_GUI {
 	private TableColumn<Thuoc, Double> taxColumn;
 
 	@FXML
-	private TableColumn<Thuoc, Void> actionColumn;
+	private TableColumn<Thuoc, String> statusColumn;
 
 	@FXML
 	private ComboBox<String> filter;
 
+	@FXML
+	private Button exportListBtn;
+
+	@FXML
+	private TableColumn<Thuoc, String> unitColumn;
+
+	private ObservableList<Thuoc> medicineList = FXCollections.observableArrayList();
+
 	// methods
 	@FXML
-	public void initialize() {
-		filter.getItems().setAll("Tất cả thuốc", "Thuốc sắp hết hạn", "Thuốc đã hết hạn",
-				"Thuốc có số lượng tồn kho thấp");
-		handleCustomerTableAction();
-		handleSeacrhCustomerAction();
+	public void initialize() throws SQLException {
+		handleExportMedicineList();
+		setUpMedicineTableAction();
 	}
 
 	@FXML
-	public void handleCustomerTableAction() {
-		addRow();
+	public void setUpMedicineTableAction() throws SQLException {
+		filter.getItems().setAll("Tất cả thuốc", "Thuốc sắp hết hạn", "Thuốc đã hết hạn",
+				"Thuốc có số lượng tồn kho thấp");
+		filter.getSelectionModel().selectFirst();
+
+		filter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				try {
+					renderMedicines(newValue.toString());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		renderMedicines(filter.getValue());
 		handleEditableMedicineTable();
 		setupTablePlaceholder();
-		handleAddCustomerAction();
-		handleAddDeleteButtonToActionColumn();
+		handleAddMedicineAction();
 	}
 
 	@FXML
@@ -110,12 +170,12 @@ public class Thuoc_GUI {
 	}
 
 	@FXML
-	public void handleAddCustomerAction() {
+	public void handleAddMedicineAction() {
 		addMedicineBtn.setOnMouseClicked(event -> {
 			try {
-				Parent addCustomerFrame = FXMLLoader.load(getClass().getResource("/fxml/ThemThuoc_GUI.fxml"));
+				Parent addMedicineFrame = FXMLLoader.load(getClass().getResource("/fxml/ThemThuoc_GUI.fxml"));
 				root.getChildren().clear();
-				root.getChildren().add(addCustomerFrame);
+				root.getChildren().add(addMedicineFrame);
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -123,90 +183,18 @@ public class Thuoc_GUI {
 		});
 
 		addMedicineBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(addMedicineBtn, 1, 0.7, 200, () -> {
+			NodeUtil.applyFadeTransition(addMedicineBtn, 1, 0.7, 200, () -> {
 			});
 		});
 
 		addMedicineBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(addMedicineBtn, 0.7, 1, 200, () -> {
+			NodeUtil.applyFadeTransition(addMedicineBtn, 0.7, 1, 200, () -> {
 			});
 		});
 	}
 
 	@FXML
-	public void handleAddDeleteButtonToActionColumn() {
-		actionColumn.setCellFactory(column -> {
-			return new TableCell<Thuoc, Void>() {
-				private final Button deleteButton = new Button();
-
-				{
-					// Style the delete button
-					deleteButton.setStyle("-fx-background-color: #D23617; -fx-text-fill: #FFF;");
-
-					// Action for the delete button
-					deleteButton.setOnAction(event -> {
-						Thuoc medicine = getTableView().getItems().get(getIndex());
-						getTableView().getItems().remove(medicine);
-					});
-
-					Image image = new Image(getClass().getResourceAsStream("/images/x-icon.png"));
-					ImageView imageView = new ImageView(image);
-
-					imageView.setFitWidth(20);
-					imageView.setFitHeight(20);
-					imageView.setPreserveRatio(true);
-					deleteButton.setGraphic(imageView);
-					deleteButton.setStyle("-fx-background-color: transparent;");
-					deleteButton.setVisible(false);
-
-					deleteButton.setOnMouseEntered(event -> {
-						NodeUtil.applyFadeTransiton(deleteButton, 1, 0.7, 300, () -> {
-						});
-						NodeUtil.applyScaleTransition(deleteButton, 1, 1.1, 1, 1.1, 300, () -> {
-						});
-					});
-					deleteButton.setOnMouseExited(event -> {
-						NodeUtil.applyFadeTransiton(deleteButton, 0.7, 1, 300, () -> {
-						});
-						NodeUtil.applyScaleTransition(deleteButton, 1.1, 1, 1.1, 1, 300, () -> {
-						});
-					});
-				}
-
-				@Override
-				protected void updateItem(Void item, boolean empty) {
-					super.updateItem(item, empty);
-					if (empty) {
-						setGraphic(null);
-					} else {
-						setGraphic(deleteButton);
-						// Center the delete button in the cell
-						setStyle("-fx-alignment: CENTER;");
-					}
-				}
-
-				@Override
-				public void updateIndex(int i) {
-					super.updateIndex(i);
-					if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
-						TableRow<Thuoc> currentRow = getTableRow();
-						currentRow.setOnMouseEntered(event -> {
-							deleteButton.setVisible(true);
-							NodeUtil.applyFadeTransiton(deleteButton, 0, 1, 300, () -> {
-							});
-						});
-						currentRow
-								.setOnMouseExited(event -> NodeUtil.applyFadeTransiton(deleteButton, 1, 0, 300, () -> {
-									deleteButton.setVisible(false);
-								}));
-					}
-				}
-			};
-		});
-	}
-
-	@FXML
-	public void addRow() {
+	public void renderMedicines(String type) throws SQLException {
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("maThuoc"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenThuoc"));
 		manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngaySX"));
@@ -216,19 +204,37 @@ public class Thuoc_GUI {
 		manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("nhaSX"));
 		expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("hanSuDung"));
 		taxColumn.setCellValueFactory(new PropertyValueFactory<>("thue"));
+		unitColumn.setCellValueFactory(new PropertyValueFactory<>("donViTinh"));
+		statusColumn.setCellValueFactory(new PropertyValueFactory<>("trangThai"));
 
-		ObservableList<Thuoc> data = FXCollections.observableArrayList(
-				new Thuoc("ID123", "Thuốc A", null, LocalDate.now(), "Nhà Sản Xuất A", LocalDate.now(), LocalDate.now(),
-						100, 50000, 0.1f, LocalDate.of(2025, 12, 31), "Moo tar cc"),
-				new Thuoc("ID124", "Thuốc B", null, LocalDate.now(), "Nhà Sản Xuất B", LocalDate.now(), LocalDate.now(),
-						50, 60000, 0.1f, LocalDate.of(2026, 1, 15), "Moo tar cc"));
+		switch (type) {
+			case "Tất cả thuốc":
+				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getAllThuoc());
+				break;
 
-		medicineTable.setItems(data);
+			case "Thuốc sắp hết hạn":
+				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocSapHetHanSuDung());
+				break;
+
+			case "Thuốc đã hết hạn":
+				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocDaHetHan());
+				break;
+
+			case "Thuốc có số lượng tồn kho thấp":
+				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocSapHetTonKho());
+				break;
+
+			default:
+				break;
+		}
+
+		medicineTable.setItems(medicineList);
+
+		handleSearchMedicineAction(medicineList);
 	}
 
 	@FXML
 	public void handleEditableMedicineTable() {
-		makeColumnEditable(idColumn, "maThuoc");
 		makeColumnEditable(nameColumn, "tenThuoc");
 		makeColumnEditable(descriptionColumn, "moTa");
 		makeColumnEditable(priceColumn, "donGiaBan");
@@ -237,6 +243,7 @@ public class Thuoc_GUI {
 		makeColumnEditable(expirationDateColumn, "ngaySanXuat");
 		makeColumnEditable(taxColumn, "thue");
 		makeColumnEditable(expirationDateColumn, "hanSuDung");
+		makeColumnEditable(unitColumn, "donViTinh");
 	}
 
 	private <T> void makeColumnEditable(TableColumn<Thuoc, T> column, String property) {
@@ -249,7 +256,17 @@ public class Thuoc_GUI {
 			@Override
 			@SuppressWarnings("unchecked")
 			public T fromString(String string) {
-				return (T) string;
+				try {
+					if (column.getCellData(0) instanceof Double) {
+						return (T) Double.valueOf(string);
+					} else if (column.getCellData(0) instanceof Integer) {
+						return (T) Integer.valueOf(string);
+					}
+					return (T) string;
+				} catch (Exception e) {
+					System.out.println("Data input error: " + e.getMessage());
+					return null;
+				}
 			}
 		}));
 
@@ -265,7 +282,103 @@ public class Thuoc_GUI {
 	}
 
 	@FXML
-	public void handleSeacrhCustomerAction() {
+	public void handleSearchMedicineAction(ObservableList<Thuoc> medicineList) {
+		FilteredList<Thuoc> filteredList = new FilteredList<>(medicineList, b -> true);
+
+		searchMedicineBtn.setOnAction(event -> {
+			filteredList.setPredicate(medicine -> {
+				if (searchField.getText() == null || searchField.getText().isEmpty()) {
+					return true;
+				}
+
+				String lowerCaseFilter = searchField.getText().toLowerCase();
+				return medicine.getMaThuoc().toLowerCase().contains(lowerCaseFilter) ||
+						medicine.getTenThuoc().toLowerCase().contains(lowerCaseFilter) ||
+						(Double.toString(medicine.getDonGiaBan()).contains(lowerCaseFilter)) ||
+						(medicine.getNhaSX() != null && medicine.getNhaSX().toLowerCase().contains(lowerCaseFilter)) ||
+						Integer.toString(medicine.getSoLuongTon()).contains(lowerCaseFilter) ||
+						(medicine.getMoTa() != null && medicine.getMoTa().toLowerCase().contains(lowerCaseFilter)) ||
+						(medicine.getDonViTinh() != null
+								&& medicine.getDonViTinh().toLowerCase().contains(lowerCaseFilter))
+						||
+						medicine.getNgaySX() != null && medicine.getNgaySX().toString().contains(lowerCaseFilter) ||
+						(Float.toString(medicine.getThue()).contains(lowerCaseFilter)) ||
+						(medicine.getHanSuDung() != null
+								&& medicine.getHanSuDung().toString().contains(lowerCaseFilter));
+
+			});
+		});
+
+		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredList.setPredicate(medicine -> {
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+
+				String lowerCaseFilter = newValue.toLowerCase();
+				return medicine.getMaThuoc().toLowerCase().contains(lowerCaseFilter) ||
+						medicine.getTenThuoc().toLowerCase().contains(lowerCaseFilter) ||
+						(Double.toString(medicine.getDonGiaBan()).contains(lowerCaseFilter)) ||
+						(medicine.getNhaSX() != null && medicine.getNhaSX().toLowerCase().contains(lowerCaseFilter)) ||
+						Integer.toString(medicine.getSoLuongTon()).contains(lowerCaseFilter) ||
+						(medicine.getMoTa() != null && medicine.getMoTa().toLowerCase().contains(lowerCaseFilter)) ||
+						(medicine.getDonViTinh() != null
+								&& medicine.getDonViTinh().toLowerCase().contains(lowerCaseFilter))
+						||
+						medicine.getNgaySX() != null && medicine.getNgaySX().toString().contains(lowerCaseFilter) ||
+						(Float.toString(medicine.getThue()).contains(lowerCaseFilter)) ||
+						(medicine.getHanSuDung() != null
+								&& medicine.getHanSuDung().toString().contains(lowerCaseFilter));
+
+			});
+		});
+
+		medicineTable.setItems(filteredList.size() == 0 ? medicineList : filteredList);
+	}
+
+	@FXML
+	private void handleExportMedicineList() {
+		exportListBtn.setOnMouseEntered(event -> {
+			NodeUtil.applyFadeTransition(exportListBtn, 1, 0.6, 300, () -> {
+			});
+		});
+
+		exportListBtn.setOnMouseExited(event -> {
+			NodeUtil.applyFadeTransition(exportListBtn, 0.6, 1, 300, () -> {
+			});
+		});
+
+		exportListBtn.setOnAction(event -> {
+			try {
+				try {
+					PDFUtil.showPdfPreview(
+							new File(getClass().getClassLoader().getResource("pdf/DanhSachThuoc.pdf").toURI()));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} catch (com.itextpdf.io.exceptions.IOException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	private void exportMedicinesToPdf(String outputPdfPath) {
+		try {
+			PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
+			PdfDocument pdfDoc = new PdfDocument(writer);
+			Document document = new Document(pdfDoc);
+
+			document.close();
+			System.out.println("\n\nPDF generated.\n\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void handleUpdateMedicine() {
 
 	}
+
 }

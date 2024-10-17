@@ -102,9 +102,11 @@ public class NhanVien_GUI {
 		handleAddButtonToActionColumn();
 
 		ObservableList<NhanVien> data = FXCollections.observableArrayList(
-				new NhanVien("MK0001", "John Doe", "Nhân viên", "0123456789", LocalDate.of(2022, 5, 10), "Đã nghỉ", "Đại học",
+				new NhanVien("MK0001", "John Doe", "Nhân viên", "0123456789", "ccc@getEmail.com",
+						LocalDate.of(2022, 5, 10), "Đã nghỉ", "Đại học",
 						"Nam", LocalDate.of(1990, 1, 1)),
-				new NhanVien("MK0002", "Jane Smith", "Người quản lý", "0987654321", LocalDate.of(2021, 11, 15), "Còn làm", "Đại học",
+				new NhanVien("MK0002", "Jane Smith", "Người quản lý", "0987654321", "ccc@getEmail.com",
+						LocalDate.of(2021, 11, 15), "Còn làm", "Đại học",
 						"Nữ", LocalDate.of(1992, 2, 2)));
 
 		employeeTable.setItems(data);
@@ -133,13 +135,13 @@ public class NhanVien_GUI {
 				deleteButton.setVisible(false);
 
 				deleteButton.setOnMouseEntered(event -> {
-					NodeUtil.applyFadeTransiton(deleteButton, 1, 0.7, 300, () -> {
+					NodeUtil.applyFadeTransition(deleteButton, 1, 0.7, 300, () -> {
 					});
 					NodeUtil.applyScaleTransition(deleteButton, 1, 1.1, 1, 1.1, 300, () -> {
 					});
 				});
 				deleteButton.setOnMouseExited(event -> {
-					NodeUtil.applyFadeTransiton(deleteButton, 0.7, 1, 300, () -> {
+					NodeUtil.applyFadeTransition(deleteButton, 0.7, 1, 300, () -> {
 					});
 					NodeUtil.applyScaleTransition(deleteButton, 1.1, 1, 1.1, 1, 300, () -> {
 					});
@@ -164,10 +166,10 @@ public class NhanVien_GUI {
 					TableRow<NhanVien> currentRow = getTableRow();
 					currentRow.setOnMouseEntered(event -> {
 						deleteButton.setVisible(true);
-						NodeUtil.applyFadeTransiton(deleteButton, 0, 1, 300, () -> {
+						NodeUtil.applyFadeTransition(deleteButton, 0, 1, 300, () -> {
 						});
 					});
-					currentRow.setOnMouseExited(event -> NodeUtil.applyFadeTransiton(deleteButton, 1, 0, 300, () -> {
+					currentRow.setOnMouseExited(event -> NodeUtil.applyFadeTransition(deleteButton, 1, 0, 300, () -> {
 						deleteButton.setVisible(false);
 					}));
 				}
@@ -243,12 +245,12 @@ public class NhanVien_GUI {
 		});
 
 		addEmployeeBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(addEmployeeBtn, 1, 0.7, 200, () -> {
+			NodeUtil.applyFadeTransition(addEmployeeBtn, 1, 0.7, 200, () -> {
 			});
 		});
 
 		addEmployeeBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(addEmployeeBtn, 0.7, 1, 200, () -> {
+			NodeUtil.applyFadeTransition(addEmployeeBtn, 0.7, 1, 200, () -> {
 			});
 		});
 	}

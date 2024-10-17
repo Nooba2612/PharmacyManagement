@@ -108,12 +108,12 @@ public class LichLam_GUI {
 								"-fx-background-color:  linear-gradient(to right, rgb(63, 188, 63), rgb(0, 230, 0)); -fx-text-fill: white; -fx-font-weight: bold;");
 
 						addButton.setOnMouseEntered(event -> {
-							NodeUtil.applyFadeTransiton(addButton, 1, 0.6, 300, () -> {
+							NodeUtil.applyFadeTransition(addButton, 1, 0.6, 300, () -> {
 							});
 						});
 
 						addButton.setOnMouseExited(event -> {
-							NodeUtil.applyFadeTransiton(addButton, 0.6, 1, 300, () -> {
+							NodeUtil.applyFadeTransition(addButton, 0.6, 1, 300, () -> {
 							});
 						});
 
@@ -132,7 +132,7 @@ public class LichLam_GUI {
 
 							box.setOnMouseEntered(event -> {
 								addButton.setVisible(true);
-								NodeUtil.applyFadeTransiton(addButton, 0, 1, 300, () -> {
+								NodeUtil.applyFadeTransition(addButton, 0, 1, 300, () -> {
 								});
 							});
 
@@ -166,11 +166,13 @@ public class LichLam_GUI {
 
 		ObservableList<LichLamViec> shifts = FXCollections.observableArrayList(
 				new LichLamViec("123", "Ca 1 (7h-15h)",
-						new NhanVien("MK0001", "John Doe", "Nhân viên", "0123456789", LocalDate.of(2022, 5, 10),
+						new NhanVien("MK0001", "John Doe", "Nhân viên", "0123456789", "ccc@getEmail.com",
+								LocalDate.of(2022, 5, 10),
 								"Đã nghỉ", "Đại học", "Nam", LocalDate.of(1990, 1, 1)),
 						LocalDate.now()),
 				new LichLamViec(
-						"456", "Ca 2 (15h-22h)", new NhanVien("MK0002", "Jane Smith", "Người quản lý", "0987654321",
+						"456", "Ca 2 (15h-22h)",
+						new NhanVien("MK0002", "Jane Smith", "Người quản lý", "0987654321", "ccc@getEmail.com",
 								LocalDate.of(2021, 11, 15), "Còn làm", "Đại học", "Nữ", LocalDate.of(1992, 2, 2)),
 						LocalDate.now()));
 
@@ -182,29 +184,29 @@ public class LichLam_GUI {
 
 		String dateOfWeek;
 		switch (column.getId()) {
-		case "mondayColumn":
-			dateOfWeek = "Thứ hai";
-			break;
-		case "tuesdayColumn":
-			dateOfWeek = "Thứ ba";
-			break;
-		case "wednesdayColumn":
-			dateOfWeek = "Thứ tư";
-			break;
-		case "thursdayColumn":
-			dateOfWeek = "Thứ năm";
-			break;
-		case "fridayColumn":
-			dateOfWeek = "Thứ sáu";
-			break;
-		case "saturdayColumn":
-			dateOfWeek = "Thứ bảy";
-			break;
-		case "sundayColumn":
-			dateOfWeek = "Chủ nhật";
-			break;
-		default:
-			throw new IllegalArgumentException("Unexpected column: " + column.getId());
+			case "mondayColumn":
+				dateOfWeek = "Thứ hai";
+				break;
+			case "tuesdayColumn":
+				dateOfWeek = "Thứ ba";
+				break;
+			case "wednesdayColumn":
+				dateOfWeek = "Thứ tư";
+				break;
+			case "thursdayColumn":
+				dateOfWeek = "Thứ năm";
+				break;
+			case "fridayColumn":
+				dateOfWeek = "Thứ sáu";
+				break;
+			case "saturdayColumn":
+				dateOfWeek = "Thứ bảy";
+				break;
+			case "sundayColumn":
+				dateOfWeek = "Chủ nhật";
+				break;
+			default:
+				throw new IllegalArgumentException("Unexpected column: " + column.getId());
 		}
 
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThemLichLam_GUI.fxml"));

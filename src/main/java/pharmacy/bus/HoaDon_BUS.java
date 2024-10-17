@@ -1,14 +1,15 @@
 package pharmacy.bus;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import pharmacy.dao.HoaDon_DAO;
 import pharmacy.entity.HoaDon;
-
-import java.util.List;
 
 public class HoaDon_BUS {
 	private final HoaDon_DAO hoaDonDAO;
 
-	public HoaDon_BUS() {
+	public HoaDon_BUS() throws SQLException {
 		this.hoaDonDAO = new HoaDon_DAO();
 	}
 
@@ -40,15 +41,21 @@ public class HoaDon_BUS {
 		return hoaDonDAO.calculateTotalRevenue();
 	}
 
-	public String calculateRevenueByDate(String date) {
+	public double calculateRevenueByDate(String date) {
 		return hoaDonDAO.calculateRevenueByDate(date);
 	}
 
-	public String calculateRevenueByMonth(int year, int month) {
-		return hoaDonDAO.calculateRevenueByMonth(year, month);
+	public double calculateRevenueByMonth(int month, int year) {
+		return hoaDonDAO.calculateRevenueByMonth(month, year);
 	}
 
-	public String calculateRevenueByYear(int year) {
+	public double calculateRevenueByYear(int year) {
 		return hoaDonDAO.calculateRevenueByYear(year);
 	}
+
+	public double calculateRevenueByEmployee(String maNhanVien, String date) {
+		return hoaDonDAO.calculateRevenueByEmployee(maNhanVien, date);
+	}
+
+	
 }

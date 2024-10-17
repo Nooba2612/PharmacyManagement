@@ -3,38 +3,39 @@ package pharmacy.entity;
 import java.time.LocalDate;
 
 public class ThietBiYTe {
-    
-    private String maThietBi;     
-    private String tenThietBi;     
-    private LocalDate ngaySX;      
-    private String moTa;           
-    private int soLuong;           
-    private DanhMuc danhMuc;       
 
-    
-    public ThietBiYTe() {}
+    private String maThietBi;
+    private String tenThietBi;
+    private LocalDate ngaySX;
+    private String moTa;
+    private int soLuongTon;
+    private double donGiaBan;
+    private DanhMuc danhMuc;
 
-    
-    public ThietBiYTe(String maThietBi, String tenThietBi, LocalDate ngaySX, String moTa, int soLuong, DanhMuc danhMuc) {
+    public ThietBiYTe() {
+    }
+
+    public ThietBiYTe(String maThietBi, String tenThietBi, LocalDate ngaySX, String moTa, int soLuongTon,
+            double donGiaBan, DanhMuc danhMuc) {
         setMaThietBi(maThietBi);
         setTenThietBi(tenThietBi);
         setNgaySX(ngaySX);
         setMoTa(moTa);
-        setSoLuong(soLuong);
+        setSoLuongTon(soLuongTon);
+        setDonGiaBan(donGiaBan);
         setDanhMuc(danhMuc);
     }
 
-    
     public ThietBiYTe(ThietBiYTe other) {
         this.maThietBi = other.maThietBi;
         this.tenThietBi = other.tenThietBi;
         this.ngaySX = other.ngaySX;
         this.moTa = other.moTa;
-        this.soLuong = other.soLuong;
+        this.soLuongTon = other.soLuongTon;
+        this.donGiaBan = other.donGiaBan;
         this.danhMuc = other.danhMuc;
     }
 
-    
     public String getMaThietBi() {
         return maThietBi;
     }
@@ -73,18 +74,29 @@ public class ThietBiYTe {
     }
 
     public void setMoTa(String moTa) {
-        this.moTa = moTa; 
+        this.moTa = moTa;
     }
 
-    public int getSoLuong() {
-        return soLuong;
+    public int getSoLuongTon() {
+        return soLuongTon;
     }
 
-    public void setSoLuong(int soLuong) {
-        if (soLuong < 0) {
+    public void setSoLuongTon(int soLuongTon) {
+        if (soLuongTon < 0) {
             throw new IllegalArgumentException("Số lượng không hợp lệ");
         }
-        this.soLuong = soLuong;
+        this.soLuongTon = soLuongTon;
+    }
+
+    public double getDonGiaBan() {
+        return donGiaBan;
+    }
+
+    public void setDonGiaBan(double donGiaBan) {
+        if (donGiaBan < 0) {
+            throw new IllegalArgumentException("Đơn giá bán không hợp lệ");
+        }
+        this.donGiaBan = donGiaBan;
     }
 
     public DanhMuc getDanhMuc() {
@@ -95,14 +107,14 @@ public class ThietBiYTe {
         this.danhMuc = danhMuc; // Giá trị danh mục từ Danh Mục
     }
 
-    // Phương thức toString()
     @Override
     public String toString() {
-        return "Thiết bị y tế [Mã: " + maThietBi + 
-               ", Tên: " + tenThietBi + 
-               ", Ngày SX: " + ngaySX + 
-               ", Mô tả: " + moTa + 
-               ", Số lượng: " + soLuong + 
-               ", Danh mục: " + (danhMuc != null ? danhMuc.toString() : "Chưa có") + "]";
+        return "Thiết bị y tế [Mã: " + maThietBi +
+                ", Tên: " + tenThietBi +
+                ", Ngày SX: " + ngaySX +
+                ", Mô tả: " + moTa +
+                ", Số lượng: " + soLuongTon +
+                ", Đơn giá bán: " + donGiaBan + // Cập nhật hiển thị đơn giá bán
+                ", Danh mục: " + (danhMuc != null ? danhMuc.toString() : "Chưa có") + "]";
     }
 }

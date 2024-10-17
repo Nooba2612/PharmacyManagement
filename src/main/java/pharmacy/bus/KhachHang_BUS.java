@@ -31,4 +31,12 @@ public class KhachHang_BUS {
     public int countKhachHang() {
         return khachHangDAO.countKhachHang();
     }
+
+    public List<KhachHang> getNewCustomerByDate(String date){
+        return khachHangDAO.getNewCustomerByDate(date);
+    }
+
+    public List<KhachHang> getTopCustomer() {
+        return khachHangDAO.getTopCustomer();
+    }
 }

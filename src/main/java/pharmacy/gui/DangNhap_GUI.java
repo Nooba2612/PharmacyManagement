@@ -128,7 +128,11 @@ public class DangNhap_GUI extends Application {
 		usernameField.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				if (passwordField.getText().length() != 0 && usernameField.getText().length() != 0) {
-					handleAuthenticate();
+					try {
+						handleAuthenticate();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				} else if (passwordField.getText().length() == 0) {
 					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền mật khẩu.");
 				} else if (usernameField.getText().length() == 0) {
@@ -140,7 +144,11 @@ public class DangNhap_GUI extends Application {
 		passwordField.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				if (passwordField.getText().length() != 0 && usernameField.getText().length() != 0) {
-					handleAuthenticate();
+					try {
+						handleAuthenticate();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				} else if (passwordField.getText().length() == 0) {
 					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền mật khẩu.");
 				} else if (usernameField.getText().length() == 0) {
@@ -152,7 +160,11 @@ public class DangNhap_GUI extends Application {
 		passwordTextField.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				if (passwordField.getText().length() != 0 && usernameField.getText().length() != 0) {
-					handleAuthenticate();
+					try {
+						handleAuthenticate();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				} else if (passwordField.getText().length() == 0) {
 					showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền mật khẩu.");
 				} else if (usernameField.getText().length() == 0) {
@@ -184,7 +196,11 @@ public class DangNhap_GUI extends Application {
 
 		submitBtn.setOnMouseClicked(event -> {
 			if (passwordField.getText().length() != 0 && usernameField.getText().length() != 0) {
-				handleAuthenticate();
+				try {
+					handleAuthenticate();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			} else if (passwordField.getText().length() == 0 || passwordTextField.getText().length() == 0) {
 				showErrorAlert("Lỗi", "Vui lòng điền đầy đủ thông tin.", "Bạn chưa điền mật khẩu.");
 			} else if (usernameField.getText().length() == 0) {
@@ -193,7 +209,7 @@ public class DangNhap_GUI extends Application {
 		});
 	}
 
-	public void handleAuthenticate() {
+	public void handleAuthenticate() throws SQLException {
 		TaiKhoan_BUS taiKhoanBUS = new TaiKhoan_BUS();
 		String password = passwordField.isVisible() ? passwordField.getText() : passwordTextField.getText();
 		boolean isAuthencated = taiKhoanBUS.authenticate(usernameField.getText(), password);
@@ -208,6 +224,8 @@ public class DangNhap_GUI extends Application {
 				try {
 					mainLayout.start(stage);
 				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 

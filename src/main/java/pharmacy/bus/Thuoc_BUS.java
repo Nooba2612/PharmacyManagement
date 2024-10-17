@@ -3,12 +3,13 @@ package pharmacy.bus;
 import pharmacy.dao.Thuoc_DAO;
 import pharmacy.entity.Thuoc;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class Thuoc_BUS {
 	private final Thuoc_DAO thuocDao;
 
-	public Thuoc_BUS() {
+	public Thuoc_BUS() throws SQLException {
 		this.thuocDao = new Thuoc_DAO();
 	}
 
@@ -59,4 +60,13 @@ public class Thuoc_BUS {
 	public int countThuocDaHetHan() {
 		return thuocDao.countThuocDaHetHan();
 	}
+
+	public List<Thuoc> getTopSaleThuocByDate(String date) {
+		return thuocDao.getTopSaleThuocByDate(date);
+	}
+
+	public int getSoldQuantityById(String maThuoc, String date) {
+		return thuocDao.getSoldQuantityById(maThuoc, date);
+	}
+
 }

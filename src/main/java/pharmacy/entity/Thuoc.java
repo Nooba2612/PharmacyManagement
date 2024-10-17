@@ -15,12 +15,15 @@ public class Thuoc {
 	private float thue;
 	private String moTa;
 	private LocalDate hanSuDung;
+	private String donViTinh;
+	private String trangThai;
 
 	public Thuoc() {
 	}
 
 	public Thuoc(String maThuoc, String tenThuoc, DanhMuc danhMuc, LocalDate ngaySX, String nhaSX, LocalDate ngayTao,
-			LocalDate ngayCapNhat, int soLuongTon, double donGiaBan, float thue, LocalDate hanSuDung, String moTa) {
+			LocalDate ngayCapNhat, int soLuongTon, double donGiaBan, float thue, LocalDate hanSuDung,
+			String moTa, String donViTinh, String trangThai) {
 		setMaThuoc(maThuoc);
 		setTenThuoc(tenThuoc);
 		setDanhMuc(danhMuc);
@@ -33,6 +36,8 @@ public class Thuoc {
 		setThue(thue);
 		setHanSuDung(hanSuDung);
 		setMoTa(moTa);
+		setDonViTinh(donViTinh);
+		setTrangThai(trangThai);
 	}
 
 	public Thuoc(Thuoc original) {
@@ -48,6 +53,19 @@ public class Thuoc {
 		this.thue = original.thue;
 		this.hanSuDung = original.hanSuDung;
 		this.moTa = original.moTa;
+		this.donViTinh = original.donViTinh;
+		this.trangThai = original.trangThai;
+	}
+
+	public String getTrangThai() {
+		return trangThai;
+	}
+
+	public void setTrangThai(String trangThai) {
+		if (trangThai == null || trangThai.isEmpty()) {
+			throw new IllegalArgumentException("Trạng thái không được rỗng.");
+		}
+		this.trangThai = trangThai;
 	}
 
 	public String getMaThuoc() {
@@ -55,11 +73,7 @@ public class Thuoc {
 	}
 
 	public void setMaThuoc(String maThuoc) {
-		if (maThuoc == null || maThuoc.isEmpty()) {
-			this.maThuoc = generateMaThuoc();
-		} else {
-			this.maThuoc = maThuoc;
-		}
+		this.maThuoc = maThuoc;
 	}
 
 	public DanhMuc getDanhMuc() {
@@ -162,24 +176,41 @@ public class Thuoc {
 		}
 		this.hanSuDung = hanSuDung;
 	}
-	
+
 	public String getMoTa() {
 		return moTa;
 	}
-	
+
 	public void setMoTa(String moTa) {
 		this.moTa = moTa;
 	}
 
-	@Override
-	public String toString() {
-		return "Thuoc{" + "maThuoc='" + maThuoc + '\'' + ", tenThuoc='" + tenThuoc + '\'' + ", danhMuc=" + danhMuc
-				+ ", ngaySX=" + ngaySX + ", nhaSX='" + nhaSX + '\'' + ", ngayTao=" + ngayTao + ", ngayCapNhat="
-				+ ngayCapNhat + ", soLuongTon=" + soLuongTon + ", donGiaBan=" + donGiaBan + ", thue=" + thue
-				+ ", hanSuDung=" + hanSuDung + '}';
+	public String getDonViTinh() {
+		return donViTinh;
 	}
 
-	private String generateMaThuoc() {
-		return "MTH" + System.currentTimeMillis();
+	public void setDonViTinh(String donViTinh) {
+		if (donViTinh == null || donViTinh.isEmpty()) {
+			throw new IllegalArgumentException("Đơn vị tính không được rỗng.");
+		}
+		this.donViTinh = donViTinh;
+	}
+
+	@Override
+	public String toString() {
+		return "Thuoc{" +
+				"maThuoc='" + maThuoc + '\'' +
+				", tenThuoc='" + tenThuoc + '\'' +
+				", danhMuc=" + danhMuc +
+				", ngaySX=" + ngaySX +
+				", nhaSX='" + nhaSX + '\'' +
+				", ngayTao=" + ngayTao +
+				", ngayCapNhat=" + ngayCapNhat +
+				", soLuongTon=" + soLuongTon +
+				", donGiaBan=" + donGiaBan +
+				", thue=" + thue +
+				", hanSuDung=" + hanSuDung +
+				", donViTinh='" + donViTinh + '\'' + // Include donViTinh in toString
+				'}';
 	}
 }

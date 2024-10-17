@@ -14,6 +14,10 @@ public interface NhanVien_Interface {
 	boolean deleteEmployee(String maNhanVien);
 
 	List<NhanVien> getAllEmployees();
-	
+
 	int countEmployees();
+
+	List<NhanVien> getTopRevenueEmployees(String date);
+
+	int getOrderQuantityOfEmployee(String maNhanVien);
 }

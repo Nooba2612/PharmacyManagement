@@ -16,8 +16,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1498.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
-	<BorderPane id="wrapper" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="710.0" prefWidth="1498.0">
+<Pane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="1498.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.MainLayout_GUI">
+	<BorderPane id="wrapper" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="771.0" prefWidth="1498.0">
 		<top>
 			<Pane id="header" prefHeight="75.0" prefWidth="898.0" style="-fx-background-color: #339933;" BorderPane.alignment="CENTER">
 				<children>
@@ -35,7 +35,7 @@
 											<Font name="System Bold" size="14.0" />
 										</font>
 									</Label>
-									<ImageView id="avatar" fitHeight="54.0" fitWidth="51.0" layoutX="23.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+									<ImageView id="userAvatar" fitHeight="54.0" fitWidth="51.0" layoutX="23.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
 										<image>
 											<Image url="@../images/user-icon.png" />
 										</image>
@@ -45,7 +45,7 @@
 											<Image url="@../images/chevron-down-icon.png" />
 										</image>
 									</ImageView>
-									<Text id="userRole" fill="#455bd7" layoutX="74.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Admin">
+									<Text id="userRole" fill="#80ffdf" layoutX="74.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nhân viên">
 										<font>
 											<Font name="System Bold" size="14.0" />
 										</font>
@@ -236,6 +236,23 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
+               <Pane id="goodsReceiptBtn" prefHeight="70.0" styleClass="categoryItem">
+                  <children>
+                     <ImageView fitHeight="54.0" fitWidth="68.0" layoutY="7.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                        <image>
+                           <Image url="@../images/goods-receipt-icon.png" />
+                        </image>
+                     </ImageView>
+                     <Text fill="#616961" layoutX="62.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Phiếu nhập hàng" wrappingWidth="167.73672485351562">
+                        <font>
+                           <Font size="17.0" />
+                        </font>
+                     </Text>
+                  </children>
+                  <cursor>
+                     <Cursor fx:constant="HAND" />
+                  </cursor>
+               </Pane>
 				</children>
 			</VBox>
 		</left>
@@ -247,9 +264,9 @@
 			</ScrollPane>
 		</center>
 	</BorderPane>
-	<VBox id="profilePopover" alignment="CENTER" layoutX="817.0" layoutY="80.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="229.0" style="-fx-background-color: #fff; -fx-border-color: #f0f0f0;" visible="false">
+	<VBox id="profilePopover" alignment="CENTER" layoutX="1262.0" layoutY="80.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="229.0" style="-fx-background-color: #fff; -fx-border-color: #f0f0f0;" visible="false">
 		<children>
-			<Pane prefHeight="200.0" prefWidth="230.0">
+			<Pane id="settingBtn" prefHeight="200.0" prefWidth="230.0">
 				<children>
 					<Text layoutX="87.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" wrappingWidth="55.73681640625">
 						<font>
@@ -266,7 +283,7 @@
 					<Cursor fx:constant="HAND" />
 				</cursor>
 			</Pane>
-			<Pane prefHeight="200.0" prefWidth="200.0">
+			<Pane id="logoutBtn" prefHeight="200.0" prefWidth="200.0">
 				<children>
 					<Text layoutX="88.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log Out" wrappingWidth="53.336669921875">
 						<font>

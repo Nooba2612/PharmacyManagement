@@ -9,16 +9,20 @@ public class KhachHang {
     private int diemTichLuy;
     private LocalDate namSinh;
     private String ghiChu;
+    private String gioiTinh;
 
-    public KhachHang() { }
+    public KhachHang() {
+    }
 
-    public KhachHang(String maKhachHang, String hoTen, String soDienThoai, int diemTichLuy, LocalDate namSinh, String ghiChu) {
+    public KhachHang(String maKhachHang, String hoTen, String soDienThoai, int diemTichLuy, LocalDate namSinh,
+            String ghiChu, String gioiTinh) {
         this.setMaKhachHang(maKhachHang);
         this.setHoTen(hoTen);
         this.setSoDienThoai(soDienThoai);
         this.diemTichLuy = diemTichLuy;
         this.setNamSinh(namSinh);
         this.ghiChu = ghiChu;
+        this.setGioiTinh(gioiTinh);
     }
 
     public KhachHang(KhachHang original) {
@@ -28,6 +32,24 @@ public class KhachHang {
         this.diemTichLuy = original.diemTichLuy;
         this.namSinh = original.namSinh;
         this.ghiChu = original.ghiChu;
+        this.gioiTinh = original.gioiTinh;
+    }
+
+    public String getGioiTinh() {
+        if (gioiTinh == null || gioiTinh.isEmpty()) {
+            throw new IllegalArgumentException("Giới tính không được rỗng");
+        }
+        return gioiTinh;
+    }
+
+    public void setGioiTinh(String gioiTinh) {
+        if (gioiTinh == null || gioiTinh.isEmpty()) {
+            throw new IllegalArgumentException("Giới tính không được rỗng");
+        }
+        if (!gioiTinh.equals("Nam") && !gioiTinh.equals("Nữ")) {
+            throw new IllegalArgumentException("Giới tính phải là 'Nam' hoặc 'Nữ'");
+        }
+        this.gioiTinh = gioiTinh;
     }
 
     public String getMaKhachHang() {
@@ -90,7 +112,7 @@ public class KhachHang {
         }
         this.namSinh = namSinh;
     }
-    
+
     public String getGhiChu() {
         return ghiChu;
     }
@@ -107,6 +129,7 @@ public class KhachHang {
                 ", soDienThoai='" + soDienThoai + '\'' +
                 ", diemTichLuy=" + diemTichLuy +
                 ", namSinh=" + namSinh +
+                ", gioiTinh='" + gioiTinh + '\'' +
                 '}';
     }
 }

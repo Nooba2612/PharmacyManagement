@@ -1,7 +1,8 @@
 package pharmacy.Interface;
 
-import pharmacy.entity.HoaDon;
 import java.util.List;
+
+import pharmacy.entity.HoaDon;
 
 public interface HoaDon_Interface {
 	boolean createHoaDon(HoaDon hoaDon);
@@ -18,10 +19,12 @@ public interface HoaDon_Interface {
 
 	String calculateTotalRevenue();
 
-	String calculateRevenueByDate(String date);
+	double calculateRevenueByDate(String date);
 
-	String calculateRevenueByMonth(int year, int month);
+	double calculateRevenueByMonth(int month, int year);
 
-	String calculateRevenueByYear(int year);
+	double calculateRevenueByYear(int year);
+	
+	double calculateRevenueByEmployee(String maNhanVien, String date);
 
 }

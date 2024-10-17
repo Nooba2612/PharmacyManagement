@@ -15,4 +15,8 @@ public interface ThietBiYTe_Interface {
 	boolean deleteThietBiYTe(String maThietBi);
 
 	int countThietBiYTe();
+
+	List<ThietBiYTe> getTopSaleThietBiYTeByDate(String date);
+
+	int getSoldQuantityById(String maThietBi, String date);
 }

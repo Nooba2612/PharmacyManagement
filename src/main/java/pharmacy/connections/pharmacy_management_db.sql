@@ -3,11 +3,13 @@ DROP DATABASE medkit_pharmacy_management;
 
 USE medkit_pharmacy_management;
 
+
 CREATE TABLE NhanVien (
     maNhanVien NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maNhanVien LIKE 'MK____'),
     hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),
     chucVu NVARCHAR(255) NOT NULL ,
-    soDienThoai CHAR(10) NOT NULL CHECK (LEN(soDienThoai) = 10),
+    soDienThoai NVARCHAR(10) NOT NULL UNIQUE,
+	email NVARCHAR(225) NOT NULL,
     ngayVaoLam DATETIME NOT NULL,
 	namSinh DATETIME NOT NULL,
     trangThai NVARCHAR(50) CHECK (trangThai IN (N'Đang làm', N'Nghỉ việc tạm thời', N'Nghỉ việc hẳn')),
@@ -16,42 +18,59 @@ CREATE TABLE NhanVien (
 );
 
 CREATE TABLE TaiKhoan (
-    tenDangNhap NVARCHAR(50) NOT NULL,
+    tenDangNhap NVARCHAR(50) NOT NULL UNIQUE,
     matKhau NVARCHAR(255) NOT NULL,
+	isLoggedIn BIT NOT NULL DEFAULT 0,
     CONSTRAINT FK_TaiKhoan_NhanVien FOREIGN KEY (tenDangNhap) REFERENCES NhanVien(maNhanVien)
 );
 
-CREATE TABLE Thuoc (
-    maThuoc NVARCHAR(50) PRIMARY KEY NOT NULL,
-    tenThuoc NVARCHAR(255) NOT NULL,
-    ngaySX DATETIME NOT NULL,
-    nhaSX NVARCHAR(255) NOT NULL,
-    ngayTao DATETIME DEFAULT GETDATE(),
-    ngayCapNhat DATETIME DEFAULT GETDATE(),
-    soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
-    donGiaBan DECIMAL(10, 2) NOT NULL CHECK (donGiaBan >= 0),
-    thue FLOAT NOT NULL CHECK (thue >= 0 AND thue <= 1),
-    hanSuDung DATETIME NOT NULL,
-    donViTinh NVARCHAR(50) NOT NULL,
-	moTa NVARCHAR(255)
-);
 
 CREATE TABLE DanhMuc (
     maDM NVARCHAR(50) PRIMARY KEY NOT NULL,
     tenDM NVARCHAR(255) NOT NULL,
     moTa NVARCHAR(255) NOT NULL,
     loaiDM INT NOT NULL,
-    maThuoc NVARCHAR(50),
-    CONSTRAINT CHK_MaDM CHECK (LEN(maDM) BETWEEN 5 AND 10),
-    CONSTRAINT FK_maThuoc FOREIGN KEY (maThuoc) REFERENCES Thuoc(maThuoc)
+    CONSTRAINT CHK_MaDM CHECK (LEN(maDM) BETWEEN 5 AND 10)
 );
+
+CREATE TABLE Thuoc (
+    maThuoc NVARCHAR(50) PRIMARY KEY NOT NULL,
+    tenThuoc NVARCHAR(255) NOT NULL,
+    maDanhMuc NVARCHAR(50) NOT NULL,
+    ngaySX DATETIME NOT NULL,
+    nhaSX NVARCHAR(255) NOT NULL,
+    ngayTao DATETIME DEFAULT GETDATE(),
+    ngayCapNhat DATETIME DEFAULT GETDATE(),
+    soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
+    donGiaBan FLOAT NOT NULL CHECK (donGiaBan >= 0),
+    thue FLOAT NOT NULL CHECK (thue >= 0 AND thue <= 1),
+    hanSuDung DATETIME NOT NULL,
+    donViTinh NVARCHAR(50) NOT NULL,
+	moTa NVARCHAR(255),
+	isDeleted BIT DEFAULT 0,
+    CONSTRAINT FK_Thuoc_DanhMuc FOREIGN KEY (maDanhMuc) REFERENCES DanhMuc(maDM),
+);
+
+ALTER TABLE Thuoc 
+ADD tinhTrang nvarchar(50) DEFAULT 'Có sẵn';
+
+ALTER TABLE Thuoc
+DROP CONSTRAINT DF__Thuoc__isDeleted__02084FDA;
+
+ALTER TABLE Thuoc
+DROP COLUMN isDeleted;
+
+UPDATE Thuoc 
+SET isDeleted = 0 
+WHERE isDeleted IS NULL;
 
 CREATE TABLE KhachHang (
     maKhachHang NVARCHAR(50) PRIMARY KEY NOT NULL,
     hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),
-    soDienThoai CHAR(10) NOT NULL CHECK (LEN(soDienThoai) = 10),
-    namSinh INT CHECK (namSinh >= 1900 AND namSinh <= YEAR(GETDATE())),
+    soDienThoai CHAR(10) NOT NULL UNIQUE CHECK (LEN(soDienThoai) = 10),
+    namSinh DATE,
     diemTichLuy INT DEFAULT 0,
+    gioiTinh NVARCHAR(15),
     ghiChu NVARCHAR(255)
 );
 
@@ -59,7 +78,7 @@ CREATE TABLE HoaDon (
     maHoaDon NVARCHAR(50) PRIMARY KEY NOT NULL,
     maKhachHang NVARCHAR(50) NOT NULL,
     maNhanVien NVARCHAR(50) NOT NULL,
-    ngayTao DATETIME NOT NULL CHECK (ngayTao = CONVERT(DATETIME, CONVERT(NVARCHAR, ngayTao, 103), 103)),
+    ngayTao DATETIME NOT NULL,
     tienKhachDua FLOAT NOT NULL CHECK (tienKhachDua >= 0),
     tongTien FLOAT NOT NULL CHECK (tongTien >= 0),
     tienThua FLOAT NOT NULL CHECK (tienThua >= 0),
@@ -74,9 +93,10 @@ CREATE TABLE ThietBiYTe (
     tenThietBi NVARCHAR(255) NOT NULL,
     ngaySX DATETIME NOT NULL,
     moTa NVARCHAR(255),
-    soLuong INT NOT NULL CHECK (soLuong >= 0),
+    soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
+    donGiaBan FLOAT NOT NULL CHECK (donGiaBan >= 0),
     maDanhMuc NVARCHAR(50) NOT NULL,
-    CONSTRAINT FK_ThietBiYTe_DanhMuc FOREIGN KEY (DanhMuc) REFERENCES NhanVien(maDanhMuc),
+    CONSTRAINT FK_ThietBiYTe_DanhMuc FOREIGN KEY (maDanhMuc) REFERENCES DanhMuc(maDM),
 );
 
 CREATE TABLE ChiTietHoaDon (
@@ -88,6 +108,7 @@ CREATE TABLE ChiTietHoaDon (
     FOREIGN KEY (maThuoc) REFERENCES Thuoc(maThuoc),
     FOREIGN KEY (maThietBi) REFERENCES ThietBiYTe(maThietBi)
 );
+
 
 CREATE TABLE NhaCungCap (
     maNCC NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maNCC LIKE 'NCC____'),
@@ -127,50 +148,65 @@ CREATE TABLE LichLamViec (
 );
 
 -- Thêm dữ liệu vào bảng NhanVien
-INSERT INTO NhanVien (maNhanVien, hoTen, email, soDienThoai, ngayVaoLam, namSinh, trangThai, trinhDo, gioiTinh) VALUES
-('MK0001', N'Nguyễn Văn A', N'van.a@example.com', '0123456789', '2023-01-01', '1990-01-01', N'Đang làm', N'Đại học', N'Nam'),
-('MK0002', N'Trần Thị B', N'thi.b@example.com', '0987654321', '2022-05-15', '1995-05-15', N'Nghỉ việc tạm thời', N'Cao đẳng', N'Nữ');
-
+INSERT INTO NhanVien (maNhanVien, hoTen, chucVu, soDienThoai, email, ngayVaoLam, namSinh, trangThai, trinhDo, gioiTinh) VALUES
+('MK0001', N'Nguyễn Văn A', N'Người quản lý', '0123456789', 'ccccc@gmail.com', '2023-01-01', '1990-01-01', N'Đang làm', N'Đại học', N'Nam'),
+('MK0002', N'Trần Thị B', N'Nhân viên', '0987654321', 'hehehe@gmail.com', '2022-05-15', '1995-05-15', N'Nghỉ việc tạm thời', N'Cao đẳng', N'Nữ'),
+('MK0003', N'Nguyễn Văn C', N'Người quản lý', '12312311', 'ccccc@gmail.com', '2023-01-01', '1990-01-01', N'Đang làm', N'Đại học', N'Nam'),
+('MK0004', N'Trần Thị D', N'Nhân viên', '12331223', 'hehehe@gmail.com', '2022-05-15', '1995-05-15', N'Nghỉ việc tạm thời', N'Cao đẳng', N'Nữ'),
+('MK0005', N'Nguyễn Văn E', N'Người quản lý', '1231231233', 'ccccc@gmail.com', '2023-01-01', '1990-01-01', N'Đang làm', N'Đại học', N'Nam');
 
 -- Thêm dữ liệu vào bảng TaiKhoan
 INSERT INTO TaiKhoan (tenDangNhap, matKhau) VALUES
 ('MK0001', '$2a$10$T1TakvHHQX3JklzHDNLKK.gB/whHnMsPcZ76yrMNSK.hDbdmILrLm'),
-('MK0002', 'password456');
-
-
--- Thêm dữ liệu vào bảng Thuoc
-INSERT INTO Thuoc (maThuoc, tenThuoc, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh) VALUES
-('T0001', N'Thuốc A', '2023-01-01', N'Công ty A', 100, 20000, 0.1, '2025-01-01', N'Viên'),
-('T0002', N'Thuốc B', '2022-02-01', N'Công ty B', 50, 30000, 0.2, '2024-02-01', N'Vỉ');
-
-INSERT INTO Thuoc (maThuoc, tenThuoc, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh) VALUES
-('T0005', N'Thuốc F', '2023-01-01', N'Công ty A', 10, 20000, 0.1, '2024-10-30', N'Viên');
+('MK0002', '$2a$10$T1TakvHHQX3JklzHDNLKK.gB/whHnMsPcZ76yrMNSK.hDbdmILrLm');
 
 
 -- Thêm dữ liệu vào bảng DanhMuc
-INSERT INTO DanhMuc (maDM, tenDM, moTa, loaiDM, maThuoc) VALUES
-('DM0001', N'Danh mục A', N'Mô tả danh mục A', 1, 'T0001'),
-('DM0002', N'Danh mục B', N'Mô tả danh mục B', 2, NULL);
+INSERT INTO DanhMuc (maDM, tenDM, moTa, loaiDM) VALUES
+('DM0001', N'Danh mục A', N'Mô tả danh mục A', 1),
+('DM0002', N'Danh mục B', N'Mô tả danh mục B', 2);
+
+-- Thêm dữ liệu vào bảng Thuoc
+INSERT INTO Thuoc (maThuoc, tenThuoc,maDanhMuc, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh) VALUES
+('T0001', N'Thuốc A','DM0001', '2023-01-01', N'Công ty A', 100, 20000, 0.1, '2025-01-01', N'Viên'),
+('T0002', N'Thuốc B', 'DM0002','2022-02-01', N'Công ty B', 50, 30000, 0.2, '2024-02-01', N'Vỉ'),
+('T0005', N'Thuốc F','DM0001', '2023-01-01', N'Công ty A', 10, 20000, 0.1, '2024-10-30', N'Viên');
+
+
 
 -- Thêm dữ liệu vào bảng KhachHang
-INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, ghiChu) VALUES
-('KH0001', N'Nguyễn Văn C', '0123456789', 1985, 100, N'Khách hàng thường xuyên'),
-('KH0002', N'Trần Thị D', '0987654321', 1990, 50, NULL);
+INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gioiTinh, ghiChu) VALUES
+('KH0001', N'Nguyễn Văn C', '0123456789', '12-12-1999', 100, 'Nam', N'Khách hàng thường xuyên'),
+('KH0002', N'Trần Thị D', '0987654321', '12-12-1980', 50,'Nữ', 'heheh');
+
+ALTER TABLE KhachHang
+ADD gioiTinh NVARCHAR(15) DEFAULT 'Nam';
+
+UPDATE KhachHang
+SET gioiTinh = 'Nam';
 
 -- Thêm dữ liệu vào bảng HoaDon
-INSERT INTO HoaDon (maHoaDon, maKhachHang, maNhanVien, thuoc, ngayTao, tienKhachDua, tongTien, tienThua, diemSuDung, loaiThanhToan) VALUES
-('HD0001', 'KH0001', 'MK0001', 'T0001', '2023-10-01', 50000, 45000, 5000, 10, N'Tiền mặt'),
-('HD0002', 'KH0002', 'MK0002', 'T0002', '2023-10-02', 60000, 58000, 2000, 0, N'Chuyển khoản');
+INSERT INTO HoaDon (maHoaDon, maKhachHang, maNhanVien, ngayTao, tienKhachDua, tongTien, tienThua, diemSuDung, loaiThanhToan) VALUES
+('HD0008', 'KH0001', 'MK0001',  '2024-10-30', 50000, 45000, 5000, 10, N'Tiền mặt'),
+('HD0009', 'KH0002', 'MK0002',  '2024-10-25', 60000, 58000, 2000, 0, N'Chuyển khoản'),
+('HD0003', 'KH0002', 'MK0002',  '2024-10-20', 60000, 58000, 2000, 0, N'Chuyển khoản'),
+('HD0004', 'KH0002', 'MK0002',  '2024-10-15', 60000, 58000, 2000, 0, N'Chuyển khoản'),
+('HD0005', 'KH0002', 'MK0002',  '2024-10-10', 60000, 58000, 2000, 0, N'Chuyển khoản'),
+('HD0006', 'KH0002', 'MK0002',  '2024-10-01', 60000, 58000, 2000, 0, N'Chuyển khoản');
+
+INSERT INTO HoaDon (maHoaDon, maKhachHang, maNhanVien, ngayTao, tienKhachDua, tongTien, tienThua, diemSuDung, loaiThanhToan) VALUES
+('HD0010', 'KH0002', 'MK0001',  '2024-10-07', 60000, 50000, 2000, 0, N'Chuyển khoản');
+
 
 -- Thêm dữ liệu vào bảng ThietBiYTe
-INSERT INTO ThietBiYTe (maThietBi, tenThietBi, ngaySX, moTa, soLuong) VALUES
-('TB0001', N'Thiết bị A', '2023-01-01', N'Mô tả thiết bị A', 20),
-('TB0002', N'Thiết bị B', '2023-02-01', N'Mô tả thiết bị B', 15);
+INSERT INTO ThietBiYTe (maThietBi, tenThietBi, ngaySX, moTa, soLuongTon, donGiaBan, maDanhMuc) VALUES
+('TB0001', N'Thiết bị A', '2023-01-01', N'Mô tả thiết bị A', 20,20000, 'DM0001'),
+('TB0002', N'Thiết bị B', '2023-02-01', N'Mô tả thiết bị B', 15,30000, 'DM0002');
 
 -- Thêm dữ liệu vào bảng ChiTietHoaDon
 INSERT INTO ChiTietHoaDon (maHoaDon, maThuoc, maThietBi, soLuong) VALUES
-('HD0001', 'T0001', NULL, 2),
-('HD0002', 'T0002', 'TB0001', 1);
+('HD0004', 'T0001', 'TB0001', 2),
+('HD0004', 'T0002', 'TB0001', 1);
 
 -- Thêm dữ liệu vào bảng NhaCungCap
 INSERT INTO NhaCungCap (maNCC, tenNCC, soDienThoai, diaChi, email) VALUES
@@ -228,29 +264,11 @@ SELECT * FROM ChiTietPhieuNhap;
 -- Truy vấn tất cả dữ liệu từ bảng LichLamViec
 SELECT * FROM LichLamViec;
 
--- Truy vấn thông tin nhân viên cùng với tài khoản của họ
-SELECT nv.hoTen, tk.tenDangNhap
-FROM NhanVien nv
-JOIN TaiKhoan tk ON nv.maNhanVien = tk.tenDangNhap;
+SELECT t.*, SUM(cthd.soLuong) AS soLuongBan FROM Thuoc t 
+JOIN ChiTietHoaDon cthd ON t.maThuoc = cthd.maThuoc 
+JOIN HoaDon hd ON hd.maHoaDon = cthd.maHoaDon 
+WHERE (CAST(hd.ngayTao AS DATE)) = '2024-10-15'
+GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao, 
+t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa 
+ORDER BY soLuongBan DESC
 
--- Truy vấn danh sách hóa đơn cùng với thông tin khách hàng
-SELECT hd.maHoaDon, kh.hoTen, hd.ngayTao, hd.tongTien
-FROM HoaDon hd
-JOIN KhachHang kh ON hd.maKhachHang = kh.maKhachHang;
-
--- Truy vấn danh sách thuốc và số lượng tồn kho
-SELECT tenThuoc, soLuongTon
-FROM Thuoc
-WHERE soLuongTon > 0;
-
--- Truy vấn danh sách nhà cung cấp và số lượng thiết bị y tế
-SELECT ncc.tenNCC, COUNT(tb.maThietBi) AS soLuongThietBi
-FROM NhaCungCap ncc
-LEFT JOIN ChiTietPhieuNhap ctpn ON ncc.maNCC = ctpn.maNhaCungCap
-LEFT JOIN ThietBiYTe tb ON ctpn.maThietBi = tb.maThietBi
-GROUP BY ncc.tenNCC;
-
--- Truy vấn thông tin lịch làm việc của nhân viên
-SELECT nv.hoTen, llv.ngayLam, llv.caLam
-FROM NhanVien nv
-JOIN LichLamViec llv ON nv.maNhanVien = llv.maNhanVien;

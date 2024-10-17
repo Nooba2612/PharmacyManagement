@@ -31,4 +31,12 @@ public class NhanVien_BUS {
     public int countEmployees() {
         return nhanVienDAO.countEmployees();
     }
+
+    public List<NhanVien> getTopRevenueEmployees(String date) {
+        return nhanVienDAO.getTopRevenueEmployees(date);
+    }
+
+    public int getOrderQuantityOfEmployee(String maNhanVien) {
+        return nhanVienDAO.getOrderQuantityOfEmployee(maNhanVien);
+    }
 }

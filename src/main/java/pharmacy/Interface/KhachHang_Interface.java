@@ -16,4 +16,8 @@ public interface KhachHang_Interface {
 	KhachHang getKhachHangById(String maKhachHang);
 	
 	int countKhachHang();
+
+	List<KhachHang> getNewCustomerByDate(String date) ;
+
+	List<KhachHang> getTopCustomer();
 }

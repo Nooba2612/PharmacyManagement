@@ -80,9 +80,10 @@ public class KhachHang_DAO implements KhachHang_Interface {
 				int namSinhInt = rs.getInt("namSinh");
 				int diemTichLuy = rs.getInt("diemTichLuy");
 				String ghiChu = rs.getString("ghiChu");
+				String gioiTinh = rs.getString("gioiTinh");
 
 				LocalDate namSinh = LocalDate.of(namSinhInt, 1, 1);
-				KhachHang kh = new KhachHang(maKhachHang, hoTen, soDienThoai, diemTichLuy, namSinh, ghiChu);
+				KhachHang kh = new KhachHang(maKhachHang, hoTen, soDienThoai, diemTichLuy, namSinh, ghiChu, gioiTinh);
 				khachHangList.add(kh);
 			}
 		} catch (SQLException e) {
@@ -97,7 +98,7 @@ public class KhachHang_DAO implements KhachHang_Interface {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)) {
 			ResultSet rs = statement.executeQuery();
-			
+
 			statement.setString(1, maKhachHang);
 			if (rs.next()) {
 				String hoTen = rs.getString("hoTen");
@@ -105,31 +106,136 @@ public class KhachHang_DAO implements KhachHang_Interface {
 				int namSinhInt = rs.getInt("namSinh");
 				int diemTichLuy = rs.getInt("diemTichLuy");
 				String ghiChu = rs.getString("ghiChu");
+				String gioiTinh = rs.getString("gioiTinh");
 
 				LocalDate namSinh = LocalDate.of(namSinhInt, 1, 1);
-				return new KhachHang(maKhachHang, hoTen, soDienThoai, diemTichLuy, namSinh, ghiChu);
+				return new KhachHang(maKhachHang, hoTen, soDienThoai, diemTichLuy, namSinh, ghiChu, gioiTinh);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
+
 	@Override
 	public int countKhachHang() {
-	    String query = "SELECT COUNT(*) FROM KhachHang";
-	    int count = 0;
-	    try (Connection connection = DatabaseConnection.getConnection();
-	         Statement statement = connection.createStatement();
-	         ResultSet rs = statement.executeQuery(query)) {
+		String query = "SELECT COUNT(*) FROM KhachHang";
+		int count = 0;
+		try (Connection connection = DatabaseConnection.getConnection();
+				Statement statement = connection.createStatement();
+				ResultSet rs = statement.executeQuery(query)) {
 
-	        if (rs.next()) {
-	            count = rs.getInt(1);
-	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return count;
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return count;
+	}
+
+	@Override
+	public List<KhachHang> getNewCustomerByDate(String date) {
+		String[] dateParts = date.split("[/-]");
+
+		List<KhachHang> newCustomerList = new ArrayList<>();
+		String query = "";
+
+		switch (dateParts.length) {
+			case 3:
+				query = "SELECT kh.maKhachHang, kh.hoTen, kh.soDienThoai, CONVERT(DATE, kh.namSinh) AS namSinh, kh.diemTichLuy, kh.gioiTinh, MIN(hd.ngayTao) AS ngayDangKy "
+						+ "FROM KhachHang kh "
+						+ "JOIN HoaDon hd ON kh.maKhachHang = hd.maKhachHang "
+						+ "WHERE kh.soDienThoai IS NOT NULL "
+						+ "GROUP BY kh.maKhachHang, kh.hoTen, kh.soDienThoai, CONVERT(DATE, kh.namSinh), kh.diemTichLuy, kh.gioiTinh "
+						+ "HAVING CONVERT(DATE, MIN(hd.ngayTao)) = ?";
+				break;
+
+			case 2:
+				query = "SELECT kh.maKhachHang, kh.hoTen, kh.soDienThoai, CONVERT(DATE, kh.namSinh) AS namSinh, kh.diemTichLuy, kh.gioiTinh, MIN(hd.ngayTao) AS ngayDangKy "
+						+ "FROM KhachHang kh "
+						+ "JOIN HoaDon hd ON kh.maKhachHang = hd.maKhachHang "
+						+ "WHERE kh.soDienThoai IS NOT NULL "
+						+ "GROUP BY kh.maKhachHang, kh.hoTen, kh.soDienThoai, CONVERT(DATE, kh.namSinh), kh.diemTichLuy, kh.gioiTinh "
+						+ "HAVING YEAR(MIN(hd.ngayTao)) = ? AND MONTH(MIN(hd.ngayTao)) = ?";
+				break;
+
+			case 1:
+				query = "SELECT kh.maKhachHang, kh.hoTen, kh.soDienThoai, CONVERT(DATE, kh.namSinh) AS namSinh, kh.diemTichLuy, kh.gioiTinh, MIN(hd.ngayTao) AS ngayDangKy "
+						+ "FROM KhachHang kh "
+						+ "JOIN HoaDon hd ON kh.maKhachHang = hd.maKhachHang "
+						+ "WHERE kh.soDienThoai IS NOT NULL "
+						+ "GROUP BY kh.maKhachHang, kh.hoTen, kh.soDienThoai, CONVERT(DATE, kh.namSinh), kh.diemTichLuy, kh.gioiTinh "
+						+ "HAVING YEAR(MIN(hd.ngayTao)) = ?";
+				break;
+
+			default:
+				break;
+		}
+
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement statement = connection.prepareStatement(query)) {
+
+			switch (dateParts.length) {
+				case 3:
+					statement.setString(1, date);
+					break;
+
+				case 2:
+					statement.setString(1, dateParts[0]);
+					statement.setString(2, dateParts[1]);
+					break;
+
+				case 1:
+					statement.setString(1, dateParts[0]);
+					break;
+			}
+
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				KhachHang khachHang = new KhachHang(
+						rs.getString("maKhachHang"),
+						rs.getString("hoTen"),
+						rs.getString("soDienThoai"),
+						rs.getInt("diemTichLuy"),
+						rs.getDate("namSinh").toLocalDate(),
+						"", rs.getString("gioiTinh"));
+				newCustomerList.add(khachHang);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return newCustomerList;
+	}
+
+	public List<KhachHang> getTopCustomer() {
+		List<KhachHang> topCustomers = new ArrayList<>();
+		String query = "SELECT maKhachHang, hoTen, soDienThoai, CONVERT(DATE, namSinh) AS namSinh, diemTichLuy, gioiTinh, ghiChu FROM KhachHang ORDER BY diemTichLuy DESC";
+
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement statement = connection.prepareStatement(query);
+				ResultSet rs = statement.executeQuery()) {
+
+			while (rs.next()) {
+				KhachHang khachHang = new KhachHang(
+						rs.getString("maKhachHang"),
+						rs.getString("hoTen"),
+						rs.getString("soDienThoai"),
+						rs.getInt("diemTichLuy"),
+						rs.getDate("namSinh").toLocalDate(),
+						rs.getString("ghiChu"),
+						rs.getString("gioiTinh"));
+				topCustomers.add(khachHang);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return topCustomers;
 	}
 
 }

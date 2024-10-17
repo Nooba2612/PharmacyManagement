@@ -1,24 +1,14 @@
 package pharmacy.utils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.RotateTransition;
 import javafx.animation.ScaleTransition;
-import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class NodeUtil {
@@ -91,7 +81,7 @@ public class NodeUtil {
 		scaleTransition.play();
 	}
 
-	public static void applyFadeTransiton(Node node, double fromOpacity, double toOpacity, double durationMillis,
+	public static void applyFadeTransition(Node node, double fromOpacity, double toOpacity, double durationMillis,
 			Runnable onFinished) {
 		FadeTransition fadeTransition = new FadeTransition();
 		fadeTransition.setNode(node);
@@ -102,7 +92,7 @@ public class NodeUtil {
 		fadeTransition.play();
 	}
 
-	public static void applyRotateTransiton(Node node, double fromAngle, double toAngle, double durationMillis,
+	public static void applyRotateTransition(Node node, double fromAngle, double toAngle, double durationMillis,
 			Runnable onFinished) {
 		RotateTransition rotateTransition = new RotateTransition();
 		rotateTransition.setNode(node);

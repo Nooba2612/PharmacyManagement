@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 public class NhanVien {
     private String maNhanVien;
     private String hoTen;
+    private String email;
     private String chucVu;
     private String soDienThoai;
     private LocalDate ngayVaoLam;
@@ -14,9 +15,10 @@ public class NhanVien {
     private String gioiTinh;
     private LocalDate namSinh;
 
-    public NhanVien() {}
+    public NhanVien() {
+    }
 
-    public NhanVien(String maNhanVien, String hoTen, String chucVu, String soDienThoai, 
+    public NhanVien(String maNhanVien, String hoTen, String chucVu, String soDienThoai, String email,
                     LocalDate ngayVaoLam, String trangThai, String trinhDo, 
                     String gioiTinh, LocalDate namSinh) {
         this.setMaNhanVien(maNhanVien);
@@ -28,12 +30,13 @@ public class NhanVien {
         this.trinhDo = trinhDo;
         this.gioiTinh = gioiTinh;
         this.namSinh = namSinh;
+        this.email = email;
     }
 
     public NhanVien(NhanVien nv) {
-        this(nv.getMaNhanVien(), nv.getHoTen(), nv.getChucVu(), 
-             nv.getSoDienThoai(), nv.getNgayVaoLam(), nv.getTrangThai(), 
-             nv.getTrinhDo(), nv.getGioiTinh(), nv.getNamSinh());
+        this(nv.getMaNhanVien(), nv.getHoTen(), nv.getChucVu(),
+                nv.getSoDienThoai(), nv.getEmail(), nv.getNgayVaoLam(), nv.getTrangThai(),
+                nv.getTrinhDo(), nv.getGioiTinh(), nv.getNamSinh());
     }
 
     public String getMaNhanVien() {
@@ -68,6 +71,14 @@ public class NhanVien {
         return chucVu;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String setEmail() {
+        return this.email;
+    }
+
     public void setChucVu(String chucVu) {
         if (chucVu == null || chucVu.isEmpty()) {
             throw new IllegalArgumentException("Chức vụ không được rỗng");
@@ -83,9 +94,9 @@ public class NhanVien {
     }
 
     public void setSoDienThoai(String soDienThoai) {
-        if (soDienThoai == null || !soDienThoai.matches("\\d{10}")) {
-            throw new IllegalArgumentException("Số điện thoại phải đủ 10 ký tự số");
-        }
+        // if (soDienThoai == null || !soDienThoai.matches("\\d{10}")) {
+        //     throw new IllegalArgumentException("Số điện thoại phải đủ 10 ký tự số");
+        // }
         this.soDienThoai = soDienThoai;
     }
 

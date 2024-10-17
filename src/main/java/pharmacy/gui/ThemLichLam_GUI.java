@@ -38,12 +38,12 @@ public class ThemLichLam_GUI {
 	@FXML
 	public void handleAddScheduleBtnAction() {
 		addScheduleBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(addScheduleBtn, 1, 0.7, 300, () -> {
+			NodeUtil.applyFadeTransition(addScheduleBtn, 1, 0.7, 300, () -> {
 			});
 		});
 
 		addScheduleBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(addScheduleBtn, 0.7, 1, 300, () -> {
+			NodeUtil.applyFadeTransition(addScheduleBtn, 0.7, 1, 300, () -> {
 			});
 		});
 
@@ -60,13 +60,13 @@ public class ThemLichLam_GUI {
 	@FXML
 	public void handleSuggestEmployees() {
 		ObservableList<NhanVien> suggestedEmployees = FXCollections.observableArrayList(
-				new NhanVien("MK0001", "Nguyễn Văn A", "a@example.com", "0123456789", LocalDate.of(2020, 1, 1),
+				new NhanVien("MK0001", "Nguyễn Văn A", "a@example.com", "0123456789","ccc@getEmail.com", LocalDate.of(2020, 1, 1),
 						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1990, 1, 1)),
-				new NhanVien("MK0002", "Nguyễn Văn B", "b@example.com", "0123456788", LocalDate.of(2020, 1, 1),
+				new NhanVien("MK0002", "Nguyễn Văn B", "b@example.com", "0123456788","ccc@getEmail.com", LocalDate.of(2020, 1, 1),
 						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1991, 1, 1)),
-				new NhanVien("MK0003", "Nguyễn Văn C", "c@example.com", "0123456787", LocalDate.of(2020, 1, 1),
+				new NhanVien("MK0003", "Nguyễn Văn C", "c@example.com", "0123456787","ccc@getEmail.com", LocalDate.of(2020, 1, 1),
 						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1992, 1, 1)),
-				new NhanVien("MK0004", "Nguyễn Văn D", "d@example.com", "0123456786", LocalDate.of(2020, 1, 1),
+				new NhanVien("MK0004", "Nguyễn Văn D", "d@example.com", "0123456786","ccc@getEmail.com", LocalDate.of(2020, 1, 1),
 						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1993, 1, 1)));
 
 		employeeList.getItems().addAll(suggestedEmployees);
@@ -87,7 +87,7 @@ public class ThemLichLam_GUI {
 		employeeList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				employeeField.setText(newValue.getMaNhanVien() + " - " + newValue.getHoTen());
-				NodeUtil.applyFadeTransiton(suggestBox, 1, 0, 200, () -> {
+				NodeUtil.applyFadeTransition(suggestBox, 1, 0, 200, () -> {
 				});
 				NodeUtil.applyTranslateYTransition(suggestBox, 0, -15, 200, () -> {
 					suggestBox.setVisible(false);
@@ -103,12 +103,12 @@ public class ThemLichLam_GUI {
 
 			if ("ccc".equals(employeeField.getText())) {
 				suggestBox.setVisible(true);
-				NodeUtil.applyFadeTransiton(suggestBox, 0, 1, 200, () -> {
+				NodeUtil.applyFadeTransition(suggestBox, 0, 1, 200, () -> {
 				});
 				NodeUtil.applyTranslateYTransition(suggestBox, -15, 0, 200, () -> {
 				});
 			} else {
-				NodeUtil.applyFadeTransiton(suggestBox, 1, 0, 200, () -> {
+				NodeUtil.applyFadeTransition(suggestBox, 1, 0, 200, () -> {
 				});
 				NodeUtil.applyTranslateYTransition(suggestBox, 0, -15, 200, () -> {
 					suggestBox.setVisible(false);
@@ -117,11 +117,11 @@ public class ThemLichLam_GUI {
 
 			// will be replace by hasEmployee
 			if (employeeField.getText().equals("")) {
-				NodeUtil.applyFadeTransiton(addScheduleBtn, 1, 0.7, 300, () -> {
+				NodeUtil.applyFadeTransition(addScheduleBtn, 1, 0.7, 300, () -> {
 					addScheduleBtn.setDisable(true);
 				});
 			} else {
-				NodeUtil.applyFadeTransiton(addScheduleBtn, 0.7, 1, 300, () -> {
+				NodeUtil.applyFadeTransition(addScheduleBtn, 0.7, 1, 300, () -> {
 					addScheduleBtn.setDisable(false);
 				});
 			}

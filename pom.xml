@@ -133,19 +133,22 @@
 		</dependency>
 
 		<!-- JavaFX Controls -->
+		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>22.0.2</version>
+			<version>24-ea+5</version>
 		</dependency>
+
 
 		<!-- JavaFX FXML -->
 		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
-			<version>22.0.2</version>
+			<version>24-ea+5</version>
 		</dependency>
+
 
 		<!-- SLF4J API -->
 		<dependency>
@@ -160,5 +163,43 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.11</version>
 		</dependency>
-	</dependencies>
+
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/itext7-core -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itext7-core</artifactId>
+			<version>8.0.5</version>
+			<type>pom</type>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/kernel -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>kernel</artifactId>
+			<version>8.0.5</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/layout -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>layout</artifactId>
+			<version>8.0.5</version>
+		</dependency>
+
+
+
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.3</version>
+		</dependency>
+
+	
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.5.0-b01</version>
+		</dependency>
+ </dependencies>
 </project>

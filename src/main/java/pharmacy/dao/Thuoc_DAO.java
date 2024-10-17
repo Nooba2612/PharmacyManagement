@@ -3,6 +3,7 @@ package pharmacy.dao;
 import pharmacy.entity.Thuoc;
 import pharmacy.entity.DanhMuc;
 import pharmacy.Interface.Thuoc_Interface;
+import pharmacy.bus.DanhMuc_BUS;
 import pharmacy.connections.DatabaseConnection;
 
 import java.sql.*;
@@ -11,15 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Thuoc_DAO implements Thuoc_Interface {
+	private Connection connection;
+	private PreparedStatement statement;
+	private ResultSet rs;
+	private String query;
+
+	public Thuoc_DAO() throws SQLException {
+		connection = DatabaseConnection.getConnection();
+	}
 
 	@Override
 	public boolean createThuoc(Thuoc thuoc) {
-		String query = "INSERT INTO Thuoc (maThuoc, tenThuoc, ngaySX, nhaSX, ngayTao, ngayCapNhat, soLuongTon, donGiaBan, thue, hanSuDung, moTa) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		query = "INSERT INTO Thuoc (maThuoc, tenThuoc, ngaySX, nhaSX, ngayTao, ngayCapNhat, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa, maDanhMuc) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try {
+			statement = connection.prepareStatement(query);
 			statement.setString(1, thuoc.getMaThuoc());
 			statement.setString(2, thuoc.getTenThuoc());
 			statement.setDate(3, Date.valueOf(thuoc.getNgaySX()));
@@ -30,7 +38,10 @@ public class Thuoc_DAO implements Thuoc_Interface {
 			statement.setDouble(8, thuoc.getDonGiaBan());
 			statement.setFloat(9, thuoc.getThue());
 			statement.setDate(10, Date.valueOf(thuoc.getHanSuDung()));
-			statement.setString(11, thuoc.getMoTa());
+			statement.setString(11, thuoc.getDonViTinh());
+			statement.setString(12, thuoc.getMoTa());
+			statement.setInt(13, 0);
+			statement.setString(14, thuoc.getDanhMuc().getMaDM());
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -43,21 +54,22 @@ public class Thuoc_DAO implements Thuoc_Interface {
 
 	@Override
 	public Thuoc getThuocByMaThuoc(String maThuoc) {
-		String query = "SELECT * FROM Thuoc WHERE maThuoc = ?";
+		query = "SELECT * FROM Thuoc WHERE maThuoc = ? WHERE d = 0";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try {
+			statement = connection.prepareStatement(query);
 			statement.setString(1, maThuoc);
 			ResultSet rs = statement.executeQuery();
 
 			if (rs.next()) {
-				DanhMuc danhMuc = new DanhMuc_DAO().getDanhMucByMaDM(rs.getString("maDanhMuc"));
+				DanhMuc danhMuc = new DanhMuc_BUS().getDanhMucByMaDM(rs.getString("maDanhMuc"));
 
 				return new Thuoc(rs.getString("maThuoc"), rs.getString("tenThuoc"), danhMuc,
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
 						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
-						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"));
+						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
+						rs.getString("donViTinh"), rs.getString("trangThai"));
+
 			}
 
 		} catch (SQLException e) {
@@ -68,12 +80,11 @@ public class Thuoc_DAO implements Thuoc_Interface {
 
 	@Override
 	public boolean updateThuoc(Thuoc thuoc) {
-		String query = "UPDATE Thuoc SET tenThuoc = ?, ngaySX = ?, nhaSX = ?, ngayCapNhat = ?, soLuongTon = ?, "
+		query = "UPDATE Thuoc SET tenThuoc = ?, ngaySX = ?, nhaSX = ?, ngayCapNhat = ?, soLuongTon = ?, "
 				+ "donGiaBan = ?, thue = ?, hanSuDung = ?, moTa = ? WHERE maThuoc = ?";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try {
+			statement = connection.prepareStatement(query);
 			statement.setString(1, thuoc.getTenThuoc());
 			statement.setDate(2, Date.valueOf(thuoc.getNgaySX()));
 			statement.setString(3, thuoc.getNhaSX());
@@ -96,15 +107,13 @@ public class Thuoc_DAO implements Thuoc_Interface {
 
 	@Override
 	public boolean deleteThuoc(String maThuoc) {
-		String query = "DELETE FROM Thuoc WHERE maThuoc = ?";
+		query = "UPDATE Thuoc SET d = 1 WHERE maThuoc = ?";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try {
+			statement = connection.prepareStatement(query);
 			statement.setString(1, maThuoc);
 			int result = statement.executeUpdate();
 			return result > 0;
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -114,18 +123,19 @@ public class Thuoc_DAO implements Thuoc_Interface {
 	@Override
 	public List<Thuoc> getAllThuoc() {
 		List<Thuoc> thuocs = new ArrayList<>();
-		String query = "SELECT * FROM Thuoc";
+		query = "SELECT * FROM Thuoc";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				Statement statement = connection.createStatement();
-				ResultSet rs = statement.executeQuery(query)) {
+		try {
+			statement = connection.prepareStatement(query);
+			rs = statement.executeQuery();
 
 			while (rs.next()) {
 				DanhMuc danhMuc = new DanhMuc_DAO().getDanhMucByMaDM(rs.getString("maDanhMuc"));
 				Thuoc thuoc = new Thuoc(rs.getString("maThuoc"), rs.getString("tenThuoc"), danhMuc,
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
 						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
-						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"));
+						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
+						rs.getString("donViTinh"), rs.getString("trangThai"));
 				thuocs.add(thuoc);
 			}
 
@@ -136,13 +146,12 @@ public class Thuoc_DAO implements Thuoc_Interface {
 	}
 
 	public int countThuoc() {
-		String query = "SELECT COUNT(*) FROM Thuoc";
+		query = "SELECT COUNT(*) FROM Thuoc";
 		int count = 0;
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query);
-				ResultSet rs = statement.executeQuery()) {
-
+		try {
+			statement = connection.prepareStatement(query);
+			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
 				count = rs.getInt(1);
 			}
@@ -154,18 +163,18 @@ public class Thuoc_DAO implements Thuoc_Interface {
 
 	public List<Thuoc> getThuocSapHetTonKho() {
 		List<Thuoc> thuocsSapHetTonKho = new ArrayList<>();
-		String query = "SELECT * FROM Thuoc WHERE soLuongTon < 15";
+		query = "SELECT * FROM Thuoc WHERE soLuongTon < 15";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try {
+			statement = connection.prepareStatement(query);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				DanhMuc danhMuc = new DanhMuc_DAO().getDanhMucByMaDM(rs.getString("maDanhMuc"));
 				Thuoc thuoc = new Thuoc(rs.getString("maThuoc"), rs.getString("tenThuoc"), danhMuc,
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
 						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
-						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"));
+						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
+						rs.getString("donViTinh"), rs.getString("trangThai"));
 				thuocsSapHetTonKho.add(thuoc);
 			}
 
@@ -177,12 +186,12 @@ public class Thuoc_DAO implements Thuoc_Interface {
 
 	public List<Thuoc> getThuocSapHetHanSuDung() {
 		List<Thuoc> thuocsSapHetHanSuDung = new ArrayList<>();
-		String query = "SELECT * FROM Thuoc WHERE hanSuDung < ?";
+		query = "SELECT * FROM Thuoc WHERE CONVERT(DATE, hanSuDung) BETWEEN ? AND ?";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
-			statement.setDate(1, Date.valueOf(LocalDate.now().plusMonths(1)));
+		try {
+			statement = connection.prepareStatement(query);
+			statement.setDate(1, Date.valueOf(LocalDate.now()));
+			statement.setDate(2, Date.valueOf(LocalDate.now().plusMonths(1)));
 
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
@@ -190,7 +199,8 @@ public class Thuoc_DAO implements Thuoc_Interface {
 				Thuoc thuoc = new Thuoc(rs.getString("maThuoc"), rs.getString("tenThuoc"), danhMuc,
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
 						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
-						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"));
+						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
+						rs.getString("donViTinh"), rs.getString("trangThai"));
 				thuocsSapHetHanSuDung.add(thuoc);
 			}
 
@@ -201,13 +211,12 @@ public class Thuoc_DAO implements Thuoc_Interface {
 	}
 
 	public int countThuocSapHetTonKho() {
-		String query = "SELECT COUNT(*) FROM Thuoc WHERE soLuongTon < 15";
+		query = "SELECT COUNT(*) FROM Thuoc WHERE soLuongTon < 15";
 		int count = 0;
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query);
-				ResultSet rs = statement.executeQuery()) {
-
+		try {
+			statement = connection.prepareStatement(query);
+			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
 				count = rs.getInt(1);
 			}
@@ -218,12 +227,11 @@ public class Thuoc_DAO implements Thuoc_Interface {
 	}
 
 	public int countThuocSapHetHanSuDung() {
-		String query = "SELECT COUNT(*) FROM Thuoc WHERE hanSuDung > ? AND hanSuDung <= ?";
+		String query = "SELECT COUNT(*) FROM Thuoc WHERE CONVERT(DATE, hanSuDung) BETWEEN ? AND ?";
 		int count = 0;
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try {
+			PreparedStatement statement = connection.prepareStatement(query);
 			statement.setDate(1, Date.valueOf(LocalDate.now()));
 			statement.setDate(2, Date.valueOf(LocalDate.now().plusMonths(1)));
 
@@ -239,11 +247,10 @@ public class Thuoc_DAO implements Thuoc_Interface {
 
 	public List<Thuoc> getThuocDaHetHan() {
 		List<Thuoc> thuocs = new ArrayList<>();
-		String query = "SELECT * FROM Thuoc WHERE hanSuDung < ?";
+		query = "SELECT * FROM Thuoc WHERE hanSuDung < ?";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try {
+			statement = connection.prepareStatement(query);
 			statement.setDate(1, Date.valueOf(LocalDate.now()));
 
 			ResultSet rs = statement.executeQuery();
@@ -252,7 +259,8 @@ public class Thuoc_DAO implements Thuoc_Interface {
 				Thuoc thuoc = new Thuoc(rs.getString("maThuoc"), rs.getString("tenThuoc"), danhMuc,
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
 						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
-						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"));
+						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
+						rs.getString("donViTinh"), rs.getString("trangThai"));
 				thuocs.add(thuoc);
 			}
 		} catch (SQLException e) {
@@ -262,12 +270,11 @@ public class Thuoc_DAO implements Thuoc_Interface {
 	}
 
 	public int countThuocDaHetHan() {
-		String query = "SELECT COUNT(*) FROM Thuoc WHERE hanSuDung < ?";
+		query = "SELECT COUNT(*) FROM Thuoc WHERE hanSuDung < ?";
 		int count = 0;
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try {
+			statement = connection.prepareStatement(query);
 			statement.setDate(1, Date.valueOf(LocalDate.now()));
 
 			ResultSet rs = statement.executeQuery();
@@ -278,6 +285,101 @@ public class Thuoc_DAO implements Thuoc_Interface {
 			e.printStackTrace();
 		}
 		return count;
+	}
+
+	public List<Thuoc> getTopSaleThuocByDate(String date) {
+		String[] dateParts = date.split("[/-]");
+		List<Thuoc> thuocList = new ArrayList<>();
+
+		switch (dateParts.length) {
+			case 3:
+				query = "SELECT t.*, SUM(cthd.soLuong) AS soLuongBan " +
+						"FROM Thuoc t " +
+						"JOIN ChiTietHoaDon cthd ON t.maThuoc = cthd.maThuoc " +
+						"JOIN HoaDon hd ON hd.maHoaDon = cthd.maHoaDon " +
+						"WHERE CAST(hd.ngayTao AS DATE) = ? AND t.d = 0 " +
+						"GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao, " +
+						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.d "
+						+
+						"ORDER BY soLuongBan DESC";
+				break;
+			case 2:
+				query = "SELECT t.*, SUM(cthd.soLuong) AS soLuongBan " +
+						"FROM Thuoc t " +
+						"JOIN ChiTietHoaDon cthd ON t.maThuoc = cthd.maThuoc " +
+						"JOIN HoaDon hd ON hd.maHoaDon = cthd.maHoaDon " +
+						"WHERE YEAR(CAST(hd.ngayTao AS DATE)) = ? AND MONTH(CAST(hd.ngayTao AS DATE)) = ? AND t.d = 0 "
+						+
+						"GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao, " +
+						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.d "
+						+
+						"ORDER BY soLuongBan DESC";
+				break;
+			case 1:
+				query = "SELECT t.*, SUM(cthd.soLuong) AS soLuongBan " +
+						"FROM Thuoc t " +
+						"JOIN ChiTietHoaDon cthd ON t.maThuoc = cthd.maThuoc " +
+						"JOIN HoaDon hd ON hd.maHoaDon = cthd.maHoaDon " +
+						"WHERE YEAR(CAST(hd.ngayTao AS DATE)) = ? AND t.d = 0 " +
+						"GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao, " +
+						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.d "
+						+
+						"ORDER BY soLuongBan DESC";
+				break;
+			default:
+				break;
+		}
+
+		try {
+			statement = connection.prepareStatement(query);
+			if (dateParts.length == 3) {
+				statement.setString(1, date);
+			} else if (dateParts.length == 2) {
+				statement.setString(1, dateParts[0]); // Năm
+				statement.setString(2, dateParts[1]); // Tháng
+			} else if (dateParts.length == 1) {
+				statement.setString(1, dateParts[0]); // Năm
+			}
+
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				DanhMuc danhMuc = new DanhMuc_BUS().getDanhMucByMaDM(rs.getString("maDanhMuc"));
+				Thuoc thuoc = new Thuoc(
+						rs.getString("maThuoc"), rs.getString("tenThuoc"), danhMuc,
+						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
+						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
+						rs.getString("donViTinh"), rs.getString("trangThai"));
+				thuocList.add(thuoc);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return thuocList;
+	}
+
+	public int getSoldQuantityById(String maThuoc, String date) {
+		query = "SELECT SUM(cthd.soLuong) AS soLuongBan " +
+				"FROM ChiTietHoaDon cthd " +
+				"WHERE cthd.maThuoc = ?";
+		int result = 0;
+
+		try {
+			statement = connection.prepareStatement(query);
+			statement.setString(1, maThuoc);
+
+			rs = statement.executeQuery();
+
+			if (rs.next()) {
+				result = rs.getInt("soLuongBan");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 
 }

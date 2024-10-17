@@ -93,8 +93,10 @@ public class KhachHang_GUI {
 		handleAddButtonToActionColumn();
 
 		ObservableList<KhachHang> data = FXCollections.observableArrayList(
-				new KhachHang("KH01", "Nguyen Van A", "0123456789", 100, LocalDate.parse("2023-01-01"), "Ghi chú cc"),
-				new KhachHang("KH02", "Tran Thi B", "0987654321", 50, LocalDate.parse("2023-02-01"), "Ghi chú cc"));
+				new KhachHang("KH01", "Nguyen Van A", "0123456789", 100, LocalDate.parse("2023-01-01"), "Ghi chú cc",
+						"Nam"),
+				new KhachHang("KH02", "Tran Thi B", "0987654321", 50, LocalDate.parse("2023-02-01"), "Ghi chú cc",
+						"Nữ"));
 
 		customerTable.setItems(data);
 
@@ -127,13 +129,13 @@ public class KhachHang_GUI {
 					deleteButton.setVisible(false);
 
 					deleteButton.setOnMouseEntered(event -> {
-						NodeUtil.applyFadeTransiton(deleteButton, 1, 0.7, 300, () -> {
+						NodeUtil.applyFadeTransition(deleteButton, 1, 0.7, 300, () -> {
 						});
 						NodeUtil.applyScaleTransition(deleteButton, 1, 1.1, 1, 1.1, 300, () -> {
 						});
 					});
 					deleteButton.setOnMouseExited(event -> {
-						NodeUtil.applyFadeTransiton(deleteButton, 0.7, 1, 300, () -> {
+						NodeUtil.applyFadeTransition(deleteButton, 0.7, 1, 300, () -> {
 						});
 						NodeUtil.applyScaleTransition(deleteButton, 1.1, 1, 1.1, 1, 300, () -> {
 						});
@@ -159,11 +161,11 @@ public class KhachHang_GUI {
 						TableRow<KhachHang> currentRow = getTableRow();
 						currentRow.setOnMouseEntered(event -> {
 							deleteButton.setVisible(true);
-							NodeUtil.applyFadeTransiton(deleteButton, 0, 1, 300, () -> {
+							NodeUtil.applyFadeTransition(deleteButton, 0, 1, 300, () -> {
 							});
 						});
 						currentRow
-								.setOnMouseExited(event -> NodeUtil.applyFadeTransiton(deleteButton, 1, 0, 300, () -> {
+								.setOnMouseExited(event -> NodeUtil.applyFadeTransition(deleteButton, 1, 0, 300, () -> {
 									deleteButton.setVisible(false);
 								}));
 					}
@@ -186,7 +188,7 @@ public class KhachHang_GUI {
 			KhachHang customer = event.getRowValue();
 			customer.setHoTen(event.getNewValue());
 		});
-		
+
 		phoneColumn.setCellFactory(TextFieldTableCell.forTableColumn());
 		phoneColumn.setOnEditCommit(event -> {
 			KhachHang customer = event.getRowValue();
@@ -214,12 +216,12 @@ public class KhachHang_GUI {
 		});
 
 		addCustomerBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(addCustomerBtn, 1, 0.7, 200, () -> {
+			NodeUtil.applyFadeTransition(addCustomerBtn, 1, 0.7, 200, () -> {
 			});
 		});
 
 		addCustomerBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(addCustomerBtn, 0.7, 1, 200, () -> {
+			NodeUtil.applyFadeTransition(addCustomerBtn, 0.7, 1, 200, () -> {
 			});
 		});
 	}

@@ -104,11 +104,11 @@ public class ThemHoaDon_GUI {
 
 		});
 		submitBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(submitBtn, 1, 0.7, 200, () -> {
+			NodeUtil.applyFadeTransition(submitBtn, 1, 0.7, 200, () -> {
 			});
 		});
 		submitBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(submitBtn, 0.7, 1, 200, () -> {
+			NodeUtil.applyFadeTransition(submitBtn, 0.7, 1, 200, () -> {
 			});
 		});
 	}
@@ -119,11 +119,11 @@ public class ThemHoaDon_GUI {
 
 		});
 		exportInvoiceBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(exportInvoiceBtn, 1, 0.7, 200, () -> {
+			NodeUtil.applyFadeTransition(exportInvoiceBtn, 1, 0.7, 200, () -> {
 			});
 		});
 		exportInvoiceBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(exportInvoiceBtn, 0.7, 1, 200, () -> {
+			NodeUtil.applyFadeTransition(exportInvoiceBtn, 0.7, 1, 200, () -> {
 			});
 		});
 	}
@@ -131,12 +131,12 @@ public class ThemHoaDon_GUI {
 	@FXML
 	public void handleBackBtnClick() {
 		backBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransiton(backBtn, 1, 0.5, 200, () -> {
+			NodeUtil.applyFadeTransition(backBtn, 1, 0.5, 200, () -> {
 			});
 		});
 
 		backBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransiton(backBtn, 0.5, 1, 200, () -> {
+			NodeUtil.applyFadeTransition(backBtn, 0.5, 1, 200, () -> {
 			});
 		});
 
