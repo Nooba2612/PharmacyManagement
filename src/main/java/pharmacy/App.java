@@ -28,7 +28,7 @@ public class App {
      * @wbp.parser.entryPoint
      */
     public App(String[] args) {
-        Application.launch(MainLayout_GUI.class, args);
+        Application.launch(DangNhap_GUI.class, args);
     }
 
 }
