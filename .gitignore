@@ -8,5 +8,8 @@
 *.war
 *.ear
 *.swp
-/bin
+/docker/
+.vscode
+*.yml
 .metadata
+bin
