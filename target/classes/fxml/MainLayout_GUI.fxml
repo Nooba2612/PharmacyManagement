@@ -16,8 +16,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="964.0" prefWidth="1498.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.MainLayout_GUI">
-	<BorderPane id="wrapper" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="964.0" prefWidth="1498.0">
+<Pane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="803.0" prefWidth="1498.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.MainLayout_GUI">
+	<BorderPane id="wrapper" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="804.0" prefWidth="1498.0">
 		<top>
 			<Pane id="header" prefHeight="75.0" prefWidth="898.0" style="-fx-background-color: #339933;" BorderPane.alignment="CENTER">
 				<children>
@@ -79,7 +79,7 @@
 		<left>
 			<VBox id="category" prefHeight="565.0" prefWidth="255.0" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER_LEFT">
 				<children>
-					<Pane id="homeBtn" prefHeight="70.0" style="-fx-background-color: #fff;">
+					<Pane id="homeBtn" prefHeight="65.0" style="-fx-background-color: #fff;">
 						<children>
 							<ImageView fitHeight="42.0" fitWidth="46.0" layoutX="14.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 								<image>
@@ -100,7 +100,7 @@
 							<String fx:value="active-category-item" />
 						</styleClass>
 					</Pane>
-					<Pane id="statisticBtn" prefHeight="70.0" styleClass="categoryItem">
+					<Pane id="statisticBtn" prefHeight="65.0" styleClass="categoryItem">
 						<children>
 							<ImageView fitHeight="48.0" fitWidth="77.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 								<image>
@@ -117,7 +117,7 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
-					<Pane id="medicinesBtn" prefHeight="70.0" styleClass="categoryItem">
+					<Pane id="medicinesBtn" prefHeight="65.0" styleClass="categoryItem">
 						<children>
 							<ImageView fitHeight="45.0" fitWidth="47.0" layoutX="14.0" layoutY="13.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 								<image>
@@ -134,7 +134,7 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
-					<Pane id="equipmentsBtn" prefHeight="70.0" styleClass="categoryItem">
+					<Pane id="equipmentsBtn" prefHeight="65.0" styleClass="categoryItem">
 						<children>
 							<ImageView fitHeight="42.0" fitWidth="39.0" layoutX="14.0" layoutY="13.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 								<image>
@@ -151,7 +151,7 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
-					<Pane id="employeesBtn" prefHeight="70.0" styleClass="categoryItem">
+					<Pane id="employeesBtn" prefHeight="65.0" styleClass="categoryItem">
 						<children>
 							<ImageView id="employeesBtn" fitHeight="39.0" fitWidth="39.0" layoutX="14.0" layoutY="15.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 								<image>
@@ -168,7 +168,7 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
-					<Pane id="customersBtn" prefHeight="70.0" styleClass="categoryItem">
+					<Pane id="customersBtn" prefHeight="65.0" styleClass="categoryItem">
 						<children>
 							<ImageView fitHeight="43.0" fitWidth="40.0" layoutX="14.0" layoutY="15.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 								<image>
@@ -185,7 +185,7 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
-					<Pane id="workScheduleBtn" prefHeight="70.0" styleClass="categoryItem">
+					<Pane id="workScheduleBtn" prefHeight="65.0" styleClass="categoryItem">
 						<children>
 							<ImageView id="employeesBtn" fitHeight="57.0" fitWidth="53.0" layoutY="9.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon" translateX="5.0">
 								<image>
@@ -202,7 +202,7 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
-					<Pane id="suppliersBtn" fx:id="supplierBtn" prefHeight="70.0" styleClass="categoryItem">
+					<Pane id="suppliersBtn" fx:id="supplierBtn" prefHeight="65.0" styleClass="categoryItem">
 						<children>
 							<ImageView fitHeight="42.0" fitWidth="47.0" layoutX="14.0" layoutY="16.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 								<image>
@@ -219,7 +219,7 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
-					<Pane id="invoicesBtn" prefHeight="70.0" styleClass="categoryItem">
+					<Pane id="invoicesBtn" prefHeight="65.0" styleClass="categoryItem">
 						<children>
 							<ImageView fitHeight="46.0" fitWidth="43.0" layoutX="14.0" layoutY="14.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 								<image>
@@ -236,7 +236,7 @@
 							<Cursor fx:constant="HAND" />
 						</cursor>
 					</Pane>
-               <Pane id="goodsReceiptBtn" prefHeight="70.0" styleClass="categoryItem">
+               <Pane id="goodsReceiptBtn" prefHeight="65.0" styleClass="categoryItem">
                   <children>
                      <ImageView fitHeight="54.0" fitWidth="68.0" layoutY="7.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                         <image>
@@ -253,7 +253,7 @@
                      <Cursor fx:constant="HAND" />
                   </cursor>
                </Pane>
-               <Pane id="Btn" prefHeight="70.0" styleClass="categoryItem">
+               <Pane id="Btn" prefHeight="65.0" styleClass="categoryItem">
                   <children>
                      <ImageView fitHeight="42.0" fitWidth="36.0" layoutX="14.0" layoutY="17.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                         <image>
