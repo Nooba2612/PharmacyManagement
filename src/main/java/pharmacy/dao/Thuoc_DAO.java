@@ -297,9 +297,9 @@ public class Thuoc_DAO implements Thuoc_Interface {
 						"FROM Thuoc t " +
 						"JOIN ChiTietHoaDon cthd ON t.maThuoc = cthd.maThuoc " +
 						"JOIN HoaDon hd ON hd.maHoaDon = cthd.maHoaDon " +
-						"WHERE CAST(hd.ngayTao AS DATE) = ? AND t.d = 0 " +
+						"WHERE CAST(hd.ngayTao AS DATE) = ? " +
 						"GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao, " +
-						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.d "
+						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.trangThai "
 						+
 						"ORDER BY soLuongBan DESC";
 				break;
@@ -308,10 +308,10 @@ public class Thuoc_DAO implements Thuoc_Interface {
 						"FROM Thuoc t " +
 						"JOIN ChiTietHoaDon cthd ON t.maThuoc = cthd.maThuoc " +
 						"JOIN HoaDon hd ON hd.maHoaDon = cthd.maHoaDon " +
-						"WHERE YEAR(CAST(hd.ngayTao AS DATE)) = ? AND MONTH(CAST(hd.ngayTao AS DATE)) = ? AND t.d = 0 "
+						"WHERE YEAR(CAST(hd.ngayTao AS DATE)) = ? AND MONTH(CAST(hd.ngayTao AS DATE)) = ? "
 						+
 						"GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao, " +
-						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.d "
+						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.trangThai "
 						+
 						"ORDER BY soLuongBan DESC";
 				break;
@@ -320,9 +320,9 @@ public class Thuoc_DAO implements Thuoc_Interface {
 						"FROM Thuoc t " +
 						"JOIN ChiTietHoaDon cthd ON t.maThuoc = cthd.maThuoc " +
 						"JOIN HoaDon hd ON hd.maHoaDon = cthd.maHoaDon " +
-						"WHERE YEAR(CAST(hd.ngayTao AS DATE)) = ? AND t.d = 0 " +
+						"WHERE YEAR(CAST(hd.ngayTao AS DATE)) = ? " +
 						"GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao, " +
-						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.d "
+						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.trangThai "
 						+
 						"ORDER BY soLuongBan DESC";
 				break;

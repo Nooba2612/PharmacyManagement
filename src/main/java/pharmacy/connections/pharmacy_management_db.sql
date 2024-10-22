@@ -47,22 +47,9 @@ CREATE TABLE Thuoc (
     hanSuDung DATETIME NOT NULL,
     donViTinh NVARCHAR(50) NOT NULL,
 	moTa NVARCHAR(255),
-	isDeleted BIT DEFAULT 0,
+    trangThai nvarchar(50) DEFAULT N'Có sẵn',
     CONSTRAINT FK_Thuoc_DanhMuc FOREIGN KEY (maDanhMuc) REFERENCES DanhMuc(maDM),
 );
-
-ALTER TABLE Thuoc 
-ADD tinhTrang nvarchar(50) DEFAULT 'Có sẵn';
-
-ALTER TABLE Thuoc
-DROP CONSTRAINT DF__Thuoc__isDeleted__02084FDA;
-
-ALTER TABLE Thuoc
-DROP COLUMN isDeleted;
-
-UPDATE Thuoc 
-SET isDeleted = 0 
-WHERE isDeleted IS NULL;
 
 CREATE TABLE KhachHang (
     maKhachHang NVARCHAR(50) PRIMARY KEY NOT NULL,
@@ -272,3 +259,5 @@ GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao,
 t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa 
 ORDER BY soLuongBan DESC
 
+-- sửa cái islogged thành 1 cho MK0001
+UPDATE TaiKhoan SET isLoggedIn = 1 WHERE tenDangNhap = 'MK0001'
