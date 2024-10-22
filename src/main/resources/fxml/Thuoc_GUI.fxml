@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="756.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.Thuoc_GUI">
+	<children>
+		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1266.0">
+			<children>
+				<Text id="mainTitle" fill="#9e9e9e" layoutX="14.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Danh sách thuốc" textAlignment="CENTER">
+					<font>
+						<Font name="Arial Bold" size="25.0" />
+					</font>
+				</Text>
+				<Pane layoutX="6.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="564.0" prefWidth="1244.0" style="-fx-background-color: #fff;">
+					<children>
+						<Line endX="1158.800048828125" layoutX="52.0" layoutY="84.0" startX="-11.400009155273438" stroke="#cccccc" strokeWidth="2.0" />
+						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="39.0" layoutY="107.0" prefHeight="421.0" prefWidth="1185.0" style="-fx-background-color: #fff;">
+							<content>
+								<TableView fx:id="medicineTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
+									<columns>
+										<TableColumn fx:id="idColumn" prefWidth="87.99999696016312" text="Mã thuốc" />
+										<TableColumn fx:id="nameColumn" prefWidth="139.99996948242188" text="Tên thuốc" />
+										<TableColumn fx:id="manufactureDateColumn" prefWidth="112.80000305175781" text="Ngày sản xuất" />
+										<TableColumn fx:id="manufacturerColumn" prefWidth="102.39996337890625" text="Nhà sản xuất" />
+										<TableColumn fx:id="availableQuantityColumn" prefWidth="105.5999755859375" text="Số lượng tồn" />
+										<TableColumn fx:id="priceColumn" prefWidth="107.99993896484375" resizable="false" text="Đơn giá" />
+										<TableColumn fx:id="taxColumn" prefWidth="83.20001220703125" text="Thuế" />
+                              <TableColumn fx:id="unitColumn" prefWidth="92.0" text="Đơn vị tính" />
+										<TableColumn fx:id="descriptionColumn" prefWidth="91.20001220703125" text="Mô tả" />
+										<TableColumn fx:id="expirationDateColumn" prefWidth="100.79998779296875" text="Hạn sử dụng" />
+										<TableColumn fx:id="statusColumn" prefWidth="105.59991455078125" text="Trạng thái" />
+									</columns>
+									<cursor>
+										<Cursor fx:constant="TEXT" />
+									</cursor>
+									<columnResizePolicy>
+										<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+									</columnResizePolicy>
+								</TableView>
+							</content>
+						</ScrollPane>
+						<Button fx:id="addMedicineBtn" layoutX="40.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Thêm thuốc" textFill="WHITE">
+							<cursor>
+								<Cursor fx:constant="HAND" />
+							</cursor>
+							<font>
+								<Font name="System Bold" size="12.0" />
+							</font>
+							<graphic>
+								<ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../images/plus-icon.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
+						<Pane fx:id="searchPane" layoutX="991.0" layoutY="21.0" prefHeight="46.0" prefWidth="221.0" style="-fx-background-color: #f0f0f0;">
+							<children>
+								<TextField fx:id="searchField" layoutX="7.0" layoutY="6.0" prefHeight="34.0" prefWidth="174.0" promptText="Nhập nội dung tìm kiếm" style="-fx-background-color: transparent;">
+									<font>
+										<Font size="13.0" />
+									</font>
+								</TextField>
+								<Button fx:id="searchMedicineBtn" layoutX="181.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0" style="-fx-background-color: transparent;" textAlignment="CENTER">
+									<graphic>
+										<ImageView fitHeight="20.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+											<image>
+												<Image url="@../images/search-icon.png" />
+											</image>
+										</ImageView>
+									</graphic>
+									<cursor>
+										<Cursor fx:constant="HAND" />
+									</cursor>
+								</Button>
+							</children>
+						</Pane>
+						<ComboBox fx:id="filter" layoutX="215.0" layoutY="24.0" prefHeight="40.0" prefWidth="174.0" promptText="Tất cả thuốc" style="-fx-background-color: #f0f0f0;">
+							<cursor>
+								<Cursor fx:constant="HAND" />
+							</cursor>
+						</ComboBox>
+                  <Button fx:id="exportListBtn" layoutX="414.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="In danh sách" textFill="WHITE">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/printer-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+					</children>
+					<effect>
+						<DropShadow height="10.0" radius="4.5" width="10.0">
+							<color>
+								<Color opacity="0.6907294988632202" />
+							</color>
+						</DropShadow>
+					</effect>
+				</Pane>
+			</children>
+		</Pane>
+	</children>
+</HBox>
