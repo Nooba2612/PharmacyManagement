@@ -11,3 +11,5 @@
 /docker/
 .vscode
 *.yml
+.metadata
+bin
