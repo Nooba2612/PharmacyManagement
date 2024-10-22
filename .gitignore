@@ -1,0 +1,15 @@
+/target/
+.project
+.classpath
+.settings/
+.env
+*.class
+*.jar
+*.war
+*.ear
+*.swp
+/docker/
+.vscode
+*.yml
+.metadata
+bin

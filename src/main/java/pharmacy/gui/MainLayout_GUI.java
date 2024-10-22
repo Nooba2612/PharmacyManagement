@@ -80,6 +80,10 @@ public class MainLayout_GUI extends Application {
         screenWidth = bounds.getWidth();
         screenHeight = bounds.getHeight();
 
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setWidth(screenBounds.getWidth());
+        primaryStage.setHeight(screenBounds.getHeight());
+
         // set header layout
         headerRightBox.setMinWidth(screenWidth - (menuBtnPane.getPrefWidth() + logoLabel.getPrefWidth()));
         logoLabel.setMinWidth(screenWidth - (menuBtnPane.getPrefWidth() + headerRightBox.getPrefWidth()));

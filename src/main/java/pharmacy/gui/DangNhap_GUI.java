@@ -1,24 +1,33 @@
 package pharmacy.gui;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import pharmacy.bus.NhanVien_BUS;
 import pharmacy.bus.TaiKhoan_BUS;
-import javafx.scene.control.*;
-import javafx.animation.*;
-
-import java.io.IOException;
-import java.sql.SQLException;
 
 public class DangNhap_GUI extends Application {
 	@FXML

@@ -186,11 +186,12 @@
 			<version>8.0.5</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
 		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itextpdf</artifactId>
-			<version>5.5.13.4</version>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.3</version>
 		</dependency>
 
 
@@ -199,24 +200,6 @@
 			<artifactId>mail</artifactId>
 			<version>1.5.0-b01</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-web -->
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-web</artifactId>
-			<version>24-ea+5</version>
-		</dependency>
-
-
-		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-swing</artifactId>
-			<version>24-ea+5</version>
-		</dependency>
-
-		
-
 
 	</dependencies>
 </project>

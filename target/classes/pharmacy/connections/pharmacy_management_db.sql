@@ -259,3 +259,8 @@ GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao,
 t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa 
 ORDER BY soLuongBan DESC
 
+<<<<<<< HEAD
+=======
+-- sửa cái islogged thành 1 cho MK0001
+UPDATE TaiKhoan SET isLoggedIn = 1 WHERE tenDangNhap = 'MK0001'
+>>>>>>> 9330a8e3eafe4d4a597977cdb0d23e1509768721
