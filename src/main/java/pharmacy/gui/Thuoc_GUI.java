@@ -26,7 +26,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -236,25 +238,57 @@ public class Thuoc_GUI {
 	}
 
 	private void setDateColumnEditable(TableColumn<Thuoc, LocalDate> column, String property) {
-		column.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<LocalDate>() {
-			@Override
-			public String toString(LocalDate object) {
-				return object == null ? "" : object.toString();
+		column.setCellFactory(col -> new TableCell<Thuoc, LocalDate>() {
+			private final DatePicker datePicker = new DatePicker();
+			{
+				datePicker.setEditable(true);
+				datePicker.setOnAction(event -> commitEdit(datePicker.getValue()));
+				datePicker.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+					if (!isNowFocused && isEditing()) {
+						cancelEdit();
+					}
+				});
 			}
 
 			@Override
-			public LocalDate fromString(String string) {
-				try {
-					return LocalDate.parse(string);
-				} catch (Exception e) {
-					return null;
+			protected void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					if (isEditing()) {
+						datePicker.setValue(getItem());
+						setGraphic(datePicker);
+						setText(null);
+					} else {
+						setText(item == null ? "" : item.toString());
+						setGraphic(null);
+					}
 				}
 			}
-		}));
+
+			@Override
+			public void startEdit() {
+				super.startEdit();
+				datePicker.setValue(getItem());
+				setGraphic(datePicker);
+				setText(null);
+				datePicker.requestFocus();
+			}
+
+			@Override
+			public void cancelEdit() {
+				super.cancelEdit();
+				setText(getItem() == null ? "" : getItem().toString());
+				setGraphic(null);
+			}
+
+		});
 
 		column.setOnEditCommit(event -> {
 			Thuoc medicine = event.getRowValue();
-			LocalDate newValue = event.getNewValue();
+			Object newValue = event.getNewValue();
 
 			if (newValue != null) {
 				showChangeTableConfirmationPopup(medicine, newValue, event, property);
@@ -262,6 +296,7 @@ public class Thuoc_GUI {
 				showInvalidInputDataDialog();
 			}
 		});
+
 	}
 
 	private <T> void makeColumnEditable(TableColumn<Thuoc, T> column, String property) {

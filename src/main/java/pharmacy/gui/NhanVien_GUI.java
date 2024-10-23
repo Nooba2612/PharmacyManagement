@@ -266,27 +266,11 @@ public class NhanVien_GUI {
 				setGraphic(null);
 			}
 
-			// @Override
-			// public void commitEdit(LocalDate newValue) {
-			// super.commitEdit(newValue);
-			// NhanVien employee = getTableView().getItems().get(getIndex());
-
-			// if (newValue != null) {
-			// showChangeTableConfirmationPopup(employee, newValue, null, property);
-			// } else {
-			// showInvalidInputDataDialog();
-			// }
-
-			// setGraphic(null);
-			// }
-
 		});
 
 		column.setOnEditCommit(event -> {
 			NhanVien employee = event.getRowValue();
 			Object newValue = event.getNewValue();
-
-			System.out.println(newValue);
 
 			if (newValue != null) {
 				showChangeTableConfirmationPopup(employee, newValue, event, property);
