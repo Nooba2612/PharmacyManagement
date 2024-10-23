@@ -39,6 +39,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import pharmacy.bus.Thuoc_BUS;
+import pharmacy.entity.NhanVien;
 import pharmacy.entity.Thuoc;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.PDFUtil;
@@ -46,7 +47,6 @@ import pharmacy.utils.PDFUtil;
 import java.util.logging.Logger;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -59,11 +59,9 @@ import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.font.PdfFontFactory.EmbeddingStrategy;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
-import com.itextpdf.layout.properties.TransparentColor;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import com.itextpdf.layout.borders.Border;
-import com.itextpdf.layout.borders.SolidBorder;
 
 import javafx.stage.StageStyle;
 
@@ -110,9 +108,6 @@ public class Thuoc_GUI {
 
 	@FXML
 	private Button searchMedicineBtn;
-
-	@FXML
-	private Pane searchPane;
 
 	@FXML
 	private TableColumn<Thuoc, Double> taxColumn;
@@ -234,10 +229,39 @@ public class Thuoc_GUI {
 		makeColumnEditable(priceColumn, "donGiaBan");
 		makeColumnEditable(availableQuantityColumn, "soLuongTon");
 		makeColumnEditable(manufacturerColumn, "nhaSX");
-		makeColumnEditable(expirationDateColumn, "ngaySanXuat");
+		setDateColumnEditable(manufactureDateColumn, "ngaySX");
 		makeColumnEditable(taxColumn, "thue");
-		makeColumnEditable(expirationDateColumn, "hanSuDung");
+		setDateColumnEditable(expirationDateColumn, "hanSuDung");
 		makeColumnEditable(unitColumn, "donViTinh");
+	}
+
+	private void setDateColumnEditable(TableColumn<Thuoc, LocalDate> column, String property) {
+		column.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<LocalDate>() {
+			@Override
+			public String toString(LocalDate object) {
+				return object == null ? "" : object.toString();
+			}
+
+			@Override
+			public LocalDate fromString(String string) {
+				try {
+					return LocalDate.parse(string);
+				} catch (Exception e) {
+					return null;
+				}
+			}
+		}));
+
+		column.setOnEditCommit(event -> {
+			Thuoc medicine = event.getRowValue();
+			LocalDate newValue = event.getNewValue();
+
+			if (newValue != null) {
+				showChangeTableConfirmationPopup(medicine, newValue, event, property);
+			} else {
+				showInvalidInputDataDialog();
+			}
+		});
 	}
 
 	private <T> void makeColumnEditable(TableColumn<Thuoc, T> column, String property) {
@@ -437,13 +461,10 @@ public class Thuoc_GUI {
 
 		exportListBtn.setOnAction(event -> {
 			try {
-				try {
-					exportMedicinesToPdf("src/main/resources/pdf/DanhSachThuoc.pdf");
-				} catch (SQLException ex) {
-				}
+				exportMedicinesToPdf("src/main/resources/pdf/DanhSachThuoc.pdf");
 				PDFUtil.showPdfPreview(
 						new File(getClass().getClassLoader().getResource("pdf/DanhSachThuoc.pdf").toURI()));
-			} catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException e) {
+			} catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException | SQLException e) {
 				Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
 			}
 
@@ -487,8 +508,7 @@ public class Thuoc_GUI {
 				Cell logoCell = new Cell().add(logo).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER);
 				headerTable.addCell(logoCell);
 
-				Paragraph name;
-				name = new Paragraph("MEDKIT")
+				Paragraph name = new Paragraph("MEDKIT")
 						.setFont(font)
 						.setFontSize(30)
 						.setBold()

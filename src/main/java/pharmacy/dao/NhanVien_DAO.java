@@ -67,7 +67,7 @@ public class NhanVien_DAO implements NhanVien_Interface {
 
     @Override
     public boolean updateEmployee(NhanVien nhanVien) {
-        String query = "UPDATE NhanVien SET hoTen = ?, chucVu = ?, soDienThoai = ?, ngayVaoLam = ?, trangThai = ?, trinhDo = ?, gioiTinh = ?, namSinh = ? WHERE maNhanVien = ?";
+        String query = "UPDATE NhanVien SET hoTen = ?, chucVu = ?, soDienThoai = ?, ngayVaoLam = ?, trangThai = ?, trinhDo = ?, gioiTinh = ?, namSinh = ?, email = ? WHERE maNhanVien = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
@@ -80,7 +80,8 @@ public class NhanVien_DAO implements NhanVien_Interface {
             statement.setString(6, nhanVien.getTrinhDo());
             statement.setString(7, nhanVien.getGioiTinh());
             statement.setDate(8, Date.valueOf(nhanVien.getNamSinh()));
-            statement.setString(9, nhanVien.getMaNhanVien());
+            statement.setString(9, nhanVien.getEmail());
+            statement.setString(10, nhanVien.getMaNhanVien());
 
             return statement.executeUpdate() > 0;
 

@@ -1,6 +1,7 @@
 package pharmacy.bus;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import pharmacy.dao.Thuoc_DAO;
@@ -22,6 +23,39 @@ public class Thuoc_BUS {
 	}
 
 	public boolean updateThuoc(Thuoc thuoc) {
+		if (thuoc == null) {
+			return false;
+		}
+
+		if (thuoc.getTenThuoc() == null || thuoc.getTenThuoc().isEmpty()) {
+			return false;
+		}
+
+		if (thuoc.getNgaySX() != null && thuoc.getNgaySX().isAfter(LocalDate.now())) {
+			return false;
+		}
+
+		if (thuoc.getNgayCapNhat() != null && thuoc.getNgayTao() != null
+				&& thuoc.getNgayCapNhat().isBefore(thuoc.getNgayTao())) {
+			return false;
+		}
+
+		if (thuoc.getHanSuDung() != null && thuoc.getNgaySX() != null) {
+			return false;
+		}
+
+		if (thuoc.getSoLuongTon() < 0) {
+			return false;
+		}
+
+		if (thuoc.getDonGiaBan() <= 0) {
+			return false;
+		}
+
+		if (thuoc.getThue() < 0) {
+			return false;
+		}
+
 		return thuocDao.updateThuoc(thuoc);
 	}
 

@@ -17,30 +17,32 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.NhanVien_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="667.0" prefWidth="1314.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.NhanVien_GUI">
 	<children>
-		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1210.0">
+		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1317.0">
 			<children>
-				<Text id="mainTitle" fill="#9e9e9e" layoutX="44.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Danh sách nhân viên" textAlignment="CENTER">
+				<Text id="mainTitle" fill="#9e9e9e" layoutX="53.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Danh sách nhân viên" textAlignment="CENTER">
 					<font>
 						<Font name="Arial Bold" size="25.0" />
 					</font>
 				</Text>
-				<Pane layoutX="44.0" layoutY="103.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="564.0" prefWidth="1097.0" style="-fx-background-color: #fff;">
+				<Pane layoutX="53.0" layoutY="103.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="564.0" prefWidth="1212.0" style="-fx-background-color: #fff;">
 					<children>
-						<Line endX="998.800048828125" endY="-1.52587890625E-5" layoutX="50.0" layoutY="88.0" startX="-2.399993896484375" startY="-1.52587890625E-5" stroke="#cccccc" strokeWidth="2.0" />
-						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="46.0" layoutY="119.0" prefHeight="421.0" prefWidth="1005.0" style="-fx-background-color: #fff;">
+						<Line endX="1126.800048828125" endY="-1.52587890625E-5" layoutX="43.0" layoutY="87.0" startX="-2.399993896484375" startY="-1.52587890625E-5" stroke="#cccccc" strokeWidth="2.0" />
+						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="46.0" layoutY="119.0" prefHeight="421.0" prefWidth="1131.0" style="-fx-background-color: #fff;">
 							<content>
 								<TableView fx:id="employeeTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
 									<columns>
-										<TableColumn fx:id="nameColumn" prefWidth="130.3999908566475" text="Tên nhân viên" />
-										<TableColumn fx:id="genderColumn" prefWidth="87.20002746582031" sortable="false" text="Giới tính" />
-										<TableColumn fx:id="birthdayColumn" prefWidth="100.80003356933594" text="Ngày sinh" />
-										<TableColumn fx:id="emailColumn" prefWidth="131.199951171875" sortable="false" text="Email" />
+										<TableColumn fx:id="idColumn" prefWidth="103.19997864961624" text="Mã nhân viên" />
+										<TableColumn fx:id="nameColumn" prefWidth="120.00001525878906" text="Tên nhân viên" />
+										<TableColumn fx:id="genderColumn" prefWidth="88.80000305175781" sortable="false" text="Giới tính" />
+										<TableColumn fx:id="birthdayColumn" prefWidth="116.00006103515625" text="Ngày sinh" />
+										<TableColumn fx:id="emailColumn" prefWidth="84.79998779296875" sortable="false" text="Email" />
 										<TableColumn fx:id="phoneColumn" prefWidth="134.4000244140625" text="Số điện thoại" />
-										<TableColumn fx:id="levelColumn" editable="false" prefWidth="103.199951171875" resizable="false" sortable="false" text="Trình độ" />
-										<TableColumn fx:id="statusColumn" prefWidth="143.199951171875" text="Trạng thái" />
-										<TableColumn fx:id="joinDateColumn" prefWidth="121.60009765625" text="Ngày vào làm" />
+										<TableColumn fx:id="levelColumn" prefWidth="103.199951171875" resizable="false" sortable="false" text="Trình độ" />
+										<TableColumn fx:id="statusColumn" prefWidth="139.19989013671875" text="Trạng thái" />
+                              <TableColumn fx:id="positionColumn" prefWidth="95.20001220703125" text="Chức vụ" />
+										<TableColumn fx:id="joinDateColumn" prefWidth="113.599853515625" text="Ngày vào làm" />
 									</columns>
 									<cursor>
 										<Cursor fx:constant="TEXT" />
@@ -51,7 +53,7 @@
 								</TableView>
 							</content>
 						</ScrollPane>
-						<Button fx:id="addEmployeeBtn" layoutX="46.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Thêm nhân viên" textFill="WHITE">
+						<Button fx:id="addEmployeeBtn" layoutX="40.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Thêm nhân viên" textFill="WHITE">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
@@ -66,7 +68,7 @@
 								</ImageView>
 							</graphic>
 						</Button>
-						<Pane fx:id="searchPane" layoutX="829.0" layoutY="21.0" prefHeight="46.0" prefWidth="221.0" style="-fx-background-color: #f0f0f0;">
+						<Pane fx:id="searchPane" layoutX="950.0" layoutY="24.0" prefHeight="46.0" prefWidth="221.0" style="-fx-background-color: #f0f0f0;">
 							<children>
 								<TextField fx:id="searchField" layoutX="7.0" layoutY="6.0" prefHeight="34.0" prefWidth="174.0" promptText="Nhập nội dung tìm kiếm" style="-fx-background-color: transparent;">
 									<font>
@@ -87,26 +89,26 @@
 								</Button>
 							</children>
 						</Pane>
-						<ComboBox fx:id="filter" layoutX="227.0" layoutY="24.0" prefHeight="40.0" prefWidth="201.0" promptText="Tất cả nhân viên" style="-fx-background-color: #f0f0f0;">
+						<ComboBox fx:id="filter" layoutX="221.0" layoutY="24.0" prefHeight="40.0" prefWidth="201.0" promptText="Tất cả nhân viên" style="-fx-background-color: #f0f0f0;">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
 						</ComboBox>
-                  <Button fx:id="exportBtn" layoutX="450.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="201.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Xuất danh sách nhân viên" textFill="WHITE">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                     <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/printer-icon.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
+						<Button fx:id="exportBtn" layoutX="444.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="201.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Xuất danh sách nhân viên" textFill="WHITE">
+							<cursor>
+								<Cursor fx:constant="HAND" />
+							</cursor>
+							<font>
+								<Font name="System Bold" size="12.0" />
+							</font>
+							<graphic>
+								<ImageView fitHeight="30.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+									<image>
+										<Image url="@../images/printer-icon.png" />
+									</image>
+								</ImageView>
+							</graphic>
+						</Button>
 					</children>
 					<effect>
 						<DropShadow height="10.0" radius="4.5" width="10.0">
