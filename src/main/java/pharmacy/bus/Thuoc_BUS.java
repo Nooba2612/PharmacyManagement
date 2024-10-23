@@ -31,16 +31,16 @@ public class Thuoc_BUS {
 			return false;
 		}
 
-		if (thuoc.getNgaySX() != null && thuoc.getNgaySX().isAfter(LocalDate.now())) {
+		if (thuoc.getNgaySX() == null || thuoc.getNgaySX().isAfter(LocalDate.now())) {
 			return false;
 		}
 
-		if (thuoc.getNgayCapNhat() != null && thuoc.getNgayTao() != null
+		if (thuoc.getNgayCapNhat() == null && thuoc.getNgayTao() == null
 				&& thuoc.getNgayCapNhat().isBefore(thuoc.getNgayTao())) {
 			return false;
 		}
 
-		if (thuoc.getHanSuDung() != null && thuoc.getNgaySX() != null) {
+		if (thuoc.getHanSuDung() == null && thuoc.getNgaySX() == null) {
 			return false;
 		}
 

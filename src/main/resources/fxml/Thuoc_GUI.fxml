@@ -34,15 +34,15 @@
 								<TableView fx:id="medicineTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
 									<columns>
 										<TableColumn fx:id="idColumn" prefWidth="87.99999696016312" text="Mã thuốc" />
-										<TableColumn fx:id="nameColumn" prefWidth="139.99996948242188" text="Tên thuốc" />
-										<TableColumn fx:id="manufactureDateColumn" prefWidth="112.80000305175781" text="Ngày sản xuất" />
+										<TableColumn fx:id="nameColumn" prefWidth="134.4000244140625" text="Tên thuốc" />
+										<TableColumn fx:id="manufactureDateColumn" prefWidth="131.19996643066406" text="Ngày sản xuất" />
 										<TableColumn fx:id="manufacturerColumn" prefWidth="102.39996337890625" text="Nhà sản xuất" />
 										<TableColumn fx:id="availableQuantityColumn" prefWidth="105.5999755859375" text="Số lượng tồn" />
-										<TableColumn fx:id="priceColumn" prefWidth="107.99993896484375" resizable="false" text="Đơn giá" />
-										<TableColumn fx:id="taxColumn" prefWidth="83.20001220703125" text="Thuế" />
-                              <TableColumn fx:id="unitColumn" prefWidth="92.0" text="Đơn vị tính" />
-										<TableColumn fx:id="descriptionColumn" prefWidth="91.20001220703125" text="Mô tả" />
-										<TableColumn fx:id="expirationDateColumn" prefWidth="100.79998779296875" text="Hạn sử dụng" />
+										<TableColumn fx:id="priceColumn" prefWidth="100.0" resizable="false" text="Đơn giá" />
+										<TableColumn fx:id="taxColumn" prefWidth="93.60003662109375" text="Thuế" />
+                              <TableColumn fx:id="unitColumn" prefWidth="100.79998779296875" text="Đơn vị tính" />
+										<TableColumn fx:id="descriptionColumn" text="Mô tả" />
+										<TableColumn fx:id="expirationDateColumn" prefWidth="120.79998779296875" text="Hạn sử dụng" />
 										<TableColumn fx:id="statusColumn" prefWidth="105.59991455078125" text="Trạng thái" />
 									</columns>
 									<cursor>

@@ -67,7 +67,9 @@ public class NhanVien_DAO implements NhanVien_Interface {
 
     @Override
     public boolean updateEmployee(NhanVien nhanVien) {
-        String query = "UPDATE NhanVien SET hoTen = ?, chucVu = ?, soDienThoai = ?, ngayVaoLam = ?, trangThai = ?, trinhDo = ?, gioiTinh = ?, namSinh = ?, email = ? WHERE maNhanVien = ?";
+        String query = "UPDATE NhanVien SET hoTen = ?, chucVu = ?, soDienThoai = ?, ngayVaoLam = ?, " +
+                "trangThai = ?, trinhDo = ?, gioiTinh = ?, namSinh = ?, email = ? " +
+                "WHERE maNhanVien = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
@@ -75,18 +77,30 @@ public class NhanVien_DAO implements NhanVien_Interface {
             statement.setString(1, nhanVien.getHoTen());
             statement.setString(2, nhanVien.getChucVu());
             statement.setString(3, nhanVien.getSoDienThoai());
-            statement.setDate(4, Date.valueOf(nhanVien.getNgayVaoLam()));
+
+            if (nhanVien.getNgayVaoLam() != null) {
+                statement.setDate(4, Date.valueOf(nhanVien.getNgayVaoLam()));
+            } else {
+                statement.setNull(4, java.sql.Types.DATE);
+            }
+
             statement.setString(5, nhanVien.getTrangThai());
             statement.setString(6, nhanVien.getTrinhDo());
             statement.setString(7, nhanVien.getGioiTinh());
-            statement.setDate(8, Date.valueOf(nhanVien.getNamSinh()));
+
+            if (nhanVien.getNamSinh() != null) {
+                statement.setDate(8, Date.valueOf(nhanVien.getNamSinh()));
+            } else {
+                statement.setNull(8, java.sql.Types.DATE);
+            }
+
             statement.setString(9, nhanVien.getEmail());
             statement.setString(10, nhanVien.getMaNhanVien());
 
             return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Input employee error: " + e.getMessage());
             return false;
         }
     }
