@@ -54,6 +54,7 @@ CREATE TABLE Thuoc (
     trangThai nvarchar(50) DEFAULT N'Có sẵn',
     CONSTRAINT FK_Thuoc_DanhMuc FOREIGN KEY (maDanhMuc) REFERENCES DanhMuc(maDM),
 );
+
 CREATE TABLE KhachHang (
     maKhachHang NVARCHAR(50) PRIMARY KEY NOT NULL,
     hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),
@@ -447,6 +448,7 @@ VALUES (
         N'Địa chỉ NCC B',
         'ncc.b@example.com'
     );
+
 -- Thêm dữ liệu vào bảng PhieuNhap
 INSERT INTO PhieuNhap (
         maPhieuNhap,

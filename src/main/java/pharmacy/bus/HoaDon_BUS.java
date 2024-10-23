@@ -57,5 +57,4 @@ public class HoaDon_BUS {
 		return hoaDonDAO.calculateRevenueByEmployee(maNhanVien, date);
 	}
 
-	
 }
