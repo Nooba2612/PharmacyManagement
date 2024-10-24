@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane prefHeight="756.0" prefWidth="1266.0">
+         <children>
+            <ImageView fitHeight="158.0" fitWidth="199.0" layoutX="66.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/LogoIUH.jpg" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+   </children>
+</HBox>

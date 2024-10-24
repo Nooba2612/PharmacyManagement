@@ -1,9 +1,9 @@
 package pharmacy.bus;
 
+import java.util.List;
+
 import pharmacy.dao.ChiTietHoaDon_DAO;
 import pharmacy.entity.ChiTietHoaDon;
-
-import java.util.List;
 
 public class ChiTietHoaDon_BUS {
 	private ChiTietHoaDon_DAO chiTietHoaDonDAO;

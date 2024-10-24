@@ -1,9 +1,9 @@
 package pharmacy.bus;
 
+import java.util.List;
+
 import pharmacy.dao.DanhMuc_DAO;
 import pharmacy.entity.DanhMuc;
-
-import java.util.List;
 
 public class DanhMuc_BUS {
     private DanhMuc_DAO danhMucDAO;

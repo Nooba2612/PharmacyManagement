@@ -35,6 +35,7 @@ public class NhanVien_DAO implements NhanVien_Interface {
         }
     }
 
+    @Override
     public NhanVien getEmployeeByMaNhanVien(String maNhanVien) {
         String query = "SELECT * FROM NhanVien WHERE maNhanVien = ?";
 
@@ -64,8 +65,11 @@ public class NhanVien_DAO implements NhanVien_Interface {
         return null;
     }
 
+    @Override
     public boolean updateEmployee(NhanVien nhanVien) {
-        String query = "UPDATE NhanVien SET hoTen = ?, chucVu = ?, soDienThoai = ?, ngayVaoLam = ?, trangThai = ?, trinhDo = ?, gioiTinh = ?, namSinh = ? WHERE maNhanVien = ?";
+        String query = "UPDATE NhanVien SET hoTen = ?, chucVu = ?, soDienThoai = ?, ngayVaoLam = ?, " +
+                "trangThai = ?, trinhDo = ?, gioiTinh = ?, namSinh = ?, email = ? " +
+                "WHERE maNhanVien = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
@@ -73,21 +77,35 @@ public class NhanVien_DAO implements NhanVien_Interface {
             statement.setString(1, nhanVien.getHoTen());
             statement.setString(2, nhanVien.getChucVu());
             statement.setString(3, nhanVien.getSoDienThoai());
-            statement.setDate(4, Date.valueOf(nhanVien.getNgayVaoLam()));
+
+            if (nhanVien.getNgayVaoLam() != null) {
+                statement.setDate(4, Date.valueOf(nhanVien.getNgayVaoLam()));
+            } else {
+                statement.setNull(4, java.sql.Types.DATE);
+            }
+
             statement.setString(5, nhanVien.getTrangThai());
             statement.setString(6, nhanVien.getTrinhDo());
             statement.setString(7, nhanVien.getGioiTinh());
-            statement.setDate(8, Date.valueOf(nhanVien.getNamSinh()));
-            statement.setString(9, nhanVien.getMaNhanVien());
+
+            if (nhanVien.getNamSinh() != null) {
+                statement.setDate(8, Date.valueOf(nhanVien.getNamSinh()));
+            } else {
+                statement.setNull(8, java.sql.Types.DATE);
+            }
+
+            statement.setString(9, nhanVien.getEmail());
+            statement.setString(10, nhanVien.getMaNhanVien());
 
             return statement.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Input employee error: " + e.getMessage());
             return false;
         }
     }
 
+    @Override
     public boolean deleteEmployee(String maNhanVien) {
         String query = "DELETE FROM NhanVien WHERE maNhanVien = ?";
 
@@ -103,6 +121,7 @@ public class NhanVien_DAO implements NhanVien_Interface {
         }
     }
 
+    @Override
     public List<NhanVien> getAllEmployees() {
         List<NhanVien> employees = new ArrayList<>();
         String query = "SELECT * FROM NhanVien";
@@ -132,6 +151,7 @@ public class NhanVien_DAO implements NhanVien_Interface {
         return employees;
     }
 
+    @Override
     public int countEmployees() {
         String query = "SELECT COUNT(*) FROM NhanVien";
         int count = 0;
@@ -148,6 +168,7 @@ public class NhanVien_DAO implements NhanVien_Interface {
         return count;
     }
 
+    @Override
     public List<NhanVien> getTopRevenueEmployees(String date) {
         List<NhanVien> topEmployees = new ArrayList<>();
         String[] dateParts = date.split("[/-]"); // Tách ngày, tháng, năm từ chuỗi nhập vào
@@ -222,6 +243,7 @@ public class NhanVien_DAO implements NhanVien_Interface {
         return topEmployees;
     }
 
+    @Override
     public int getOrderQuantityOfEmployee(String maNhanVien) {
         int orderQuantity = 0;
 
@@ -244,6 +266,55 @@ public class NhanVien_DAO implements NhanVien_Interface {
         }
 
         return orderQuantity;
+    }
+
+    @Override
+    public List<NhanVien> getEmployeesByStatus(String status) {
+        String sql = "SELECT * FROM NhanVien";
+
+        switch (status) {
+            case "Tất cả nhân viên" -> {
+                return getAllEmployees();
+            }
+            case "Nhân viên đã nghỉ" -> {
+                sql += " WHERE trangThai = N'Nghỉ việc hẳn'";
+            }
+            case "Nhân viên còn làm" -> {
+                sql += " WHERE trangThai = N'Đang làm'";
+            }
+            case "Nhân viên nghỉ tạm thời" -> {
+                sql += " WHERE trangThai = N'Nghỉ việc tạm thời'";
+            }
+            default -> {
+                return new ArrayList<>();
+            }
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
+            List<NhanVien> employees = new ArrayList<>();
+            while (rs.next()) {
+                NhanVien nv = new NhanVien(
+                        rs.getString("maNhanVien"),
+                        rs.getString("hoTen"),
+                        rs.getString("chucVu"),
+                        rs.getString("soDienThoai"),
+                        rs.getString("email"),
+                        rs.getDate("ngayVaoLam").toLocalDate(),
+                        rs.getString("trangThai"),
+                        rs.getString("trinhDo"),
+                        rs.getString("gioiTinh"),
+                        rs.getDate("namSinh").toLocalDate());
+                employees.add(nv);
+            }
+            return employees;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
 }

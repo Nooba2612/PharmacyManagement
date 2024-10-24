@@ -1,34 +1,20 @@
 package pharmacy;
 
-import java.awt.EventQueue;
-
 import javafx.application.Application;
-import pharmacy.gui.*;
+import javafx.stage.Stage;
+import pharmacy.gui.MainLayout_GUI;
 
-public class App {
+public class App extends Application {
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Pharmacy Management");
+        primaryStage.show();
+    }
 
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new App(args);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        launch(MainLayout_GUI.class, args);
     }
-
-    /**
-     * Create the application.
-     * 
-     * @wbp.parser.entryPoint
-     */
-    public App(String[] args) {
-        Application.launch(DangNhap_GUI.class, args);
-    }
-
 }

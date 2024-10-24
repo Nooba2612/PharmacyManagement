@@ -10,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import pharmacy.utils.NodeUtil;
 
@@ -58,7 +59,7 @@ public class ThemNhanVien_GUI {
 	private Text positionSelectAlert;
 
 	@FXML
-	private HBox root;
+	private Pane root;
 
 	@FXML
 	private TextField salaryField;
@@ -71,7 +72,7 @@ public class ThemNhanVien_GUI {
 
 	@FXML
 	private Text unitSelectAlert;
-	
+
 	@FXML
 	private DatePicker birthdayField;
 

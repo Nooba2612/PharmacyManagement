@@ -20,10 +20,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import pharmacy.entity.*;
 import pharmacy.utils.NodeUtil;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 
 public class HoaDon_GUI {
 

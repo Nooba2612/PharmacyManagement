@@ -1,7 +1,8 @@
 package pharmacy.Interface;
 
-import pharmacy.entity.ThietBiYTe;
 import java.util.List;
+
+import pharmacy.entity.ThietBiYTe;
 
 public interface ThietBiYTe_Interface {
 	boolean createThietBiYTe(ThietBiYTe thietBiYTe);

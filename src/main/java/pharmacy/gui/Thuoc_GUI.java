@@ -1,72 +1,71 @@
 package pharmacy.gui;
 
 import java.beans.PropertyDescriptor;
-import java.io.FileOutputStream;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.layout.*;
+import com.itextpdf.layout.element.*;
 
-import com.itextpdf.commons.utils.Base64.InputStream;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Table;
-
-import javafx.animation.FadeTransition;
-import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
 import pharmacy.bus.Thuoc_BUS;
-import pharmacy.entity.*;
+import pharmacy.entity.NhanVien;
+import pharmacy.entity.Thuoc;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.PDFUtil;
+
+import java.util.logging.Logger;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Optional;
+import java.util.logging.Level;
+
+import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.kernel.colors.Color;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.font.PdfFontFactory.EmbeddingStrategy;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.properties.VerticalAlignment;
+import com.itextpdf.layout.borders.Border;
+
+import javafx.stage.StageStyle;
 
 public class Thuoc_GUI {
 
@@ -113,9 +112,6 @@ public class Thuoc_GUI {
 	private Button searchMedicineBtn;
 
 	@FXML
-	private Pane searchPane;
-
-	@FXML
 	private TableColumn<Thuoc, Double> taxColumn;
 
 	@FXML
@@ -150,7 +146,7 @@ public class Thuoc_GUI {
 				try {
 					renderMedicines(newValue.toString());
 				} catch (SQLException e) {
-					e.printStackTrace();
+					Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
 				}
 			}
 		});
@@ -178,7 +174,7 @@ public class Thuoc_GUI {
 				root.getChildren().add(addMedicineFrame);
 
 			} catch (IOException e) {
-				e.printStackTrace();
+				Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
 			}
 		});
 
@@ -208,24 +204,19 @@ public class Thuoc_GUI {
 		statusColumn.setCellValueFactory(new PropertyValueFactory<>("trangThai"));
 
 		switch (type) {
-			case "Tất cả thuốc":
-				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getAllThuoc());
-				break;
+			case "Tất cả thuốc" -> medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getAllThuoc());
 
-			case "Thuốc sắp hết hạn":
+			case "Thuốc sắp hết hạn" ->
 				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocSapHetHanSuDung());
-				break;
 
-			case "Thuốc đã hết hạn":
+			case "Thuốc đã hết hạn" ->
 				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocDaHetHan());
-				break;
 
-			case "Thuốc có số lượng tồn kho thấp":
+			case "Thuốc có số lượng tồn kho thấp" ->
 				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocSapHetTonKho());
-				break;
 
-			default:
-				break;
+			default -> {
+			}
 		}
 
 		medicineTable.setItems(medicineList);
@@ -240,10 +231,72 @@ public class Thuoc_GUI {
 		makeColumnEditable(priceColumn, "donGiaBan");
 		makeColumnEditable(availableQuantityColumn, "soLuongTon");
 		makeColumnEditable(manufacturerColumn, "nhaSX");
-		makeColumnEditable(expirationDateColumn, "ngaySanXuat");
+		setDateColumnEditable(manufactureDateColumn, "ngaySX");
 		makeColumnEditable(taxColumn, "thue");
-		makeColumnEditable(expirationDateColumn, "hanSuDung");
+		setDateColumnEditable(expirationDateColumn, "hanSuDung");
 		makeColumnEditable(unitColumn, "donViTinh");
+	}
+
+	private void setDateColumnEditable(TableColumn<Thuoc, LocalDate> column, String property) {
+		column.setCellFactory(col -> new TableCell<Thuoc, LocalDate>() {
+			private final DatePicker datePicker = new DatePicker();
+			{
+				datePicker.setEditable(true);
+				datePicker.setOnAction(event -> commitEdit(datePicker.getValue()));
+				datePicker.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+					if (!isNowFocused && isEditing()) {
+						cancelEdit();
+					}
+				});
+			}
+
+			@Override
+			protected void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					if (isEditing()) {
+						datePicker.setValue(getItem());
+						setGraphic(datePicker);
+						setText(null);
+					} else {
+						setText(item == null ? "" : item.toString());
+						setGraphic(null);
+					}
+				}
+			}
+
+			@Override
+			public void startEdit() {
+				super.startEdit();
+				datePicker.setValue(getItem());
+				setGraphic(datePicker);
+				setText(null);
+				datePicker.requestFocus();
+			}
+
+			@Override
+			public void cancelEdit() {
+				super.cancelEdit();
+				setText(getItem() == null ? "" : getItem().toString());
+				setGraphic(null);
+			}
+
+		});
+
+		column.setOnEditCommit(event -> {
+			Thuoc medicine = event.getRowValue();
+			Object newValue = event.getNewValue();
+
+			if (newValue != null) {
+				showChangeTableConfirmationPopup(medicine, newValue, event, property);
+			} else {
+				showInvalidInputDataDialog();
+			}
+		});
+
 	}
 
 	private <T> void makeColumnEditable(TableColumn<Thuoc, T> column, String property) {
@@ -264,7 +317,6 @@ public class Thuoc_GUI {
 					}
 					return (T) string;
 				} catch (Exception e) {
-					System.out.println("Data input error: " + e.getMessage());
 					return null;
 				}
 			}
@@ -272,13 +324,107 @@ public class Thuoc_GUI {
 
 		column.setOnEditCommit(event -> {
 			Thuoc medicine = event.getRowValue();
-			try {
-				PropertyDescriptor pd = new PropertyDescriptor(property, Thuoc.class);
-				pd.getWriteMethod().invoke(medicine, event.getNewValue());
-			} catch (Exception e) {
-				e.printStackTrace();
+			Object newValue = event.getNewValue();
+
+			if (newValue != null) {
+				showChangeTableConfirmationPopup(medicine, newValue, event, property);
+			} else {
+				showInvalidInputDataDialog();
 			}
 		});
+	}
+
+	@FXML
+	private void showInvalidInputDataDialog() {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Không thể nhập dữ liệu");
+		alert.setHeaderText("Giá trị nhập không phù hợp.");
+
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+
+		ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
+		icon.setFitHeight(48);
+		icon.setFitWidth(48);
+		alert.setGraphic(icon);
+
+		alert.getButtonTypes().clear();
+
+		ButtonType confirmButton = new ButtonType("Xác nhận");
+		alert.getButtonTypes().add(confirmButton);
+
+		Node confirmBtn = alert.getDialogPane().lookupButton(confirmButton);
+		confirmBtn.setStyle(
+				"-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+
+		stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
+
+		alert.showAndWait();
+	}
+
+	@FXML
+	public <T> void showChangeTableConfirmationPopup(Thuoc medicine, Object newValue,
+			TableColumn.CellEditEvent<Thuoc, T> event, String property) {
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Xác nhận thay đổi");
+		alert.setHeaderText("Thay đổi thông tin thuốc " + medicine.getTenThuoc());
+		alert.setContentText("Mã thuốc: " + medicine.getMaThuoc());
+
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
+		stage.initStyle(StageStyle.UNDECORATED);
+
+		ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/confirmation-icon.png")));
+		icon.setFitHeight(48);
+		icon.setFitWidth(48);
+		alert.setGraphic(icon);
+
+		ButtonType confirmButton = new ButtonType("Xác nhận", ButtonData.OK_DONE);
+		ButtonType cancelButton = new ButtonType("Hủy", ButtonData.CANCEL_CLOSE);
+
+		alert.getButtonTypes().setAll(confirmButton, cancelButton);
+
+		Node confirmBtn = alert.getDialogPane().lookupButton(confirmButton);
+		Node cancelBtn = alert.getDialogPane().lookupButton(cancelButton);
+
+		confirmBtn.setStyle(
+				"-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+		cancelBtn.setStyle(
+				"-fx-background-color: red; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+
+		confirmBtn.setOnMouseEntered(e -> {
+			NodeUtil.applyFadeTransition(confirmBtn, 1, 0.6, 300, () -> {
+			});
+		});
+
+		confirmBtn.setOnMouseExited(e -> {
+			NodeUtil.applyFadeTransition(confirmBtn, 0.6, 1, 300, () -> {
+			});
+		});
+
+		cancelBtn.setOnMouseEntered(e -> {
+			NodeUtil.applyFadeTransition(cancelBtn, 1, 0.6, 300, () -> {
+			});
+		});
+
+		cancelBtn.setOnMouseExited(e -> {
+			NodeUtil.applyFadeTransition(cancelBtn, 0.6, 1, 300, () -> {
+			});
+		});
+
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == confirmButton) {
+			try {
+				PropertyDescriptor pd = new PropertyDescriptor(property, Thuoc.class);
+				pd.getWriteMethod().invoke(medicine, newValue);
+				new Thuoc_BUS().updateThuoc(medicine);
+				System.out.println("Input successfully.");
+				event.consume();
+			} catch (Exception ex) {
+				Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, ex);
+			}
+		} else {
+			event.consume();
+		}
 	}
 
 	@FXML
@@ -333,7 +479,7 @@ public class Thuoc_GUI {
 			});
 		});
 
-		medicineTable.setItems(filteredList.size() == 0 ? medicineList : filteredList);
+		medicineTable.setItems(filteredList.isEmpty() ? medicineList : filteredList);
 	}
 
 	@FXML
@@ -350,35 +496,112 @@ public class Thuoc_GUI {
 
 		exportListBtn.setOnAction(event -> {
 			try {
-				try {
-					PDFUtil.showPdfPreview(
-							new File(getClass().getClassLoader().getResource("pdf/DanhSachThuoc.pdf").toURI()));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} catch (com.itextpdf.io.exceptions.IOException e) {
-				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
+				exportMedicinesToPdf("src/main/resources/pdf/DanhSachThuoc.pdf");
+				PDFUtil.showPdfPreview(
+						new File(getClass().getClassLoader().getResource("pdf/DanhSachThuoc.pdf").toURI()));
+			} catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException | SQLException e) {
+				Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
 			}
+
 		});
 	}
 
-	private void exportMedicinesToPdf(String outputPdfPath) {
-		try {
-			PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
-			PdfDocument pdfDoc = new PdfDocument(writer);
-			Document document = new Document(pdfDoc);
+	private void exportMedicinesToPdf(String outputPdfPath) throws SQLException {
+		try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
+				PdfDocument pdfDoc = new PdfDocument(writer)) {
 
-			document.close();
+			// Aplly font
+			URL fontUrl = getClass().getClassLoader().getResource("fonts/Roboto/Roboto-Regular.ttf");
+			Path fontPath;
+			try {
+				fontPath = Path.of(fontUrl.toURI());
+			} catch (URISyntaxException e) {
+				throw new IOException("Invalid URI syntax for font URL", e);
+			}
+			PdfFont font = PdfFontFactory.createFont(Files.readAllBytes(fontPath), PdfEncodings.IDENTITY_H,
+					EmbeddingStrategy.PREFER_EMBEDDED);
+
+			// Define primary color
+			String primaryColorHex = "#339933";
+			DeviceRgb primaryColor = new DeviceRgb(
+					Integer.parseInt(primaryColorHex.substring(1, 3)),
+					Integer.parseInt(primaryColorHex.substring(3, 5)),
+					Integer.parseInt(primaryColorHex.substring(5, 7)));
+
+			// Transparent color
+			Color transparentColor = new DeviceRgb(0, 0, 0);
+
+			try (Document document = new Document(pdfDoc)) {
+				// Header
+				Table headerTable = new Table(2);
+				headerTable.setWidth(UnitValue.createPercentValue(40))
+						.setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+				com.itextpdf.layout.element.Image logo = new com.itextpdf.layout.element.Image(
+						ImageDataFactory.create(getClass().getClassLoader().getResource("images/pharmacy-icon.png")));
+				logo.scaleToFit(80, 80);
+				Cell logoCell = new Cell().add(logo).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER);
+				headerTable.addCell(logoCell);
+
+				Paragraph name = new Paragraph("MEDKIT")
+						.setFont(font)
+						.setFontSize(30)
+						.setBold()
+						.setFontColor(primaryColor)
+						.setTextAlignment(TextAlignment.CENTER);
+				Cell nameCell = new Cell().add(name).setVerticalAlignment(VerticalAlignment.MIDDLE)
+						.setBorder(Border.NO_BORDER);
+				headerTable.addCell(nameCell);
+				document.add(headerTable.setMarginBottom(10));
+
+				// Title
+				document.add(new Paragraph("DANH SÁCH THUỐC")
+						.setFont(font)
+						.setFontSize(20)
+						.setBold()
+						.setTextAlignment(TextAlignment.CENTER)
+						.setMarginTop(20)
+						.setMarginBottom(20));
+
+				// Table
+				Table table = new Table(new float[] { 1, 2, 2, 2, 2, 2, 2, 2 });
+				table.setWidth(UnitValue.createPercentValue(100));
+
+				table.addHeaderCell(new Cell().add(new Paragraph("Mã thuốc").setFont(font).setFontSize(8))
+						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+				table.addHeaderCell(new Cell().add(new Paragraph("Tên thuốc").setFont(font).setFontSize(8))
+						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+				table.addHeaderCell(new Cell().add(new Paragraph("Đơn vị tính").setFont(font).setFontSize(8))
+						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+				table.addHeaderCell(new Cell().add(new Paragraph("Nhà sản xuất").setFont(font).setFontSize(8))
+						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+				table.addHeaderCell(new Cell().add(new Paragraph("Ngày sản xuất").setFont(font).setFontSize(8))
+						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+				table.addHeaderCell(new Cell().add(new Paragraph("Ngày hết hạn").setFont(font).setFontSize(8))
+						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+				table.addHeaderCell(new Cell().add(new Paragraph("Trạng thái").setFont(font).setFontSize(8))
+						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+				table.addHeaderCell(new Cell().add(new Paragraph("Số lượng tồn").setFont(font).setFontSize(8))
+						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+
+				for (Thuoc medicine : medicineList) {
+					table.addCell(new Paragraph(medicine.getMaThuoc()).setFont(font).setFontSize(8));
+					table.addCell(new Paragraph(medicine.getTenThuoc()).setFont(font).setFontSize(8));
+					table.addCell(new Paragraph(medicine.getDonViTinh()).setFont(font).setFontSize(8));
+					table.addCell(new Paragraph(medicine.getNhaSX()).setFont(font).setFontSize(8));
+					table.addCell(new Paragraph(medicine.getNgaySX().toString()).setFont(font).setFontSize(8));
+					table.addCell(new Paragraph(medicine.getHanSuDung().toString()).setFont(font).setFontSize(8));
+					table.addCell(new Paragraph(medicine.getTrangThai()).setFont(font).setFontSize(8));
+					table.addCell(
+							new Paragraph(String.valueOf(medicine.getSoLuongTon())).setFont(font).setFontSize(8));
+				}
+
+				document.add(table);
+			}
 			System.out.println("\n\nPDF generated.\n\n");
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
 		}
-	}
-
-	private void handleUpdateMedicine() {
-
 	}
 
 }

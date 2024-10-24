@@ -24,6 +24,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import pharmacy.entity.*;
+import pharmacy.utils.NodeUtil;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -35,8 +37,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import pharmacy.entity.*;
-import pharmacy.utils.NodeUtil;
 
 public class LichLam_GUI {
 

@@ -23,9 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import pharmacy.bus.NhanVien_BUS;
 import pharmacy.bus.TaiKhoan_BUS;
-import pharmacy.entity.TaiKhoan;
 import pharmacy.utils.NodeUtil;
 
 public class MainLayout_GUI extends Application {
@@ -39,14 +37,16 @@ public class MainLayout_GUI extends Application {
     private List<Node> categoryItemList;
     private Pane dashboardBtn;
     private Label logoLabel;
-    private Button categoryBtn;
+    private Button menuBtn;
     private VBox profilePopover;
-    private Pane categoryBtnPane;
+    private Pane menuBtnPane;
     private ScrollPane mainContentPane;
     private VBox category;
     private BorderPane wrapperBorderPane;
     private Pane logoutBtn;
     private Pane settingBtn;
+    private Pane categoryBtn;
+    private Pane aboutUsBtn;
 
     private Screen screen;
     private Rectangle2D bounds;
@@ -68,26 +68,28 @@ public class MainLayout_GUI extends Application {
         dashboardBtn = (Pane) root.lookup("#dashboardBtn");
         logoutBtn = (Pane) root.lookup("#logoutBtn");
         settingBtn = (Pane) root.lookup("#settingBtn");
-        categoryBtnPane = (Pane) root.lookup("#categoryBtnPane");
+        menuBtnPane = (Pane) root.lookup("#menuBtnPane");
         logoLabel = (Label) root.lookup("#logoLabel");
-        categoryBtn = (Button) root.lookup("#categoryBtn");
+        menuBtn = (Button) root.lookup("#menuBtn");
         profilePopover = (VBox) root.lookup("#profilePopover");
         mainContentPane = (ScrollPane) root.lookup("#mainContentPane");
         wrapperBorderPane = (BorderPane) root.lookup("#wrapper");
         category = (VBox) root.lookup("#category");
+        categoryBtn = (Pane) root.lookup("#categoryBtn");
+        menuBtn = (Button) root.lookup("#menuBtn");
+        aboutUsBtn = (Pane) root.lookup("#aboutUsBtn");
         screen = Screen.getPrimary();
         bounds = screen.getBounds();
         screenWidth = bounds.getWidth();
         screenHeight = bounds.getHeight();
 
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-		primaryStage.setWidth(screenBounds.getWidth());
+        primaryStage.setWidth(screenBounds.getWidth());
         primaryStage.setHeight(screenBounds.getHeight());
-		
 
         // set header layout
-        headerRightBox.setMinWidth(screenWidth - (categoryBtnPane.getPrefWidth() + logoLabel.getPrefWidth()));
-        logoLabel.setMinWidth(screenWidth - (categoryBtnPane.getPrefWidth() + headerRightBox.getPrefWidth()));
+        headerRightBox.setMinWidth(screenWidth - (menuBtnPane.getPrefWidth() + logoLabel.getPrefWidth()));
+        logoLabel.setMinWidth(screenWidth - (menuBtnPane.getPrefWidth() + headerRightBox.getPrefWidth()));
 
         // set inner root layout size
         wrapperBorderPane.setMinSize(screenWidth, screenHeight);
@@ -137,7 +139,7 @@ public class MainLayout_GUI extends Application {
         }
 
         // handle open and close category bar
-        categoryBtn.setOnMouseClicked(event -> {
+        menuBtn.setOnMouseClicked(event -> {
             double categoryDefaultWidth = 265;
 
             if (category.isVisible()) {
@@ -184,38 +186,19 @@ public class MainLayout_GUI extends Application {
         String buttonId = frameBtn.getId();
 
         switch (buttonId) {
-            case "homeBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
-                break;
-            case "statisticBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThongKe_GUI.fxml"));
-                break;
-            case "customersBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/KhachHang_GUI.fxml"));
-                break;
-            case "employeesBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhanVien_GUI.fxml"));
-                break;
-            case "workScheduleBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/LichLam_GUI.fxml"));
-                break;
-            case "suppliersBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhaCungCap_GUI.fxml"));
-                break;
-            case "medicinesBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/Thuoc_GUI.fxml"));
-                break;
-            case "invoicesBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/HoaDon_GUI.fxml"));
-                break;
-            case "equipmentsBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThietBiYTe_GUI.fxml"));
-                break;
-            case "goodsReceiptBtn":
-                mainContent = FXMLLoader.load(getClass().getResource("/fxml/PhieuNhap_GUI_GUI.fxml"));
-                break;
-            default:
-                throw new IllegalArgumentException("Không có nút nào tương ứng với ID: " + buttonId);
+            case "homeBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
+            case "statisticBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThongKe_GUI.fxml"));
+            case "customersBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/KhachHang_GUI.fxml"));
+            case "employeesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhanVien_GUI.fxml"));
+            case "workScheduleBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/LichLam_GUI.fxml"));
+            case "suppliersBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhaCungCap_GUI.fxml"));
+            case "medicinesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/Thuoc_GUI.fxml"));
+            case "invoicesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/HoaDon_GUI.fxml"));
+            case "equipmentsBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThietBiYTe_GUI.fxml"));
+            case "goodsReceiptBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/PhieuNhap_GUI.fxml"));
+            case "categoryBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/DanhMuc_GUI.fxml"));
+            case "aboutUsBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/GioiThieuChung_GUI.fxml"));
+            default -> throw new IllegalArgumentException("Không có nút nào tương ứng với ID: " + buttonId);
         }
 
         mainContentPane.setContent(mainContent);

@@ -1,7 +1,8 @@
 package pharmacy.Interface;
 
-import pharmacy.entity.ChiTietPhieuNhap;
 import java.util.List;
+
+import pharmacy.entity.ChiTietPhieuNhap;
 
 public interface ChiTietPhieuNhap_Interface {
 	boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap);

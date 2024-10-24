@@ -19,12 +19,12 @@ public class NhanVien {
     }
 
     public NhanVien(String maNhanVien, String hoTen, String chucVu, String soDienThoai, String email,
-                    LocalDate ngayVaoLam, String trangThai, String trinhDo, 
-                    String gioiTinh, LocalDate namSinh) {
-        this.setMaNhanVien(maNhanVien);
-        this.setHoTen(hoTen);
-        this.setChucVu(chucVu);
-        this.setSoDienThoai(soDienThoai);
+            LocalDate ngayVaoLam, String trangThai, String trinhDo,
+            String gioiTinh, LocalDate namSinh) {
+        this.maNhanVien = maNhanVien;
+        this.hoTen = hoTen;
+        this.chucVu = chucVu;
+        this.soDienThoai = soDienThoai;
         this.ngayVaoLam = ngayVaoLam;
         this.trangThai = trangThai;
         this.trinhDo = trinhDo;
@@ -61,9 +61,6 @@ public class NhanVien {
     }
 
     public void setHoTen(String hoTen) {
-        if (hoTen == null || !hoTen.matches("^[A-Z].*")) {
-            throw new IllegalArgumentException("Họ tên phải viết hoa chữ cái đầu");
-        }
         this.hoTen = hoTen;
     }
 
@@ -75,8 +72,8 @@ public class NhanVien {
         return email;
     }
 
-    public String setEmail() {
-        return this.email;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setChucVu(String chucVu) {
@@ -87,16 +84,10 @@ public class NhanVien {
     }
 
     public String getSoDienThoai() {
-        if (soDienThoai == null || !soDienThoai.matches("\\d{10}")) {
-            throw new IllegalArgumentException("Số điện thoại phải đủ 10 ký tự số");
-        }
         return soDienThoai;
     }
 
     public void setSoDienThoai(String soDienThoai) {
-        // if (soDienThoai == null || !soDienThoai.matches("\\d{10}")) {
-        //     throw new IllegalArgumentException("Số điện thoại phải đủ 10 ký tự số");
-        // }
         this.soDienThoai = soDienThoai;
     }
 
@@ -104,12 +95,8 @@ public class NhanVien {
         return ngayVaoLam;
     }
 
-    public void setNgayVaoLam(String ngayVaoLam) {
-        try {
-            this.ngayVaoLam = LocalDate.parse(ngayVaoLam, java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Ngày vào làm không hợp lệ");
-        }
+    public void setNgayVaoLam(LocalDate ngayVaoLam) {
+        this.ngayVaoLam = ngayVaoLam;
     }
 
     public String getTrangThai() {
@@ -125,9 +112,6 @@ public class NhanVien {
     }
 
     public void setTrinhDo(String trinhDo) {
-        if (!trinhDo.equals("Cao đẳng") && !trinhDo.equals("Đại học") && !trinhDo.equals("Cao học")) {
-            throw new IllegalArgumentException("Trình độ không hợp lệ");
-        }
         this.trinhDo = trinhDo;
     }
 
@@ -136,9 +120,6 @@ public class NhanVien {
     }
 
     public void setGioiTinh(String gioiTinh) {
-        if (!gioiTinh.equals("Nam") && !gioiTinh.equals("Nữ") && !gioiTinh.equals("Khác")) {
-            throw new IllegalArgumentException("Giới tính không hợp lệ");
-        }
         this.gioiTinh = gioiTinh;
     }
 
@@ -147,9 +128,6 @@ public class NhanVien {
     }
 
     public void setNamSinh(LocalDate namSinh) {
-        if (namSinh == null) {
-            throw new IllegalArgumentException("Định dạng dd/MM/yyyy");
-        }
         this.namSinh = namSinh;
     }
 
@@ -162,6 +140,7 @@ public class NhanVien {
                 ", soDienThoai='" + soDienThoai + '\'' +
                 ", ngayVaoLam=" + ngayVaoLam +
                 ", trangThai='" + trangThai + '\'' +
+                ", email='" + email + '\'' +
                 ", trinhDo='" + trinhDo + '\'' +
                 ", gioiTinh='" + gioiTinh + '\'' +
                 ", namSinh=" + namSinh +

@@ -20,4 +20,6 @@ public interface NhanVien_Interface {
 	List<NhanVien> getTopRevenueEmployees(String date);
 
 	int getOrderQuantityOfEmployee(String maNhanVien);
+
+	List<NhanVien> getEmployeesByStatus(String status);
 }

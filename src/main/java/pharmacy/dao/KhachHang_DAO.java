@@ -1,13 +1,13 @@
 package pharmacy.dao;
 
-import pharmacy.Interface.KhachHang_Interface;
-import pharmacy.connections.DatabaseConnection;
-import pharmacy.entity.KhachHang;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import pharmacy.Interface.KhachHang_Interface;
+import pharmacy.connections.DatabaseConnection;
+import pharmacy.entity.KhachHang;
 
 public class KhachHang_DAO implements KhachHang_Interface {
 

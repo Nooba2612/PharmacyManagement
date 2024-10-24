@@ -1,10 +1,10 @@
 package pharmacy.bus;
 
-import pharmacy.dao.ThietBiYTe_DAO;
-import pharmacy.entity.ThietBiYTe;
-
 import java.sql.SQLException;
 import java.util.List;
+
+import pharmacy.dao.ThietBiYTe_DAO;
+import pharmacy.entity.ThietBiYTe;
 
 public class ThietBiYTe_BUS {
     private ThietBiYTe_DAO thietBiYTeDAO;

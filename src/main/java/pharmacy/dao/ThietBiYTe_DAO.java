@@ -1,13 +1,13 @@
 package pharmacy.dao;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import pharmacy.Interface.ThietBiYTe_Interface;
 import pharmacy.connections.DatabaseConnection;
 import pharmacy.entity.DanhMuc;
 import pharmacy.entity.ThietBiYTe;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ThietBiYTe_DAO implements ThietBiYTe_Interface {
 

@@ -43,6 +43,12 @@ public class KhachHang {
     }
 
     public void setGioiTinh(String gioiTinh) {
+        if (gioiTinh == null || gioiTinh.isEmpty()) {
+            throw new IllegalArgumentException("Giới tính không được rỗng");
+        }
+        if (!gioiTinh.equals("Nam") && !gioiTinh.equals("Nữ")) {
+            throw new IllegalArgumentException("Giới tính phải là 'Nam' hoặc 'Nữ'");
+        }
         this.gioiTinh = gioiTinh;
     }
 

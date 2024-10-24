@@ -1,9 +1,9 @@
 package pharmacy.bus;
 
+import java.util.List;
+
 import pharmacy.dao.LichLamViec_DAO;
 import pharmacy.entity.LichLamViec;
-
-import java.util.List;
 
 public class LichLamViec_BUS {
 	private LichLamViec_DAO lichLamViecDAO = new LichLamViec_DAO();

@@ -1,9 +1,10 @@
 package pharmacy.bus;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import pharmacy.dao.NhanVien_DAO;
 import pharmacy.entity.NhanVien;
-
-import java.util.List;
 
 public class NhanVien_BUS {
     private NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
@@ -17,7 +18,53 @@ public class NhanVien_BUS {
     }
 
     public boolean updateEmployee(NhanVien nhanVien) {
-        return nhanVienDAO.updateEmployee(nhanVien);
+        if (nhanVien == null) {
+            return false;
+        }
+
+        if (nhanVien.getHoTen() == null || nhanVien.getHoTen().isEmpty()) {
+            return false;
+        }
+
+        if (nhanVien.getEmail() == null ||
+                nhanVien.getEmail().matches("(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$")) {
+            return false;
+        }
+
+        if (nhanVien.getSoDienThoai() == null ||
+                !nhanVien.getSoDienThoai().matches("^0\\d{9}$")) {
+            return false;
+        }
+
+        if (nhanVien.getNamSinh() == null || nhanVien.getNamSinh().isAfter(LocalDate.now())) {
+            return false;
+        }
+
+        if (nhanVien.getNgayVaoLam() == null || nhanVien.getNgayVaoLam().isAfter(LocalDate.now())) {
+            return false;
+        }
+
+        if (nhanVien.getChucVu() == null || nhanVien.getChucVu().isEmpty() ||
+                (!nhanVien.getChucVu().equals("Nhân viên") &&
+                        !nhanVien.getChucVu().equals("Người quản lý"))) {
+            return false;
+        }
+
+        if (nhanVien.getTrangThai() == null || nhanVien.getTrangThai().isEmpty() ||
+                (!nhanVien.getTrangThai().equals("Còn làm việc") &&
+                        !nhanVien.getTrangThai().equals("Nghỉ việc tạm thời") &&
+                        !nhanVien.getTrangThai().equals("Nghỉ việc hẳn"))) {
+
+            return false;
+        }
+
+        boolean result = nhanVienDAO.updateEmployee(nhanVien);
+
+        if (!result) {
+            System.err.println("Error update table in database.");
+        }
+
+        return result;
     }
 
     public boolean deleteEmployee(String maNhanVien) {
@@ -38,5 +85,9 @@ public class NhanVien_BUS {
 
     public int getOrderQuantityOfEmployee(String maNhanVien) {
         return nhanVienDAO.getOrderQuantityOfEmployee(maNhanVien);
+    }
+
+    public List<NhanVien> getEmployeesByStatus(String status) {
+        return nhanVienDAO.getEmployeesByStatus(status);
     }
 }

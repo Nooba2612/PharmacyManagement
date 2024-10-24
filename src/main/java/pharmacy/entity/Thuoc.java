@@ -24,20 +24,20 @@ public class Thuoc {
 	public Thuoc(String maThuoc, String tenThuoc, DanhMuc danhMuc, LocalDate ngaySX, String nhaSX, LocalDate ngayTao,
 			LocalDate ngayCapNhat, int soLuongTon, double donGiaBan, float thue, LocalDate hanSuDung,
 			String moTa, String donViTinh, String trangThai) {
-		setMaThuoc(maThuoc);
-		setTenThuoc(tenThuoc);
-		setDanhMuc(danhMuc);
-		setNgaySX(ngaySX);
-		setNhaSX(nhaSX);
-		setNgayTao(ngayTao);
-		setNgayCapNhat(ngayCapNhat);
-		setSoLuongTon(soLuongTon);
-		setDonGiaBan(donGiaBan);
-		setThue(thue);
-		setHanSuDung(hanSuDung);
-		setMoTa(moTa);
-		setDonViTinh(donViTinh);
-		setTrangThai(trangThai);
+		this.maThuoc = maThuoc;
+		this.tenThuoc = tenThuoc;
+		this.danhMuc = danhMuc;
+		this.ngaySX = ngaySX;
+		this.nhaSX = nhaSX;
+		this.ngayTao = ngayTao;
+		this.ngayCapNhat = ngayCapNhat;
+		this.soLuongTon = soLuongTon;
+		this.donGiaBan = donGiaBan;
+		this.thue = thue;
+		this.hanSuDung = hanSuDung;
+		this.moTa = moTa;
+		this.donViTinh = donViTinh;
+		this.trangThai = trangThai;
 	}
 
 	public Thuoc(Thuoc original) {

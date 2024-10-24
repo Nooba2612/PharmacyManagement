@@ -1,7 +1,8 @@
 package pharmacy.Interface;
 
-import pharmacy.entity.LichLamViec;
 import java.util.List;
+
+import pharmacy.entity.LichLamViec;
 
 public interface LichLamViec_Interface {
 	boolean createLichLamViec(LichLamViec lichLamViec);

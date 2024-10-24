@@ -1,15 +1,19 @@
 package pharmacy.dao;
 
-import pharmacy.entity.Thuoc;
-import pharmacy.entity.DanhMuc;
-import pharmacy.Interface.Thuoc_Interface;
-import pharmacy.bus.DanhMuc_BUS;
-import pharmacy.connections.DatabaseConnection;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import pharmacy.Interface.Thuoc_Interface;
+import pharmacy.bus.DanhMuc_BUS;
+import pharmacy.connections.DatabaseConnection;
+import pharmacy.entity.DanhMuc;
+import pharmacy.entity.Thuoc;
 
 public class Thuoc_DAO implements Thuoc_Interface {
 	private Connection connection;
@@ -23,25 +27,22 @@ public class Thuoc_DAO implements Thuoc_Interface {
 
 	@Override
 	public boolean createThuoc(Thuoc thuoc) {
-		query = "INSERT INTO Thuoc (maThuoc, tenThuoc, ngaySX, nhaSX, ngayTao, ngayCapNhat, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa, maDanhMuc) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO Thuoc (maThuoc, tenThuoc, maDanhMuc, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			statement = connection.prepareStatement(query);
 			statement.setString(1, thuoc.getMaThuoc());
 			statement.setString(2, thuoc.getTenThuoc());
-			statement.setDate(3, Date.valueOf(thuoc.getNgaySX()));
-			statement.setString(4, thuoc.getNhaSX());
-			statement.setDate(5, Date.valueOf(thuoc.getNgayTao()));
-			statement.setDate(6, Date.valueOf(thuoc.getNgayCapNhat()));
-			statement.setInt(7, thuoc.getSoLuongTon());
-			statement.setDouble(8, thuoc.getDonGiaBan());
-			statement.setFloat(9, thuoc.getThue());
-			statement.setDate(10, Date.valueOf(thuoc.getHanSuDung()));
-			statement.setString(11, thuoc.getDonViTinh());
-			statement.setString(12, thuoc.getMoTa());
-			statement.setInt(13, 0);
-			statement.setString(14, thuoc.getDanhMuc().getMaDM());
+			statement.setString(3, thuoc.getDanhMuc().getMaDM()); // Đặt mã danh mục
+			statement.setDate(4, Date.valueOf(thuoc.getNgaySX()));
+			statement.setString(5, thuoc.getNhaSX());
+			statement.setInt(6, thuoc.getSoLuongTon());
+			statement.setDouble(7, thuoc.getDonGiaBan());
+			statement.setFloat(8, thuoc.getThue());
+			statement.setDate(9, Date.valueOf(thuoc.getHanSuDung()));
+			statement.setString(10, thuoc.getDonViTinh());
+			statement.setString(11, thuoc.getMoTa());
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -49,6 +50,14 @@ public class Thuoc_DAO implements Thuoc_Interface {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -81,7 +90,7 @@ public class Thuoc_DAO implements Thuoc_Interface {
 	@Override
 	public boolean updateThuoc(Thuoc thuoc) {
 		query = "UPDATE Thuoc SET tenThuoc = ?, ngaySX = ?, nhaSX = ?, ngayCapNhat = ?, soLuongTon = ?, "
-				+ "donGiaBan = ?, thue = ?, hanSuDung = ?, moTa = ? WHERE maThuoc = ?";
+				+ "donGiaBan = ?, thue = ?, hanSuDung = ?, moTa = ?, trangThai = ? WHERE maThuoc = ?";
 
 		try {
 			statement = connection.prepareStatement(query);
@@ -94,7 +103,8 @@ public class Thuoc_DAO implements Thuoc_Interface {
 			statement.setFloat(7, thuoc.getThue());
 			statement.setDate(8, Date.valueOf(thuoc.getHanSuDung()));
 			statement.setString(9, thuoc.getMoTa());
-			statement.setString(10, thuoc.getMaThuoc());
+			statement.setString(10, thuoc.getTrangThai());
+			statement.setString(11, thuoc.getMaThuoc());
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -311,7 +321,7 @@ public class Thuoc_DAO implements Thuoc_Interface {
 						"WHERE YEAR(CAST(hd.ngayTao AS DATE)) = ? AND MONTH(CAST(hd.ngayTao AS DATE)) = ? "
 						+
 						"GROUP BY t.maThuoc, t.tenThuoc, t.maDanhMuc, t.ngaySX, t.nhaSX, t.ngayTao, " +
-						"t.ngayCapNhat, t.donViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.trangThai "
+						"t.ngayCapNhatonViTinh, t.soLuongTon, t.donGiaBan, t.thue, t.hanSuDung, t.moTa, t.trangThai "
 						+
 						"ORDER BY soLuongBan DESC";
 				break;
@@ -335,10 +345,10 @@ public class Thuoc_DAO implements Thuoc_Interface {
 			if (dateParts.length == 3) {
 				statement.setString(1, date);
 			} else if (dateParts.length == 2) {
-				statement.setString(1, dateParts[0]); // Năm
-				statement.setString(2, dateParts[1]); // Tháng
+				statement.setString(1, dateParts[0]); // Year
+				statement.setString(2, dateParts[1]); // Month
 			} else if (dateParts.length == 1) {
-				statement.setString(1, dateParts[0]); // Năm
+				statement.setString(1, dateParts[0]); // Year
 			}
 
 			rs = statement.executeQuery();

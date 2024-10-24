@@ -1,9 +1,9 @@
 package pharmacy.bus;
 
+import java.util.List;
+
 import pharmacy.dao.KhachHang_DAO;
 import pharmacy.entity.KhachHang;
-
-import java.util.List;
 
 public class KhachHang_BUS {
     private KhachHang_DAO khachHangDAO = new KhachHang_DAO();

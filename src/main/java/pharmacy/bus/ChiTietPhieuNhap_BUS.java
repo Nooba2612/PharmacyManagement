@@ -1,9 +1,9 @@
 package pharmacy.bus;
 
+import java.util.List;
+
 import pharmacy.dao.ChiTietPhieuNhap_DAO;
 import pharmacy.entity.ChiTietPhieuNhap;
-
-import java.util.List;
 
 public class ChiTietPhieuNhap_BUS {
     private ChiTietPhieuNhap_DAO chiTietPhieuNhapDAO;

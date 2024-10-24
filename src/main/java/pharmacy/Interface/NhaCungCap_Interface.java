@@ -1,7 +1,8 @@
 package pharmacy.Interface;
 
-import pharmacy.entity.NhaCungCap;
 import java.util.List;
+
+import pharmacy.entity.NhaCungCap;
 
 public interface NhaCungCap_Interface {
 	boolean createNhaCungCap(NhaCungCap nhaCungCap);
