@@ -21,7 +21,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader;
 
-        if (screenWidth <= 1300) {
+        if (screenWidth <= 1400) {
             loader = new FXMLLoader(getClass().getResource("/fxml/MainLayout_md_GUI.fxml"));
         } else {
             loader = new FXMLLoader(getClass().getResource("/fxml/MainLayout_lg_GUI.fxml"));

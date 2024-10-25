@@ -360,7 +360,7 @@ public class Thuoc_GUI {
 				});
 
 				comboBox.setOnAction(event -> {
-					commitEdit((comboBox.getValue()));
+					commitEdit((comboBox.getValue().trim()));
 				});
 
 				comboBox.getItems().addAll(options);
@@ -387,7 +387,7 @@ public class Thuoc_GUI {
 			@Override
 			public void startEdit() {
 				super.startEdit();
-				comboBox.setValue(getItem());
+				comboBox.setValue(getItem().trim());
 				setGraphic(comboBox);
 				setText(null);
 				comboBox.requestFocus();
@@ -396,7 +396,7 @@ public class Thuoc_GUI {
 			@Override
 			public void cancelEdit() {
 				super.cancelEdit();
-				setText(getItem() == null ? "" : getItem());
+				setText(getItem() == null ? "" : getItem().trim());
 				setGraphic(null);
 			}
 		});
@@ -482,7 +482,7 @@ public class Thuoc_GUI {
 		column.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<T>() {
 			@Override
 			public String toString(T object) {
-				return object == null ? "" : object.toString();
+				return object == null ? "" : object.toString().trim();
 			}
 
 			@Override
@@ -494,7 +494,7 @@ public class Thuoc_GUI {
 					} else if (column.getCellData(0) instanceof Integer) {
 						return (T) Integer.valueOf(string);
 					}
-					return (T) string;
+					return (T) string.trim();
 				} catch (Exception e) {
 					return null;
 				}

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -329,12 +330,14 @@ public class ThemThuoc_GUI {
 		// add medicine
 		submitBtn.setOnAction(event -> {
 
-			String maThuoc = idField.getText();
-			String tenThuoc = nameField.getText();
-			String moTa = desciptionField.getText();
-			String nhaSX = manufacturerField.getText();
-			int soLuongTon = Integer.parseInt(!quantityField.getText().isEmpty() ? quantityField.getText() : "0");
-			double donGiaBan = Double.parseDouble(!priceField.getText().isEmpty() ? priceField.getText() : "0");
+			String maThuoc = idField.getText().trim();
+			String tenThuoc = nameField.getText().trim();
+			String moTa = desciptionField.getText().trim();
+			String nhaSX = manufacturerField.getText().trim();
+			int soLuongTon = Integer
+					.parseInt(!quantityField.getText().trim().isEmpty() ? quantityField.getText().trim() : "0");
+			double donGiaBan = Double
+					.parseDouble(!priceField.getText().trim().isEmpty() ? priceField.getText().trim() : "0");
 			float thue = 0;
 			if (taxField.getValue() != null) {
 				String taxValue = taxField.getValue().replace("%", "").trim();
@@ -430,7 +433,7 @@ public class ThemThuoc_GUI {
 		boolean isValid = true;
 
 		// Validate ID field
-		if (idField.getText().isEmpty()) {
+		if (idField.getText().trim().isEmpty()) {
 			idAlert.setText("Mã thuốc không được rỗng.");
 			idAlert.setVisible(true);
 			isValid = false;
@@ -439,7 +442,7 @@ public class ThemThuoc_GUI {
 		}
 
 		// Validate Name field
-		if (nameField.getText().isEmpty()) {
+		if (nameField.getText().trim().isEmpty()) {
 			nameAlert.setText("Tên thuốc không được rỗng.");
 			nameAlert.setVisible(true);
 			isValid = false;
@@ -448,7 +451,7 @@ public class ThemThuoc_GUI {
 		}
 
 		// Validate Manufacturer field
-		if (manufacturerField.getText().isEmpty()) {
+		if (manufacturerField.getText().trim().isEmpty()) {
 			manufacturerAlert.setText("Nhà sản xuất thuốc không được rỗng.");
 			manufacturerAlert.setVisible(true);
 			isValid = false;
@@ -457,7 +460,7 @@ public class ThemThuoc_GUI {
 		}
 
 		// Validate Quantity field
-		String quantityText = quantityField.getText();
+		String quantityText = quantityField.getText().trim();
 		if (quantityText.isEmpty()) {
 			quantityField.setText("");
 			quantityAlert.setText("Số lượng không được để trống.");
@@ -483,7 +486,7 @@ public class ThemThuoc_GUI {
 		}
 
 		// Validate Price field
-		String priceText = priceField.getText();
+		String priceText = priceField.getText().trim();
 		if (priceText.isEmpty()) {
 			priceField.setText("");
 			priceAlert.setText("Giá bán không được để trống.");
@@ -514,17 +517,27 @@ public class ThemThuoc_GUI {
 		}
 
 		// Validate Tax field
-		if (taxField.getValue() == null || taxField.getEditor().getText().isEmpty()) {
+		String[] VALID_TAXES = { "0%", "5%", "10%", "15%", "20%" };
+		if (taxField.getValue() == null || taxField.getEditor().getText().trim().isEmpty()) {
 			taxAlert.setText("Thuế chưa được chọn.");
 			taxAlert.setVisible(true);
 			isValid = false;
+		} else if (!Arrays.asList(VALID_TAXES).contains(taxField.getValue().trim())
+				|| !Arrays.asList(VALID_TAXES).contains(taxField.getEditor().getText().trim())) {
+
 		} else {
 			taxAlert.setVisible(false);
 		}
 
 		// Validate Unit field
-		if (unitField.getValue() == null || unitField.getEditor().getText().isEmpty()) {
+		String[] VALID_UNITS = { "Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói" };
+		if (unitField.getValue() == null || unitField.getEditor().getText().trim().isEmpty()) {
 			unitAlert.setText("Đơn vị tính chưa được chọn.");
+			unitAlert.setVisible(true);
+			isValid = false;
+		} else if (!Arrays.asList(VALID_UNITS).contains(unitField.getValue().trim())
+				|| !Arrays.asList(VALID_UNITS).contains(taxField.getEditor().getText().trim())) {
+			unitAlert.setText("Đơn vị tính không hợp lệ.");
 			unitAlert.setVisible(true);
 			isValid = false;
 		} else {
@@ -532,8 +545,8 @@ public class ThemThuoc_GUI {
 		}
 
 		// Validate Unit field
-		if (categoryField.getValue() == null || categoryField.getEditor().getText().isEmpty()) {
-			categoryAlert.setText("Đơn vị tính chưa được chọn.");
+		if (categoryField.getValue() == null || categoryField.getEditor().getText().trim().isEmpty()) {
+			categoryAlert.setText("Danh mục chưa được chọn.");
 			categoryAlert.setVisible(true);
 			isValid = false;
 		} else {
@@ -563,6 +576,8 @@ public class ThemThuoc_GUI {
 
 	@FXML
 	public void clearForm() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		createDateField.setText(LocalDateTime.now().format(formatter));
 		categoryField.setValue("");
 		idField.setText("");
 		nameField.setText("");
