@@ -3,6 +3,8 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -10,8 +12,12 @@
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
@@ -19,19 +25,277 @@
 
 <HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="756.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.Thuoc_GUI">
 	<children>
-		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1266.0">
+		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1266.0" style="-fx-background-color: transparaent;">
 			<children>
-				<Text id="mainTitle" fill="#9e9e9e" layoutX="14.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Danh sách thuốc" textAlignment="CENTER">
+				<Text id="mainTitle" fill="#9e9e9e" layoutX="550.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quản lý thuốc" textAlignment="CENTER">
 					<font>
 						<Font name="Arial Bold" size="25.0" />
 					</font>
 				</Text>
-				<Pane layoutX="6.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="564.0" prefWidth="1244.0" style="-fx-background-color: #fff;">
+            <GridPane layoutX="9.0" layoutY="52.0" prefHeight="270.0" prefWidth="1244.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="553.3999633789062" minWidth="10.0" percentWidth="25.0" prefWidth="322.2" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="393.20001220703125" minWidth="10.0" prefWidth="107.19999999999999" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.7999877929688" minWidth="10.0" percentWidth="25.0" prefWidth="319.40001220703124" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.7999877929688" minWidth="10.0" prefWidth="133.79998779296875" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.7999877929688" minWidth="10.0" percentWidth="25.0" prefWidth="320.60002441406255" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thời gian tạo:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="createDateField" editable="false" prefHeight="36.0" prefWidth="540.0" promptText="Thời gian thêm mới thuốc" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;" text="26/12/2004 12:12">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
+                        <Label />
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Đơn vị tính:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <ComboBox fx:id="unitField" editable="true" prefHeight="36.0" prefWidth="540.0" promptText="-- Hãy chọn đơn vị tính --" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ComboBox>
+                        <Label fx:id="unitAlert" text="Đơn vị tính không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mã thuốc:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="idField" prefHeight="36.0" prefWidth="540.0" promptText="Nhập mã thuốc" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
+                        <Label fx:id="idAlert" text="Mã thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tên thuốc:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="nameField" prefHeight="36.0" prefWidth="540.0" promptText="Nhập tên thuốc" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
+                        <Label fx:id="nameAlert" text="Tên thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nhà sản xuất:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="manufacturerField" prefHeight="36.0" prefWidth="540.0" promptText="Nhập nhà sản xuất" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
+                        <Label fx:id="manufacturerAlert" text="Nhà sản xuất thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Đơn giá:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="priceField" prefHeight="36.0" prefWidth="540.0" promptText="Nhập đơn giá bán" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
+                        <Label fx:id="priceAlert" text="Đơn giá thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Số lượng:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="quantityField" prefHeight="36.0" prefWidth="540.0" promptText="Nhập số lượng" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
+                        <Label fx:id="quantityAlert" text="Số lượng thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Danh mục:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <ComboBox fx:id="categoryField" editable="true" prefHeight="36.0" prefWidth="540.0" promptText="-- Hãy chọn danh mục --" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ComboBox>
+                        <Label fx:id="categoryAlert" text="Danh mục thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ngày sản xuất:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <DatePicker fx:id="manufactureDateField" prefHeight="36.0" prefWidth="540.0" promptText="Chọn ngày sản xuất" style="-fx-background-color:#f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #f2f2f2;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </DatePicker>
+                        <Label fx:id="manufactureDateAlert" text="Ngày sản xuất thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="3">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Ngày hết hạn:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <DatePicker fx:id="expirationDateField" prefHeight="36.0" prefWidth="540.0" promptText="Chọn ngày hết hạn" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #f2f2f2;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </DatePicker>
+                        <Label fx:id="expirationDateAlert" text="Ngày hết hạn của thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thuế:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <ComboBox fx:id="taxField" editable="true" prefHeight="36.0" prefWidth="540.0" promptText="-- Hãy chọn thuế --" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ComboBox>
+                        <Label fx:id="taxAlert" text="Thuế của thuốc không được bỏ trống." textFill="#e12626" visible="false">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="79.0" prefWidth="299.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mô tả thêm:">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="desciptionField" prefHeight="36.0" prefWidth="540.0" promptText="Liều lượng, hoạt chất, ..." style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
+                        <Label />
+                     </children>
+                  </VBox>
+               </children>
+            </GridPane>
+				<Pane layoutX="11.0" layoutY="331.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="419.0" prefWidth="1244.0" style="-fx-background-color: #fff;">
 					<children>
-						<Line endX="1158.800048828125" layoutX="52.0" layoutY="84.0" startX="-11.400009155273438" stroke="#cccccc" strokeWidth="2.0" />
-						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="39.0" layoutY="107.0" prefHeight="421.0" prefWidth="1185.0" style="-fx-background-color: #fff;">
+						<Line endX="1158.800048828125" layoutX="57.0" layoutY="71.0" startX="-11.400009155273438" stroke="#cccccc" strokeWidth="2.0" />
+						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="44.0" layoutY="94.0" prefHeight="301.0" prefWidth="1179.0" style="-fx-background-color: #fff;">
 							<content>
-								<TableView fx:id="medicineTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
+								<TableView fx:id="medicineTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="1173.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
 									<columns>
 										<TableColumn fx:id="idColumn" prefWidth="87.99999696016312" text="Mã thuốc" />
 										<TableColumn fx:id="nameColumn" prefWidth="134.4000244140625" text="Tên thuốc" />
@@ -54,7 +318,7 @@
 								</TableView>
 							</content>
 						</ScrollPane>
-						<Button fx:id="addMedicineBtn" layoutX="40.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Thêm thuốc" textFill="WHITE">
+						<Button fx:id="addMedicineBtn" layoutX="45.0" layoutY="20.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="129.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Thêm thuốc" textFill="WHITE">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
@@ -69,33 +333,31 @@
 								</ImageView>
 							</graphic>
 						</Button>
-						<Pane fx:id="searchPane" layoutX="991.0" layoutY="21.0" prefHeight="46.0" prefWidth="221.0" style="-fx-background-color: #f0f0f0;">
+						<Pane fx:id="searchPane" layoutX="996.0" layoutY="20.0" prefHeight="34.0" prefWidth="221.0" style="-fx-background-color: #f0f0f0;">
 							<children>
-								<TextField fx:id="searchField" layoutX="7.0" layoutY="6.0" prefHeight="34.0" prefWidth="174.0" promptText="Nhập nội dung tìm kiếm" style="-fx-background-color: transparent;">
+								<TextField fx:id="searchField" layoutX="7.0" layoutY="2.0" prefHeight="30.0" prefWidth="184.0" promptText="Nhập nội dung tìm kiếm" style="-fx-background-color: transparent;">
 									<font>
 										<Font size="13.0" />
 									</font>
 								</TextField>
 								<Button fx:id="searchMedicineBtn" layoutX="181.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0" style="-fx-background-color: transparent;" textAlignment="CENTER">
-									<graphic>
-										<ImageView fitHeight="20.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
-											<image>
-												<Image url="@../images/search-icon.png" />
-											</image>
-										</ImageView>
-									</graphic>
 									<cursor>
 										<Cursor fx:constant="HAND" />
 									</cursor>
 								</Button>
+										<ImageView fitHeight="20.0" fitWidth="17.0" layoutX="199.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+											<image>
+												<Image url="@../images/search-icon.png" />
+											</image>
+										</ImageView>
 							</children>
 						</Pane>
-						<ComboBox fx:id="filter" layoutX="215.0" layoutY="24.0" prefHeight="40.0" prefWidth="174.0" promptText="Tất cả thuốc" style="-fx-background-color: #f0f0f0;">
+						<ComboBox fx:id="filter" layoutX="220.0" layoutY="20.0" prefHeight="34.0" prefWidth="129.0" promptText="Tất cả thuốc" style="-fx-background-color: #f0f0f0;">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
 						</ComboBox>
-						<Button fx:id="exportListBtn" layoutX="414.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="In danh sách" textFill="WHITE">
+						<Button fx:id="exportListBtn" layoutX="388.0" layoutY="20.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="129.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="In danh sách" textFill="WHITE">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
@@ -119,6 +381,8 @@
 						</DropShadow>
 					</effect>
 				</Pane>
+            <Line endX="626.0000610351562" layoutX="-96.0" layoutY="28.0" startX="113.5999984741211" startY="-1.9073486328125E-6" stroke="#cccccc" strokeWidth="2.0" />
+            <Line endX="646.800048828125" endY="-1.9073486328125E-6" layoutX="602.0" layoutY="29.0" startX="144.39999389648438" startY="-1.9073486328125E-6" stroke="#cccccc" strokeWidth="2.0" />
 			</children>
 		</Pane>
 	</children>

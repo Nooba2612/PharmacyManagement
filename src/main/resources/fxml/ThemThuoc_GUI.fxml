@@ -151,11 +151,6 @@
                                     <Cursor fx:constant="TEXT" />
                                  </cursor>
                               </TextField>
-                              <Text fill="#ff2c2c" strokeType="OUTSIDE" strokeWidth="0.0" text="(*)" wrappingWidth="26.2672119140625">
-                                 <font>
-                                    <Font name="System Bold" size="16.0" />
-                                 </font>
-                              </Text>
                            </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">

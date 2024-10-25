@@ -74,9 +74,6 @@ public class MainLayout_lg_GUI {
     private HBox header;
 
     @FXML
-    private VBox category;
-
-    @FXML
     private Pane logoutBtn;
 
     @FXML
@@ -166,41 +163,41 @@ public class MainLayout_lg_GUI {
             });
         }
 
-        // handle open and close category bar
+        // handle open and close menu bar
         menuBtn.setOnMouseClicked(event -> {
-            double categoryDefaultWidth = 265;
+            double menuDefaultWidth = 265;
 
-            if (category.isVisible()) {
+            if (menu.isVisible()) {
 
-                double newWidth = screenWidth + category.getPrefWidth();
+                double newWidth = screenWidth + menu.getPrefWidth();
 
-                NodeUtil.applyFadeTransition(category, 1, 0, 300, () -> {
-                    category.setVisible(false);
-                    category.setPrefWidth(0);
+                NodeUtil.applyFadeTransition(menu, 1, 0, 300, () -> {
+                    menu.setVisible(false);
+                    menu.setPrefWidth(0);
                 });
 
-                NodeUtil.applyTranslateXTransition(mainContentPane, 0, -(category.getPrefWidth()), 200, () -> {
+                NodeUtil.applyTranslateXTransition(mainContentPane, 0, -(menu.getPrefWidth()), 200, () -> {
                     mainContentPane.setTranslateX(0);
 
                 });
 
-                NodeUtil.applyTranslateXTransition(category, 0, -(category.getPrefWidth()), 200, () -> {
+                NodeUtil.applyTranslateXTransition(menu, 0, -(menu.getPrefWidth()), 200, () -> {
                     mainContentPane.setMinWidth(newWidth);
                 });
             } else {
-                category.setPrefWidth(categoryDefaultWidth);
-                category.setVisible(true);
+                menu.setPrefWidth(menuDefaultWidth);
+                menu.setVisible(true);
 
-                double newWidth = screenWidth - category.getPrefWidth();
+                double newWidth = screenWidth - menu.getPrefWidth();
 
-                NodeUtil.applyFadeTransition(category, 0, 1, 300, () -> {
-
-                });
-
-                NodeUtil.applyTranslateXTransition(category, -(category.getPrefWidth()), 0, 200, () -> {
+                NodeUtil.applyFadeTransition(menu, 0, 1, 300, () -> {
 
                 });
-                NodeUtil.applyTranslateXTransition(mainContentPane, 0, category.getPrefWidth(), 200, () -> {
+
+                NodeUtil.applyTranslateXTransition(menu, -(menu.getPrefWidth()), 0, 200, () -> {
+
+                });
+                NodeUtil.applyTranslateXTransition(mainContentPane, 0, menu.getPrefWidth(), 200, () -> {
                     mainContentPane.setMinWidth(newWidth);
                     mainContentPane.setTranslateX(0);
                 });

@@ -126,7 +126,7 @@
 									<String fx:value="active-category-item" />
 								</styleClass>
 							</Pane>
-							<Pane fx:id="statisticBtn" styleClass="categoryItem" GridPane.rowIndex="1">
+							<Pane fx:id="statisticBtn" styleClass="categoryItem" GridPane.rowIndex="2">
 								<children>
 									<ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 										<image>
@@ -143,7 +143,7 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
-							<Pane fx:id="equipmentsBtn" styleClass="categoryItem" GridPane.rowIndex="2">
+							<Pane fx:id="equipmentsBtn" styleClass="categoryItem" GridPane.rowIndex="3">
 								<children>
 									<ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="10.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 										<image>
@@ -160,14 +160,14 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
-							<Pane fx:id="medicinesBtn" styleClass="categoryItem" GridPane.rowIndex="3">
+							<Pane fx:id="medicinesBtn" styleClass="categoryItem" GridPane.rowIndex="4">
 								<children>
 									<ImageView fitHeight="40.0" fitWidth="40.0" layoutX="12.0" layoutY="10.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 										<image>
 											<Image url="@../images/pills-icon.png" />
 										</image>
 									</ImageView>
-									<Text fill="#616961" layoutX="64.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thuốc" wrappingWidth="84.53671264648438">
+									<Text fill="#616961" layoutX="64.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Sản phẩm" wrappingWidth="84.53671264648438">
 										<font>
 											<Font size="17.0" />
 										</font>
@@ -177,7 +177,7 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
-							<Pane fx:id="employeesBtn" styleClass="categoryItem" GridPane.rowIndex="4">
+							<Pane fx:id="employeesBtn" styleClass="categoryItem" GridPane.rowIndex="5">
 								<children>
 									<ImageView fx:id="employeesBtn" fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="12.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 										<image>
@@ -194,7 +194,7 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
-							<Pane fx:id="customersBtn" styleClass="categoryItem" GridPane.rowIndex="5">
+							<Pane fx:id="customersBtn" styleClass="categoryItem" GridPane.rowIndex="6">
 								<children>
 									<ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="12.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 										<image>
@@ -211,7 +211,7 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
-							<Pane fx:id="workScheduleBtn" styleClass="categoryItem" GridPane.rowIndex="6">
+							<Pane fx:id="workScheduleBtn" styleClass="categoryItem" GridPane.rowIndex="7">
 								<children>
 									<ImageView fx:id="employeesBtn" fitHeight="42.0" fitWidth="53.0" layoutX="3.0" layoutY="10.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon" translateX="5.0">
 										<image>
@@ -228,7 +228,7 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
-							<Pane fx:id="suppliersBtn" styleClass="categoryItem" GridPane.rowIndex="7">
+							<Pane fx:id="suppliersBtn" styleClass="categoryItem" GridPane.rowIndex="8">
 								<children>
 									<ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="14.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 										<image>
@@ -245,7 +245,7 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
-							<Pane fx:id="invoicesBtn" styleClass="categoryItem" GridPane.rowIndex="8">
+							<Pane fx:id="invoicesBtn" styleClass="categoryItem" GridPane.rowIndex="9">
 								<children>
 									<ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 										<image>
@@ -262,7 +262,7 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
-							<Pane fx:id="goodsReceiptBtn" styleClass="categoryItem" GridPane.rowIndex="9">
+							<Pane fx:id="goodsReceiptBtn" styleClass="categoryItem" GridPane.rowIndex="10">
 								<children>
 									<ImageView fitHeight="50.0" fitWidth="53.0" layoutY="7.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
 										<image>
@@ -270,23 +270,6 @@
 										</image>
 									</ImageView>
 									<Text fill="#616961" layoutX="65.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Phiếu nhập hàng" wrappingWidth="167.73672485351562">
-										<font>
-											<Font size="17.0" />
-										</font>
-									</Text>
-								</children>
-								<cursor>
-									<Cursor fx:constant="HAND" />
-								</cursor>
-							</Pane>
-							<Pane fx:id="categoryBtn" styleClass="categoryItem" GridPane.rowIndex="10">
-								<children>
-									<ImageView fitHeight="40.0" fitWidth="40.0" layoutX="16.0" layoutY="13.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
-										<image>
-											<Image url="@../images/category-icon.png" />
-										</image>
-									</ImageView>
-									<Text fill="#616961" layoutX="63.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Danh mục" wrappingWidth="167.73672485351562">
 										<font>
 											<Font size="17.0" />
 										</font>
@@ -313,6 +296,23 @@
 									<Cursor fx:constant="HAND" />
 								</cursor>
 							</Pane>
+                     <Pane fx:id="saleBtn" styleClass="categoryItem" GridPane.rowIndex="1">
+                        <children>
+                           <ImageView fitHeight="40.0" fitWidth="40.0" layoutX="14.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                              <image>
+                                 <Image url="@../images/black-cart-icon.png" />
+                              </image>
+                           </ImageView>
+                           <Text fill="#616961" layoutX="65.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Bán hàng" wrappingWidth="161.33676147460938">
+                              <font>
+                                 <Font size="17.0" />
+                              </font>
+                           </Text>
+                        </children>
+                        <cursor>
+                           <Cursor fx:constant="HAND" />
+                        </cursor>
+                     </Pane>
                   </children>
                </GridPane>
 				</left>
