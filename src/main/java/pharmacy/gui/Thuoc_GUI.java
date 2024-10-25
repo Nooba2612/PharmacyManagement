@@ -39,6 +39,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import pharmacy.bus.Thuoc_BUS;
 import pharmacy.entity.NhanVien;
@@ -49,6 +50,8 @@ import pharmacy.utils.PDFUtil;
 import java.util.logging.Logger;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -64,6 +67,8 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 import com.itextpdf.layout.borders.Border;
+import com.sun.prism.PixelFormat;
+import com.sun.prism.PixelFormat.DataType;
 
 import javafx.stage.StageStyle;
 
@@ -112,7 +117,7 @@ public class Thuoc_GUI {
 	private Button searchMedicineBtn;
 
 	@FXML
-	private TableColumn<Thuoc, Double> taxColumn;
+	private TableColumn<Thuoc, Float> taxColumn;
 
 	@FXML
 	private TableColumn<Thuoc, String> statusColumn;
@@ -127,6 +132,8 @@ public class Thuoc_GUI {
 	private TableColumn<Thuoc, String> unitColumn;
 
 	private ObservableList<Thuoc> medicineList = FXCollections.observableArrayList();
+
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	// methods
 	@FXML
@@ -144,15 +151,15 @@ public class Thuoc_GUI {
 		filter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				try {
-					renderMedicines(newValue.toString());
+					renderMedicines(newValue);
 				} catch (SQLException e) {
 					Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
 				}
 			}
 		});
 
-		renderMedicines(filter.getValue());
 		handleEditableMedicineTable();
+		renderMedicines(filter.getValue());
 		setupTablePlaceholder();
 		handleAddMedicineAction();
 	}
@@ -196,12 +203,36 @@ public class Thuoc_GUI {
 		manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngaySX"));
 		descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("moTa"));
 		priceColumn.setCellValueFactory(new PropertyValueFactory<>("donGiaBan"));
+		taxColumn.setCellValueFactory(new PropertyValueFactory<>("thue"));
 		availableQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("soLuongTon"));
 		manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("nhaSX"));
 		expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("hanSuDung"));
-		taxColumn.setCellValueFactory(new PropertyValueFactory<>("thue"));
 		unitColumn.setCellValueFactory(new PropertyValueFactory<>("donViTinh"));
 		statusColumn.setCellValueFactory(new PropertyValueFactory<>("trangThai"));
+
+		manufactureDateColumn.setCellFactory(col -> new TableCell<Thuoc, LocalDate>() {
+			@Override
+			protected void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty || item == null) {
+					setText("");
+				} else {
+					setText(formatter.format(item));
+				}
+			}
+		});
+
+		expirationDateColumn.setCellFactory(col -> new TableCell<Thuoc, LocalDate>() {
+			@Override
+			protected void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty || item == null) {
+					setText("");
+				} else {
+					setText(formatter.format(item));
+				}
+			}
+		});
 
 		switch (type) {
 			case "Tất cả thuốc" -> medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getAllThuoc());
@@ -222,24 +253,171 @@ public class Thuoc_GUI {
 		medicineTable.setItems(medicineList);
 
 		handleSearchMedicineAction(medicineList);
+
+		handleEditableMedicineTable();
 	}
 
 	@FXML
 	public void handleEditableMedicineTable() {
-		makeColumnEditable(nameColumn, "tenThuoc");
-		makeColumnEditable(descriptionColumn, "moTa");
-		makeColumnEditable(priceColumn, "donGiaBan");
-		makeColumnEditable(availableQuantityColumn, "soLuongTon");
-		makeColumnEditable(manufacturerColumn, "nhaSX");
+		setColumnEditable(nameColumn, "tenThuoc");
+		setColumnEditable(descriptionColumn, "moTa");
+		setColumnEditable(priceColumn, "donGiaBan");
+		setColumnEditable(availableQuantityColumn, "soLuongTon");
+		setColumnEditable(manufacturerColumn, "nhaSX");
 		setDateColumnEditable(manufactureDateColumn, "ngaySX");
-		makeColumnEditable(taxColumn, "thue");
+		setFloatComboBoxColumnEditable(taxColumn, "thue", new String[] { "0%", "5%", "10%", "15%", "20%" });
 		setDateColumnEditable(expirationDateColumn, "hanSuDung");
-		makeColumnEditable(unitColumn, "donViTinh");
+		setStringComboBoxColumnEditable(unitColumn, "donViTinh",
+				new String[] { "Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói" });
+	}
+
+	public Float parsePercentageString(String percentage) {
+		try {
+			String numericPart = percentage.replace("%", "").trim();
+			return Float.parseFloat(numericPart) / 100;
+		} catch (NumberFormatException e) {
+			System.err.println("Invalid percentage format: " + percentage);
+			return null;
+		}
+	}
+
+	private void setFloatComboBoxColumnEditable(TableColumn<Thuoc, Float> column, String property, String[] options) {
+		column.setCellFactory(col -> new TableCell<Thuoc, Float>() {
+			private final ComboBox<String> comboBox = new ComboBox<>();
+
+			{
+				comboBox.setEditable(true);
+				comboBox.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+					if (!isNowFocused && isEditing()) {
+						cancelEdit();
+					}
+				});
+
+				comboBox.setOnAction(event -> {
+					commitEdit(parsePercentageString(comboBox.getValue()));
+				});
+
+				comboBox.getItems().addAll(options);
+			}
+
+			@Override
+			protected void updateItem(Float item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					if (isEditing()) {
+						comboBox.setValue(String.valueOf(getItem() * 100).replace(".0", "") + "%");
+						setGraphic(comboBox);
+						setText(null);
+					} else {
+						setText(item == null ? "" : String.valueOf(item * 100).replace(".0", "") + "%");
+						setGraphic(null);
+					}
+				}
+			}
+
+			@Override
+			public void startEdit() {
+				super.startEdit();
+				comboBox.setValue(String.valueOf(getItem() * 100).replace(".0", "") + "%");
+				setGraphic(comboBox);
+				setText(null);
+				comboBox.requestFocus();
+			}
+
+			@Override
+			public void cancelEdit() {
+				super.cancelEdit();
+				setText(getItem() == null ? "" : String.valueOf(getItem() * 100).replace(".0", "") + "%");
+				setGraphic(null);
+			}
+		});
+
+		column.setOnEditCommit(event -> {
+			Thuoc medicine = event.getRowValue();
+			Object newValue = event.getNewValue();
+
+			if (newValue != null) {
+				showChangeTableConfirmationPopup(medicine, newValue, event, property);
+			} else {
+				showInvalidInputDataDialog();
+			}
+		});
+	}
+
+	private void setStringComboBoxColumnEditable(TableColumn<Thuoc, String> column, String property, String[] options) {
+		column.setCellFactory(col -> new TableCell<Thuoc, String>() {
+			private final ComboBox<String> comboBox = new ComboBox<>();
+
+			{
+				comboBox.setEditable(true);
+				comboBox.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+					if (!isNowFocused && isEditing()) {
+						cancelEdit();
+					}
+				});
+
+				comboBox.setOnAction(event -> {
+					commitEdit((comboBox.getValue()));
+				});
+
+				comboBox.getItems().addAll(options);
+			}
+
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					if (isEditing()) {
+						comboBox.setValue(getItem());
+						setGraphic(comboBox);
+						setText(null);
+					} else {
+						setText(item == null ? "" : item);
+						setGraphic(null);
+					}
+				}
+			}
+
+			@Override
+			public void startEdit() {
+				super.startEdit();
+				comboBox.setValue(getItem());
+				setGraphic(comboBox);
+				setText(null);
+				comboBox.requestFocus();
+			}
+
+			@Override
+			public void cancelEdit() {
+				super.cancelEdit();
+				setText(getItem() == null ? "" : getItem());
+				setGraphic(null);
+			}
+		});
+
+		column.setOnEditCommit(event -> {
+			Thuoc medicine = event.getRowValue();
+			Object newValue = event.getNewValue();
+
+			if (newValue != null) {
+				showChangeTableConfirmationPopup(medicine, newValue, event, property);
+			} else {
+				showInvalidInputDataDialog();
+			}
+		});
 	}
 
 	private void setDateColumnEditable(TableColumn<Thuoc, LocalDate> column, String property) {
+
 		column.setCellFactory(col -> new TableCell<Thuoc, LocalDate>() {
 			private final DatePicker datePicker = new DatePicker();
+
 			{
 				datePicker.setEditable(true);
 				datePicker.setOnAction(event -> commitEdit(datePicker.getValue()));
@@ -252,6 +430,7 @@ public class Thuoc_GUI {
 
 			@Override
 			protected void updateItem(LocalDate item, boolean empty) {
+
 				super.updateItem(item, empty);
 				if (empty) {
 					setText(null);
@@ -262,7 +441,7 @@ public class Thuoc_GUI {
 						setGraphic(datePicker);
 						setText(null);
 					} else {
-						setText(item == null ? "" : item.toString());
+						setText(item == null ? "" : formatter.format(item));
 						setGraphic(null);
 					}
 				}
@@ -280,7 +459,7 @@ public class Thuoc_GUI {
 			@Override
 			public void cancelEdit() {
 				super.cancelEdit();
-				setText(getItem() == null ? "" : getItem().toString());
+				setText(getItem() == null ? "" : formatter.format(getItem()));
 				setGraphic(null);
 			}
 
@@ -299,7 +478,7 @@ public class Thuoc_GUI {
 
 	}
 
-	private <T> void makeColumnEditable(TableColumn<Thuoc, T> column, String property) {
+	private <T> void setColumnEditable(TableColumn<Thuoc, T> column, String property) {
 		column.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<T>() {
 			@Override
 			public String toString(T object) {
@@ -416,9 +595,12 @@ public class Thuoc_GUI {
 			try {
 				PropertyDescriptor pd = new PropertyDescriptor(property, Thuoc.class);
 				pd.getWriteMethod().invoke(medicine, newValue);
-				new Thuoc_BUS().updateThuoc(medicine);
-				System.out.println("Input successfully.");
-				event.consume();
+				if (new Thuoc_BUS().updateThuoc(medicine)) {
+					System.out.println("Input successfully.");
+					event.consume();
+				} else {
+					showInvalidInputDataDialog();
+				}
 			} catch (Exception ex) {
 				Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, ex);
 			}

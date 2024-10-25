@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -17,107 +18,134 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import pharmacy.bus.TaiKhoan_BUS;
 import pharmacy.utils.NodeUtil;
 
-public class MainLayout_GUI extends Application {
+public class MainLayout_lg_GUI {
 
+    @FXML
     private Label username;
+
+    @FXML
     private Text userRole;
+
+    @FXML
     private ImageView userAvatar;
-    private Parent root;
+
+    @FXML
+    private HBox root;
+
+    @FXML
     private HBox headerRightBox;
-    private Pane profilePane;
-    private List<Node> categoryItemList;
+
+    @FXML
+    private Pane userInfo;
+
+    @FXML
+    private GridPane menu;
+
+    @FXML
     private Pane dashboardBtn;
+
+    @FXML
     private Label logoLabel;
+
+    @FXML
     private Button menuBtn;
+
+    @FXML
     private VBox profilePopover;
+
+    @FXML
     private Pane menuBtnPane;
+
+    @FXML
     private ScrollPane mainContentPane;
+
+    @FXML
+    private HBox header;
+
+    @FXML
     private VBox category;
-    private BorderPane wrapperBorderPane;
+
+    @FXML
     private Pane logoutBtn;
+
+    @FXML
+    private BorderPane wrapper;
+
+    @FXML
     private Pane settingBtn;
+
+    @FXML
     private Pane categoryBtn;
+
+    @FXML
     private Pane aboutUsBtn;
 
-    private Screen screen;
-    private Rectangle2D bounds;
-    private double screenWidth;
-    private double screenHeight;
+    @FXML
+    private VBox logo;
+
     private Parent mainContent;
+    private final Screen screen = Screen.getPrimary();
+    private final Rectangle2D bounds = screen.getBounds();
+    private final double screenWidth = bounds.getWidth();
+    private final double screenHeight = bounds.getHeight();
 
-    @Override
-    public void start(Stage primaryStage) throws IOException, SQLException {
-        Scene scene;
-        root = FXMLLoader.load(getClass().getResource("/fxml/MainLayout_GUI.fxml"));
-        scene = new Scene(root);
-        username = (Label) root.lookup("#username");
-        userRole = (Text) root.lookup("#userRole");
-        userAvatar = (ImageView) root.lookup("#userAvatar");
-        headerRightBox = (HBox) root.lookup("#headerRightBox");
-        profilePane = (Pane) root.lookup("#userInfo");
-        categoryItemList = NodeUtil.findNodesWithClass(root, "categoryItem");
-        dashboardBtn = (Pane) root.lookup("#dashboardBtn");
-        logoutBtn = (Pane) root.lookup("#logoutBtn");
-        settingBtn = (Pane) root.lookup("#settingBtn");
-        menuBtnPane = (Pane) root.lookup("#menuBtnPane");
-        logoLabel = (Label) root.lookup("#logoLabel");
-        menuBtn = (Button) root.lookup("#menuBtn");
-        profilePopover = (VBox) root.lookup("#profilePopover");
-        mainContentPane = (ScrollPane) root.lookup("#mainContentPane");
-        wrapperBorderPane = (BorderPane) root.lookup("#wrapper");
-        category = (VBox) root.lookup("#category");
-        categoryBtn = (Pane) root.lookup("#categoryBtn");
-        menuBtn = (Button) root.lookup("#menuBtn");
-        aboutUsBtn = (Pane) root.lookup("#aboutUsBtn");
-        screen = Screen.getPrimary();
-        bounds = screen.getBounds();
-        screenWidth = bounds.getWidth();
-        screenHeight = bounds.getHeight();
+    @FXML
+    public void initialize() throws IOException, SQLException {
+        responesiveLayout();
 
-        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-        primaryStage.setWidth(screenBounds.getWidth());
-        primaryStage.setHeight(screenBounds.getHeight());
-
-        // set header layout
-        headerRightBox.setMinWidth(screenWidth - (menuBtnPane.getPrefWidth() + logoLabel.getPrefWidth()));
-        logoLabel.setMinWidth(screenWidth - (menuBtnPane.getPrefWidth() + headerRightBox.getPrefWidth()));
-
-        // set inner root layout size
-        wrapperBorderPane.setMinSize(screenWidth, screenHeight);
-
-        // set main content, default is home frame
-        mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
-        mainContentPane.setContent(mainContent);
-
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Medkit - Pharmacy Management System");
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/pharmacy-icon.png")));
-        primaryStage.setResizable(false);
-        primaryStage.setMaximized(true);
-        primaryStage.show();
-
-        handleCategoryAction();
+        handleMenuAction();
 
         handleProfileBtnAction();
 
         handleLogoutAccount();
     }
 
-    public void handleCategoryAction() {
-        Pane firstCategoryItem = (Pane) categoryItemList.get(0);
-        Node icon = firstCategoryItem.getChildren().get(0);
-        Node name = firstCategoryItem.getChildren().get(1);
+    @FXML
+    public void responesiveLayout() throws IOException {
+        root.setMinSize(screenWidth, screenHeight);
+        root.widthProperty().addListener((obs, oldVal, newVal) -> {
+            mainContentPane.setPrefWidth(newVal.doubleValue() - header.getPrefWidth());
+            logo.setMinWidth(newVal.doubleValue() - 550);
+        });
 
-        firstCategoryItem.setStyle("-fx-background-color: #F0F0F0;");
+        root.heightProperty().addListener((obs, oldVal, newVal) -> {
+            wrapper.setPrefHeight(newVal.doubleValue());
+            mainContentPane.setPrefHeight(newVal.doubleValue() - header.getPrefHeight());
+        });
+
+        wrapper.prefWidthProperty().bind(root.widthProperty());
+        menu.prefHeightProperty().bind(wrapper.heightProperty());
+
+        // set header layout
+        headerRightBox
+                .setMinWidth(screen.getBounds().getWidth() - (menuBtnPane.getPrefWidth() + logoLabel.getPrefWidth()));
+        logoLabel.setMinWidth(
+                screen.getBounds().getWidth() - (menuBtnPane.getPrefWidth() + headerRightBox.getPrefWidth()));
+
+        // set main content, default is home frame
+        mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
+        mainContentPane.setContent(mainContent);
+    }
+
+    @FXML
+    public void handleMenuAction() {
+        Pane firstMenuItem = (Pane) menu.getChildren().getFirst();
+
+        Node icon = firstMenuItem.getChildren().get(0);
+        Node name = firstMenuItem.getChildren().get(1);
+
+        firstMenuItem.setStyle("-fx-background-color: #F0F0F0;");
         name.setStyle("-fx-fill: #339933;");
 
         NodeUtil.applyTranslateXTransition(icon, 0, 30, 300, () -> {
@@ -125,11 +153,11 @@ public class MainLayout_GUI extends Application {
         NodeUtil.applyTranslateXTransition(name, 0, 30, 300, () -> {
         });
 
-        handleHoverCategoryItem();
+        handleHoverMenuItem();
 
-        for (Node item : categoryItemList) {
+        for (Node item : menu.getChildren()) {
             item.setOnMouseClicked(event -> {
-                handleActiveCategoryItem(event);
+                handleActiveMenuItem(event);
                 try {
                     handeChangeFrame(item);
                 } catch (IOException e) {
@@ -182,6 +210,7 @@ public class MainLayout_GUI extends Application {
 
     }
 
+    @FXML
     public void handeChangeFrame(Node frameBtn) throws IOException {
         String buttonId = frameBtn.getId();
 
@@ -206,9 +235,9 @@ public class MainLayout_GUI extends Application {
         mainContentPane.setHvalue(0);
     }
 
-    public void handleHoverCategoryItem() {
-        for (Node item : categoryItemList) {
-            Pane pane = (Pane) item;
+    @FXML
+    public void handleHoverMenuItem() {
+        for (Node item : menu.getChildren()) {
 
             item.setOnMouseEntered(event -> {
                 if (!NodeUtil.hasClass(item, "active-category-item")) {
@@ -223,16 +252,17 @@ public class MainLayout_GUI extends Application {
             });
 
             item.setOnMouseClicked(event -> {
-                handleActiveCategoryItem(event);
+                handleActiveMenuItem(event);
             });
         }
     }
 
-    public void handleActiveCategoryItem(MouseEvent event) {
+    @FXML
+    public void handleActiveMenuItem(MouseEvent event) {
 
         Node categoryItem = (Node) event.getSource();
 
-        for (Node item : categoryItemList) {
+        for (Node item : menu.getChildren()) {
             Pane pane = (Pane) item;
             Node icon = pane.getChildren().get(0);
             Node name = pane.getChildren().get(1);
@@ -258,18 +288,19 @@ public class MainLayout_GUI extends Application {
 
     }
 
+    @FXML
     public void handleProfileBtnAction() throws IOException, SQLException {
         profilePopover.setVisible(false);
-        profilePopover.setLayoutX(screenWidth - profilePopover.getPrefWidth() - 10);
+        profilePopover.setLayoutX(screen.getBounds().getWidth() - profilePopover.getPrefWidth() - 10);
         List<Node> profilePopoverItemList = profilePopover.getChildren();
-        Node moreIcon = profilePane.getChildren().get(2);
+        Node moreIcon = userInfo.getChildren().get(2);
 
         username.setText(new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getHoTen());
         userRole.setText(new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getChucVu());
 
-        profilePane.setOnMouseClicked(event -> {
+        userInfo.setOnMouseClicked(event -> {
             if (profilePopover.isVisible()) {
-                profilePane.setStyle("-fx-background-color: transparent;");
+                userInfo.setStyle("-fx-background-color: transparent;");
                 NodeUtil.applyFadeTransition(profilePopover, 1.0, 0.0, 300, () -> profilePopover.setVisible(false));
                 NodeUtil.applyTranslateYTransition(profilePopover, 0, -20, 300, () -> {
                 });
@@ -281,7 +312,7 @@ public class MainLayout_GUI extends Application {
                 });
                 NodeUtil.applyTranslateYTransition(profilePopover, -20, 0, 300, () -> {
                 });
-                profilePane.setStyle("-fx-background-color: #2DCB2D;");
+                userInfo.setStyle("-fx-background-color: #2DCB2D;");
                 NodeUtil.applyRotateTransition(moreIcon, 0, 180, 200, () -> {
                 });
             }
@@ -298,18 +329,29 @@ public class MainLayout_GUI extends Application {
         }
     }
 
+    @FXML
     public void handleLogoutAccount() {
         logoutBtn.setOnMouseClicked(event -> {
-            Stage stage = (Stage) root.getScene().getWindow();
-            stage.hide();
-
             try {
-                DangNhap_GUI dangNhapGUI = new DangNhap_GUI();
-                stage.setMaximized(false);
-                new TaiKhoan_BUS()
-                        .logoutAccount(new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getMaNhanVien());
-                dangNhapGUI.start(stage);
-            } catch (Exception e) {
+                Stage stage = (Stage) root.getScene().getWindow();
+                stage.hide();
+                Stage loginStage = new Stage();
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DangNhap_GUI.fxml"));
+                Parent loginRoot = loader.load();
+
+                TaiKhoan_BUS taiKhoanBUS = new TaiKhoan_BUS();
+                taiKhoanBUS.logoutAccount(taiKhoanBUS.getCurrentAccount().getTenDangNhap().getMaNhanVien());
+
+                Scene scene = new Scene(loginRoot, 468, 567);
+                loginStage.setScene(scene);
+                loginStage.setMaximized(false);
+                loginStage.sizeToScene();
+                loginStage.setTitle("Medkit - Pharmacy Management System");
+                loginStage.getIcons()
+                        .add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));
+                loginStage.show();
+            } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
         });

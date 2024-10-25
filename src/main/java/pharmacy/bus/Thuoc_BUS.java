@@ -35,12 +35,19 @@ public class Thuoc_BUS {
 			return false;
 		}
 
-		if (thuoc.getNgayCapNhat() == null && thuoc.getNgayTao() == null
-				&& thuoc.getNgayCapNhat().isBefore(thuoc.getNgayTao())) {
+		if (thuoc.getDonViTinh() == null || thuoc.getDonViTinh().equals("Viên") || thuoc.getDonViTinh().equals("Vỉ")
+				|| thuoc.getDonViTinh().equals("Hộp") || thuoc.getDonViTinh().equals("Chai")
+				|| thuoc.getDonViTinh().equals("ống") || thuoc.getDonViTinh().equals("Gói")) {
 			return false;
 		}
 
-		if (thuoc.getHanSuDung() == null && thuoc.getNgaySX() == null) {
+		if ((thuoc.getNgayCapNhat() == null && thuoc.getNgayTao() == null) ||
+				(thuoc.getNgayCapNhat() != null && thuoc.getNgayTao() != null &&
+						thuoc.getNgayCapNhat().isBefore(thuoc.getNgayTao()))) {
+			return false;
+		}
+
+		if (thuoc.getHanSuDung() == null || thuoc.getNgaySX() == null) {
 			return false;
 		}
 
