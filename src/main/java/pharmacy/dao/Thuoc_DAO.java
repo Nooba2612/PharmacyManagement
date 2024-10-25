@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,7 +91,7 @@ public class Thuoc_DAO implements Thuoc_Interface {
 	@Override
 	public boolean updateThuoc(Thuoc thuoc) {
 		query = "UPDATE Thuoc SET tenThuoc = ?, ngaySX = ?, nhaSX = ?, ngayCapNhat = ?, soLuongTon = ?, "
-				+ "donGiaBan = ?, thue = ?, hanSuDung = ?, moTa = ?, trangThai = ? WHERE maThuoc = ?";
+				+ "donGiaBan = ?, thue = ?, hanSuDung = ?, moTa = ?, donViTinh = ?, trangThai = ? WHERE maThuoc = ?";
 
 		try {
 			statement = connection.prepareStatement(query);
@@ -103,8 +104,9 @@ public class Thuoc_DAO implements Thuoc_Interface {
 			statement.setFloat(7, thuoc.getThue());
 			statement.setDate(8, Date.valueOf(thuoc.getHanSuDung()));
 			statement.setString(9, thuoc.getMoTa());
-			statement.setString(10, thuoc.getTrangThai());
-			statement.setString(11, thuoc.getMaThuoc());
+			statement.setString(10, thuoc.getDonViTinh());
+			statement.setString(11, thuoc.getTrangThai());
+			statement.setString(12, thuoc.getMaThuoc());
 
 			int result = statement.executeUpdate();
 			return result > 0;

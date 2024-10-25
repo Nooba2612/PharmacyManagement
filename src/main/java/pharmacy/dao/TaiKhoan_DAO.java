@@ -45,8 +45,6 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			closeResources();
 		}
 		return false;
 	}
@@ -64,8 +62,6 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		} finally {
-			closeResources();
 		}
 	}
 
@@ -85,8 +81,6 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			closeResources();
 		}
 		return null;
 	}
@@ -104,8 +98,6 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		} finally {
-			closeResources();
 		}
 	}
 
@@ -120,8 +112,6 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
-		} finally {
-			closeResources();
 		}
 	}
 
@@ -138,8 +128,6 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			closeResources();
 		}
 		return count;
 	}
@@ -159,8 +147,6 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} finally {
-			closeResources();
 		}
 		return null;
 	}
@@ -178,16 +164,4 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
 		}
 	}
 
-	private void closeResources() {
-		try {
-			if (rs != null)
-				rs.close();
-			if (statement != null)
-				statement.close();
-			if (connection != null)
-				connection.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
 }

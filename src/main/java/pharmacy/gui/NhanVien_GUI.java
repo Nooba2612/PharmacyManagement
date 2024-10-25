@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
@@ -44,6 +45,9 @@ import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import pharmacy.bus.NhanVien_BUS;
 import pharmacy.bus.NhanVien_BUS;
+import pharmacy.entity.NhanVien;
+import pharmacy.entity.Thuoc;
+import pharmacy.entity.NhanVien;
 import pharmacy.entity.NhanVien;
 import pharmacy.entity.NhanVien;
 import pharmacy.utils.NodeUtil;
@@ -122,25 +126,22 @@ public class NhanVien_GUI {
 
 	private ObservableList<NhanVien> employeeList = FXCollections.observableArrayList();
 
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
 	// methods
 	@FXML
 	public void initialize() {
 		handleEmployeeTableAction();
-		handleSearchEmployeeAction(employeeList);
-
 	}
 
 	@FXML
 	public void handleEmployeeTableAction() {
-		filter.getItems().addAll("Tất cả nhân viên", "Nhân viên đã nghỉ", "Nhân viên còn làm",
-				"Nhân viên nghỉ tạm thời");
-		filter.getSelectionModel().selectFirst();
-
+		handleEditableEmployeeTable();
 		setUpEmployeesTable();
 		handleExportButtonEmployeeAction();
-		handleEditableEmployeeTable();
 		setupTablePlaceholder();
 		handleAddEmployeeAction();
+		handleSearchEmployeeAction(employeeList);
 	}
 
 	@FXML
@@ -156,17 +157,45 @@ public class NhanVien_GUI {
 		birthdayColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
 		positionColumn.setCellValueFactory(new PropertyValueFactory<>("chucVu"));
 
-		handleRenderEmployeesTable(filter.getValue());
-
-		filter.getSelectionModel().selectedItemProperty().addListener((observation, oldValue, newValue) -> {
-			handleRenderEmployeesTable(newValue);
+		joinDateColumn.setCellFactory(col -> new TableCell<NhanVien, LocalDate>() {
+			@Override
+			protected void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty || item == null) {
+					setText("");
+				} else {
+					setText(formatter.format(item));
+				}
+			}
 		});
 
+		birthdayColumn.setCellFactory(col -> new TableCell<NhanVien, LocalDate>() {
+			@Override
+			protected void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty || item == null) {
+					setText("");
+				} else {
+					setText(formatter.format(item));
+				}
+			}
+		});
+
+		filter.getItems().addAll("Tất cả nhân viên", "Nhân viên đã nghỉ", "Nhân viên còn làm",
+				"Nhân viên nghỉ tạm thời");
+		filter.getSelectionModel().selectFirst();
+
+		filter.getSelectionModel().selectedItemProperty().addListener((observation, oldValue, newValue) -> {
+			renderEmployeesTable(newValue);
+		});
+
+		renderEmployeesTable(filter.getValue());
+
+		handleEditableEmployeeTable();
 	}
 
 	@FXML
-	public void handleRenderEmployeesTable(String renderType) {
-
+	public void renderEmployeesTable(String renderType) {
 		if (renderType.equals("Tất cả nhân viên")) {
 			employeeList = FXCollections.observableArrayList(new NhanVien_BUS().getAllEmployees());
 			employeeTable.setItems(FXCollections.observableArrayList(employeeList));
@@ -174,6 +203,7 @@ public class NhanVien_GUI {
 			employeeList = FXCollections.observableArrayList(new NhanVien_BUS().getEmployeesByStatus(renderType));
 			employeeTable.setItems(FXCollections.observableArrayList(employeeList));
 		}
+
 	}
 
 	@FXML
@@ -194,7 +224,6 @@ public class NhanVien_GUI {
 				PDFUtil.showPdfPreview(
 						new File(getClass().getClassLoader().getResource("pdf/DanhSachNhanVien.pdf").toURI()));
 			} catch (com.itextpdf.io.exceptions.IOException | IOException | URISyntaxException e) {
-				e.printStackTrace();
 			}
 		});
 	}
@@ -208,20 +237,89 @@ public class NhanVien_GUI {
 
 	@FXML
 	public void handleEditableEmployeeTable() {
-		makeColumnEditable(nameColumn, "hoTen");
-		makeColumnEditable(genderColumn, "gioiTinh");
-		makeColumnEditable(phoneColumn, "soDienThoai");
-		makeColumnEditable(levelColumn, "trinhDo");
-		makeColumnEditable(emailColumn, "email");
-		makeColumnEditable(statusColumn, "trangThai");
-		makeColumnEditable(positionColumn, "chucVu");
+		setColumnEditable(nameColumn, "hoTen");
+		setStringComboBoxColumnEditable(genderColumn, "gioiTinh", new String[] { "Nam", "Nữ", "Khác" });
+		setColumnEditable(phoneColumn, "soDienThoai");
+		setStringComboBoxColumnEditable(levelColumn, "trinhDo", new String[] { "Đại học", "Cao đẳng", "Cao học" });
+		setColumnEditable(emailColumn, "email");
+		setStringComboBoxColumnEditable(statusColumn, "trangThai",
+				new String[] { "Còn làm việc", "Nghỉ phép", "Đã nghỉ việc" });
+		setStringComboBoxColumnEditable(positionColumn, "chucVu", new String[] { "Người quản lý", "Nhân viên" });
 		setDateColumnEditable(birthdayColumn, "namSinh");
 		setDateColumnEditable(joinDateColumn, "ngayVaoLam");
+	}
+
+	private void setStringComboBoxColumnEditable(TableColumn<NhanVien, String> column, String property,
+			String[] options) {
+		column.setCellFactory(col -> new TableCell<NhanVien, String>() {
+			private final ComboBox<String> comboBox = new ComboBox<>();
+
+			{
+				comboBox.setEditable(true);
+				comboBox.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+					if (!isNowFocused && isEditing()) {
+						cancelEdit();
+					}
+				});
+
+				comboBox.setOnAction(event -> {
+					commitEdit((comboBox.getValue()));
+				});
+
+				comboBox.getItems().addAll(options);
+			}
+
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					if (isEditing()) {
+						comboBox.setValue(getItem());
+						setGraphic(comboBox);
+						setText(null);
+					} else {
+						setText(item == null ? "" : item);
+						setGraphic(null);
+					}
+				}
+			}
+
+			@Override
+			public void startEdit() {
+				super.startEdit();
+				comboBox.setValue(getItem());
+				setGraphic(comboBox);
+				setText(null);
+				comboBox.requestFocus();
+			}
+
+			@Override
+			public void cancelEdit() {
+				super.cancelEdit();
+				setText(getItem() == null ? "" : getItem());
+				setGraphic(null);
+			}
+		});
+
+		column.setOnEditCommit(event -> {
+			NhanVien employee = event.getRowValue();
+			Object newValue = event.getNewValue();
+
+			if (newValue != null) {
+				showChangeTableConfirmationPopup(employee, newValue, event, property);
+			} else {
+				showInvalidInputDataDialog();
+			}
+		});
 	}
 
 	private void setDateColumnEditable(TableColumn<NhanVien, LocalDate> column, String property) {
 		column.setCellFactory(col -> new TableCell<NhanVien, LocalDate>() {
 			private final DatePicker datePicker = new DatePicker();
+
 			{
 				datePicker.setEditable(true);
 				datePicker.setOnAction(event -> commitEdit(datePicker.getValue()));
@@ -244,7 +342,7 @@ public class NhanVien_GUI {
 						setGraphic(datePicker);
 						setText(null);
 					} else {
-						setText(item == null ? "" : item.toString());
+						setText(item == null ? "" : formatter.format(item));
 						setGraphic(null);
 					}
 				}
@@ -262,7 +360,7 @@ public class NhanVien_GUI {
 			@Override
 			public void cancelEdit() {
 				super.cancelEdit();
-				setText(getItem() == null ? "" : getItem().toString());
+				setText(getItem() == null ? "" : formatter.format(getItem()));
 				setGraphic(null);
 			}
 
@@ -281,7 +379,7 @@ public class NhanVien_GUI {
 
 	}
 
-	private <T> void makeColumnEditable(TableColumn<NhanVien, T> column, String property) {
+	private <T> void setColumnEditable(TableColumn<NhanVien, T> column, String property) {
 		column.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<T>() {
 			@Override
 			public String toString(T object) {
@@ -402,13 +500,13 @@ public class NhanVien_GUI {
 
 				if (new NhanVien_BUS().updateEmployee(employee)) {
 					System.out.println("Input successfully.");
+					if (event != null) {
+						event.consume();
+					}
 				} else {
 					showInvalidInputDataDialog();
 				}
 
-				if (event != null) {
-					event.consume();
-				}
 			} catch (Exception ex) {
 				Logger.getLogger(NhanVien_GUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
