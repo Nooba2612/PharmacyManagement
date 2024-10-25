@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<HBox fx:id="root" prefHeight="894.0" prefWidth="1539.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.MainLayout_md_GUI">
+   <children>
+      <Pane prefHeight="834.0" prefWidth="1539.0">
+         <children>
+            <GridPane alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="894.0" prefWidth="1538.0" style="-fx-background-color: #fff;">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="838.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints maxHeight="332.4" minHeight="10.0" prefHeight="69.60000610351562" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="332.4" minHeight="10.0" prefHeight="74.39998474121094" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="753.6000122070313" minHeight="10.0" prefHeight="750.4000152587892" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <HBox fx:id="header" prefHeight="74.0" prefWidth="1491.0" style="-fx-background-color: #339933;">
+                     <children>
+                        <Pane fx:id="menuBtnPane" prefHeight="72.0" prefWidth="248.0" />
+                        <VBox fx:id="logo" alignment="CENTER_LEFT" minHeight="0.0" prefHeight="74.0" prefWidth="1066.0">
+                           <children>
+                              <Label fx:id="logoLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="72.0" prefWidth="1037.0" text="MEDKIT" textAlignment="CENTER" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="25.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                        <HBox fx:id="headerRightBox" alignment="TOP_RIGHT" maxWidth="1.7976931348623157E308" prefHeight="72.0" prefWidth="267.0">
+                           <children>
+                              <Pane fx:id="userInfo" focusTraversable="true" prefHeight="72.0" prefWidth="277.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label fx:id="username" layoutX="74.0" layoutY="16.0" style="-fx-max-width: 150px;" text="Đặng Phúc Nguyên" textFill="WHITE">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <ImageView fx:id="userAvatar" fitHeight="54.0" fitWidth="51.0" layoutX="23.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/user-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="moreProfileIcon" fitHeight="9.0" fitWidth="21.0" layoutX="216.0" layoutY="32.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/chevron-down-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fx:id="userRole" fill="#80ffdf" layoutX="74.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nhân viên">
+                                       <font>
+                                          <Font name="System Bold" size="14.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Pane>
+                           </children>
+                        </HBox>
+                     </children>
+                  </HBox>
+                  <HBox alignment="TOP_CENTER" style="-fx-background-color: #fff;" GridPane.rowIndex="1">
+                     <children>
+                        <GridPane fx:id="menu" prefHeight="74.0" prefWidth="1542.0">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <VBox fx:id="homeBtn" alignment="CENTER" prefHeight="74.0" prefWidth="146.0">
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/home-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Trang chủ" wrappingWidth="82.936767578125">
+                                       <font>
+                                          <Font size="17.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="statisticBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/statistic-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thống kê" textAlignment="CENTER" wrappingWidth="74.93670654296875">
+                                       <font>
+                                          <Font size="17.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="equipmentsBtn" alignment="CENTER" prefHeight="82.0" prefWidth="125.0" GridPane.columnIndex="2">
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/medical-equipment-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thiết bị y tế" textAlignment="CENTER" wrappingWidth="101.33672332763672">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="medicinesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/pills-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thuốc" textAlignment="CENTER" wrappingWidth="84.53671264648438">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="employeesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4">
+                                 <children>
+                                    <ImageView fx:id="employeesBtn" fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/employee-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Nhân viên" textAlignment="CENTER" wrappingWidth="84.53671264648438">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="customersBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5">
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/customers-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Khách hàng" textAlignment="CENTER" wrappingWidth="106.93670654296875">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="workScheduleBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="6">
+                                 <children>
+                                    <ImageView fx:id="employeesBtn1" fitHeight="43.0" fitWidth="52.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/calendar-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Lịch làm việc" textAlignment="CENTER" wrappingWidth="127.73672485351562">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="suppliersBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="7">
+                                 <children>
+                                    <ImageView fitHeight="41.0" fitWidth="50.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/supplier-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Nhà cung cấp" textAlignment="CENTER" wrappingWidth="112.5366439819336">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="invoicesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="8">
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/invoice-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Hóa đơn" textAlignment="CENTER" wrappingWidth="72.53671264648438">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="9">
+                                 <children>
+                                    <ImageView fx:id="goodsReceiptBtn" fitHeight="41.0" fitWidth="44.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/goods-receipt-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Phiếu nhập hàng" textAlignment="CENTER" wrappingWidth="118.93678283691406">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="categoryBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="10">
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/category-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Danh mục" textAlignment="CENTER" wrappingWidth="84.53665161132812">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <VBox fx:id="aboutUsBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="11">
+                                 <children>
+                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                       <image>
+                                          <Image url="@../images/about-us-icon.png" />
+                                       </image>
+                                    </ImageView>
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Về chúng tôi" textAlignment="CENTER" wrappingWidth="102.1367416381836">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </GridPane>
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </HBox>
+                  <VBox prefWidth="1538.0" GridPane.rowIndex="2">
+                     <children>
+                        <ScrollPane fx:id="mainContentPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" pannable="true" prefHeight="674.0" prefWidth="1514.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #72C972; -fx-border: 1px 0 0 0;" />
+                     </children>
+                  </VBox>
+               </children>
+            </GridPane>
+            <VBox fx:id="profilePopover" alignment="CENTER" layoutX="1304.199951171875" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="229.0" style="-fx-background-color: #fff; -fx-border-color: #f0f0f0;">
+               <children>
+                  <Pane fx:id="settingBtn" prefHeight="200.0" prefWidth="230.0">
+                     <children>
+                        <Text layoutX="87.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Settings" wrappingWidth="55.73681640625">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <ImageView fitHeight="24.0" fitWidth="21.0" layoutX="50.0" layoutY="11.0" opacity="0.6" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/gear-icon.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Pane>
+                  <Pane fx:id="logoutBtn" prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Text layoutX="88.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Log Out" wrappingWidth="53.336669921875">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Text>
+                        <ImageView fitHeight="26.0" fitWidth="20.0" layoutX="50.0" layoutY="9.0" opacity="0.6" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/logout-icon.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Pane>
+               </children>
+               <effect>
+                  <DropShadow offsetX="-1.0" offsetY="2.0">
+                     <color>
+                        <Color red="0.6000000238418579" green="0.6000000238418579" blue="0.6000000238418579" />
+                     </color>
+                  </DropShadow>
+               </effect>
+            </VBox>
+         </children>
+      </Pane>
+   </children>
+</HBox>

@@ -62,12 +62,6 @@ public class ThemNhanVien_GUI {
 	private Pane root;
 
 	@FXML
-	private TextField salaryField;
-
-	@FXML
-	private Text salaryFieldAlert;
-
-	@FXML
 	private Button submitBtn;
 
 	@FXML
@@ -81,7 +75,7 @@ public class ThemNhanVien_GUI {
 	public void initialize() {
 		genderSelect.getItems().addAll("Nam", "Nữ", "Khác");
 		levelSelect.getItems().addAll("Đại học", "Cao đẳng", "Cao học");
-		positionSelect.getItems().addAll("Quản lý", "Nhân viên bán hàng");
+		positionSelect.getItems().addAll("Người quản lý", "Nhân viên");
 		handleBackBtnClick();
 	}
 

@@ -13,6 +13,7 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,43 +26,39 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import pharmacy.bus.TaiKhoan_BUS;
 
-public class DangNhap_GUI extends Application {
+public class DangNhap_GUI {
+
 	@FXML
-	private Parent root;
-	private Scene scene;
-	private ImageView showPasswordIcon;
-	private ImageView hidePasswordIcon;
+	private ImageView showPasswordBtn;
+
+	@FXML
+	private ImageView hidePasswordBtn;
+
+	@FXML
 	private TextField usernameField;
-	private Text forgotPasswordBtnText;
+
+	@FXML
 	private PasswordField passwordField;
+
+	@FXML
 	private TextField passwordTextField;
+
+	@FXML
 	private Button submitBtn;
+
+	@FXML
 	private ProgressBar progressBar;
+
+	@FXML
 	private Text progressStatus;
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		root = FXMLLoader.load(getClass().getResource("/fxml/DangNhap_GUI.fxml"));
-		scene = new Scene(root);
-		showPasswordIcon = (ImageView) root.lookup("#showPasswordBtn");
-		hidePasswordIcon = (ImageView) root.lookup("#hidePasswordBtn");
-		usernameField = (TextField) root.lookup("#usernameField");
-		passwordField = (PasswordField) root.lookup("#passwordField");
-		passwordTextField = (TextField) root.lookup("#passwordTextField");
-		forgotPasswordBtnText = (Text) root.lookup("#forgotPasswordBtn");
-		submitBtn = (Button) root.lookup("#submitBtn");
-		progressBar = (ProgressBar) root.lookup("#progressBar");
-		progressStatus = (Text) root.lookup("#progressStatus");
-
-		primaryStage.setTitle("Login");
-		primaryStage.setScene(scene);
-		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/pharmacy-icon.png")));
-		primaryStage.setResizable(false);
-		primaryStage.show();
+	@FXML
+	public void initialize() throws Exception {
 
 		progressBar.setVisible(false);
 		progressStatus.setVisible(false);
@@ -74,6 +71,7 @@ public class DangNhap_GUI extends Application {
 
 	}
 
+	@FXML
 	public void handlePasswordInput() {
 		passwordField.setOnKeyTyped(event -> {
 			passwordTextField.setText(passwordField.getText());
@@ -86,6 +84,7 @@ public class DangNhap_GUI extends Application {
 		handleShowAndHidePassword();
 	}
 
+	@FXML
 	public void showAndHidePasswordBtnClickAnimation(Node node) {
 		TranslateTransition moveDownTransition = new TranslateTransition();
 		moveDownTransition.setNode(node);
@@ -103,10 +102,10 @@ public class DangNhap_GUI extends Application {
 
 		sequentialTransition.setOnFinished(e -> {
 			node.setVisible(false);
-			if (node == hidePasswordIcon) {
-				showPasswordIcon.setVisible(true);
+			if (node == hidePasswordBtn) {
+				showPasswordBtn.setVisible(true);
 			} else {
-				hidePasswordIcon.setVisible(true);
+				hidePasswordBtn.setVisible(true);
 			}
 		});
 
@@ -114,25 +113,27 @@ public class DangNhap_GUI extends Application {
 		sequentialTransition.play();
 	}
 
+	@FXML
 	public void handleShowAndHidePassword() {
 		passwordTextField.setVisible(false);
-		hidePasswordIcon.setVisible(false);
+		hidePasswordBtn.setVisible(false);
 
-		showPasswordIcon.setOnMouseClicked(event -> {
-			showAndHidePasswordBtnClickAnimation(showPasswordIcon);
+		showPasswordBtn.setOnMouseClicked(event -> {
+			showAndHidePasswordBtnClickAnimation(showPasswordBtn);
 			passwordTextField.setText(passwordField.getText());
 			passwordField.setVisible(false);
 			passwordTextField.setVisible(true);
 		});
 
-		hidePasswordIcon.setOnMouseClicked(event -> {
-			showAndHidePasswordBtnClickAnimation(hidePasswordIcon);
+		hidePasswordBtn.setOnMouseClicked(event -> {
+			showAndHidePasswordBtnClickAnimation(hidePasswordBtn);
 			passwordField.setText(passwordTextField.getText());
 			passwordField.setVisible(true);
 			passwordTextField.setVisible(false);
 		});
 	}
 
+	@FXML
 	public void handleEnterKeyPress() {
 		usernameField.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
@@ -183,6 +184,7 @@ public class DangNhap_GUI extends Application {
 		});
 	}
 
+	@FXML
 	public void handleSubmitBtnAction() {
 		FadeTransition fadeIn = new FadeTransition(Duration.millis(300), submitBtn);
 		fadeIn.setFromValue(1.0);
@@ -218,6 +220,7 @@ public class DangNhap_GUI extends Application {
 		});
 	}
 
+	@FXML
 	public void handleAuthenticate() throws SQLException {
 		TaiKhoan_BUS taiKhoanBUS = new TaiKhoan_BUS();
 		String password = passwordField.isVisible() ? passwordField.getText() : passwordTextField.getText();
@@ -229,14 +232,37 @@ public class DangNhap_GUI extends Application {
 				Stage stage = (Stage) usernameField.getScene().getWindow();
 				stage.hide();
 
-				MainLayout_GUI mainLayout = new MainLayout_GUI();
+				final Screen screen = Screen.getPrimary();
+				final Rectangle2D bounds = screen.getBounds();
+				final double screenWidth = bounds.getWidth();
+				final double screenHeight = bounds.getHeight();
+
+				Stage mainStage = new Stage();
+				FXMLLoader loader;
+
+				if (screenWidth <= 1350) {
+					loader = new FXMLLoader(getClass().getResource("/fxml/MainLayout_md_GUI.fxml"));
+				} else {
+					loader = new FXMLLoader(getClass().getResource("/fxml/MainLayout_lg_GUI.fxml"));
+				}
+
 				try {
-					mainLayout.start(stage);
+					loader.load();
 				} catch (IOException e) {
 					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
 				}
+
+				mainStage.setWidth(screenWidth);
+				mainStage.setHeight(screenHeight);
+
+				Scene scene = new Scene(loader.getRoot());
+				mainStage.setScene(scene);
+				mainStage.setTitle("Medkit - Pharmacy Management System");
+				mainStage.setMaximized(true);
+				mainStage.getIcons()
+						.add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));
+				mainStage.setResizable(false);
+				mainStage.show();
 
 				System.out.println("\n\nLogin Successfully.");
 			} else {
@@ -246,13 +272,13 @@ public class DangNhap_GUI extends Application {
 		pause.play();
 	}
 
+	@FXML
 	public void showErrorAlert(String title, String headerText, String alertContent) {
+		Stage stage = (Stage) usernameField.getScene().getWindow();
 		Alert errorAlert = new Alert(Alert.AlertType.ERROR);
 		errorAlert.setTitle(title);
 		errorAlert.setHeaderText(headerText != null ? headerText : "Error");
 		errorAlert.setContentText(alertContent);
-
-		Stage stage = (Stage) errorAlert.getDialogPane().getScene().getWindow();
 		try {
 			stage.getIcons().add(new Image("/images/alert-icon.png"));
 		} catch (Exception e) {
@@ -262,6 +288,7 @@ public class DangNhap_GUI extends Application {
 		errorAlert.show();
 	}
 
+	@FXML
 	public void handleProgressBarAction(boolean isAuthenticated) {
 		progressBar.setVisible(true);
 		progressBar.setProgress(0);

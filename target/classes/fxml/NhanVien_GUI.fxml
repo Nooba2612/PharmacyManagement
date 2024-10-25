@@ -31,18 +31,18 @@
 						<Line endX="1064.7999267578125" endY="-3.0517578125E-5" layoutX="55.0" layoutY="91.0" startX="-13.800003051757812" startY="-3.0517578125E-5" stroke="#cccccc" strokeWidth="2.0" />
 						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="37.0" layoutY="111.0" prefHeight="421.0" prefWidth="1088.0" style="-fx-background-color: #fff;">
 							<content>
-								<TableView fx:id="employeeTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
+								<TableView fx:id="employeeTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF; -fx-font-size: 10px;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
 									<columns>
                               <TableColumn fx:id="idColumn" prefWidth="104.79998475313187" text="Mã nhân viên" />
 										<TableColumn fx:id="nameColumn" prefWidth="107.19996643066406" text="Tên nhân viên" />
-										<TableColumn fx:id="genderColumn" prefWidth="82.39997863769531" sortable="false" text="Giới tính" />
-										<TableColumn fx:id="birthdayColumn" prefWidth="119.99996948242188" text="Ngày sinh" />
-										<TableColumn fx:id="emailColumn" prefWidth="105.60003662109375" text="Email" />
-										<TableColumn fx:id="phoneColumn" prefWidth="140.0" text="Số điện thoại" />
-										<TableColumn fx:id="levelColumn" prefWidth="103.199951171875" resizable="false" sortable="false" text="Trình độ" />
-										<TableColumn fx:id="statusColumn" prefWidth="121.60009765625" text="Trạng thái" />
-                              <TableColumn fx:id="positionColumn" prefWidth="95.20001220703125" text="Chức vụ" />
-										<TableColumn fx:id="joinDateColumn" prefWidth="131.2000732421875" text="Ngày vào làm" />
+										<TableColumn fx:id="genderColumn" prefWidth="92.00001525878906" sortable="false" text="Giới tính" />
+										<TableColumn fx:id="birthdayColumn" prefWidth="105.60003662109375" text="Ngày sinh" />
+										<TableColumn fx:id="emailColumn" prefWidth="99.199951171875" text="Email" />
+										<TableColumn fx:id="phoneColumn" prefWidth="120.79998779296875" text="Số điện thoại" />
+										<TableColumn fx:id="levelColumn" prefWidth="116.79998779296875" resizable="false" sortable="false" text="Trình độ" />
+										<TableColumn fx:id="statusColumn" prefWidth="121.5999755859375" text="Trạng thái" />
+                              <TableColumn fx:id="positionColumn" prefWidth="104.7999267578125" text="Chức vụ" />
+										<TableColumn fx:id="joinDateColumn" prefWidth="119.99993896484375" text="Ngày vào làm" />
 									</columns>
 									<cursor>
 										<Cursor fx:constant="TEXT" />
