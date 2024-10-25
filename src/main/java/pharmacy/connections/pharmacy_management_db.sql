@@ -20,6 +20,7 @@ CREATE TABLE NhanVien (
     gioiTinh NVARCHAR(50) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác'))
 );
 
+
 CREATE TABLE TaiKhoan (
     tenDangNhap NVARCHAR(50) NOT NULL UNIQUE,
     matKhau NVARCHAR(255) NOT NULL,

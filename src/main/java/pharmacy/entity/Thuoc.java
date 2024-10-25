@@ -111,9 +111,6 @@ public class Thuoc {
 	}
 
 	public void setNhaSX(String nhaSX) {
-		if (nhaSX == null || nhaSX.isEmpty()) {
-			throw new IllegalArgumentException("Nhà sản xuất không được rỗng.");
-		}
 		this.nhaSX = nhaSX;
 	}
 

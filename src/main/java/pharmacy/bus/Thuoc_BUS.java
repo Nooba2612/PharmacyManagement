@@ -27,7 +27,11 @@ public class Thuoc_BUS {
 			return false;
 		}
 
-		if (thuoc.getTenThuoc() == null || thuoc.getTenThuoc().isEmpty()) {
+		if (thuoc.getTenThuoc() == null || thuoc.getTenThuoc().trim().isEmpty()) {
+			return false;
+		}
+
+		if (thuoc.getNhaSX() == null || thuoc.getNhaSX().trim().isEmpty()) {
 			return false;
 		}
 
