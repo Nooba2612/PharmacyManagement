@@ -1,0 +1,40 @@
+/* Apply styling to the TabPane itself */
+.tab-pane {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-padding: 10;
+}
+
+/* Style individual tabs (the headers) */
+.tab {
+    -fx-background-color: #b7f7cf; /* Default tab background */
+    -fx-padding: 10 15; /* Inner padding for tab headers */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5 5 0 0; /* Round top corners */
+    -fx-background-radius: 5 5 0 0;
+    -fx-border-color: #b2bec3;
+    -fx-border-width: 1px;
+}
+
+/* Change background when a tab is selected */
+.tab:selected {
+    -fx-background-color: #339933;
+    -fx-text-base-color: white;
+    -fx-border-color: #339933;
+}
+
+/* Tab content area (what's inside each tab) */
+.tab-content-area {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+}
+
+/* Customize close button for tabs if enabled */
+.tab .tab-close-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: red;
+}
