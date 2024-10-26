@@ -21,13 +21,41 @@ public class HoaDon {
 
 	public HoaDon(String maHoaDon, KhachHang khachHang, NhanVien nhanVien, LocalDate ngayTao, double tienKhachDua,
 			double diemSuDung, String loaiThanhToan, List<ChiTietHoaDon> chiTietHoaDonList) {
-		setMaHoaDon(maHoaDon);
-		setKhachHang(khachHang);
-		setNhanVien(nhanVien);
-		setNgayTao(ngayTao);
-		setTienKhachDua(tienKhachDua);
-		setDiemSuDung(diemSuDung);
-		setLoaiThanhToan(loaiThanhToan);
+		if (maHoaDon == null || !maHoaDon.matches("HD\\d{6}\\d{5}")) {
+			throw new IllegalArgumentException("Mã hóa đơn không hợp lệ");
+		}
+		this.maHoaDon = maHoaDon;
+
+		if (khachHang == null) {
+			throw new IllegalArgumentException("Khách hàng không hợp lệ");
+		}
+		this.khachHang = khachHang;
+
+		if (nhanVien == null) {
+			throw new IllegalArgumentException("Nhân viên không hợp lệ");
+		}
+		this.nhanVien = nhanVien;
+
+		if (ngayTao == null) {
+			throw new IllegalArgumentException("Ngày tạo không hợp lệ");
+		}
+		this.ngayTao = ngayTao;
+
+		if (tienKhachDua < 0) {
+			throw new IllegalArgumentException("Tiền khách đưa không hợp lệ");
+		}
+		this.tienKhachDua = tienKhachDua;
+
+		if (diemSuDung < 0) {
+			throw new IllegalArgumentException("Điểm sử dụng không hợp lệ");
+		}
+		this.diemSuDung = diemSuDung;
+
+		if (!loaiThanhToan.equals("Tiền mặt") && !loaiThanhToan.equals("Chuyển khoản")) {
+			throw new IllegalArgumentException("Loại thanh toán không hợp lệ");
+		}
+		this.loaiThanhToan = loaiThanhToan;
+
 		this.chiTietHoaDonList = chiTietHoaDonList != null ? chiTietHoaDonList : new ArrayList<>();
 	}
 

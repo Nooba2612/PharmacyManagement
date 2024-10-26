@@ -11,23 +11,19 @@ import pharmacy.Interface.ChiTietHoaDon_Interface;
 import pharmacy.connections.DatabaseConnection;
 import pharmacy.entity.ChiTietHoaDon;
 import pharmacy.entity.HoaDon;
-import pharmacy.entity.ThietBiYTe;
-import pharmacy.entity.Thuoc;
+import pharmacy.entity.SanPham;
 
 public class ChiTietHoaDon_DAO implements ChiTietHoaDon_Interface {
 
 	@Override
 	public boolean createChiTietHoaDon(ChiTietHoaDon chiTietHoaDon) {
-		String query = "INSERT INTO ChiTietHoaDon (maHoaDon, maThuoc, maThietBi, soLuong) VALUES (?, ?, ?, ?)";
+		String query = "INSERT INTO ChiTietHoaDon (maHoaDon, maSanPham, soLuong) VALUES (?, ?, ?)";
 
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)) {
 
-			statement.setString(1, chiTietHoaDon.getHoaDon().getMaHoaDon());
-			statement.setString(2, chiTietHoaDon.getThuoc().getMaThuoc());
-			statement.setString(3,
-					chiTietHoaDon.getThietBi() != null ? chiTietHoaDon.getThietBi().getMaThietBi() : null);
-			statement.setInt(4, chiTietHoaDon.getSoLuong());
+			statement.setString(2, chiTietHoaDon.getSanPham().getMaSanPham());
+			statement.setInt(3, chiTietHoaDon.getSoLuong());
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -40,43 +36,38 @@ public class ChiTietHoaDon_DAO implements ChiTietHoaDon_Interface {
 
 	@Override
 	public List<ChiTietHoaDon> getChiTietHoaDonByMaHoaDon(String maHoaDon) {
-	    String query = "SELECT * FROM ChiTietHoaDon WHERE maHoaDon = ?";
-	    List<ChiTietHoaDon> chiTietHoaDonList = new ArrayList<>(); 
-
-	    try (Connection connection = DatabaseConnection.getConnection();
-	         PreparedStatement statement = connection.prepareStatement(query)) {
-
-	        statement.setString(1, maHoaDon);
-	        ResultSet rs = statement.executeQuery();
-
-	        while (rs.next()) {
-	            HoaDon hoaDon = new HoaDon_DAO().getHoaDonById(rs.getString("maHoaDon"));
-	            Thuoc thuoc = new Thuoc_DAO().getThuocByMaThuoc(rs.getString("maThuoc"));
-				ThietBiYTe thietBi = new ThietBiYTe_DAO().getThietBiYTeByMaThietBi(rs.getString("maThietBi"));
-
-	            ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(hoaDon, thuoc, thietBi, rs.getInt("soLuong"));
-	            chiTietHoaDonList.add(chiTietHoaDon);
-	        }
-
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	    }
-	    return chiTietHoaDonList;
-	}
-
-
-	@Override
-	public boolean updateChiTietHoaDon(ChiTietHoaDon chiTietHoaDon) {
-		String query = "UPDATE ChiTietHoaDon SET maThuoc = ?, maThietBi = ?, soLuong = ? WHERE maHoaDon = ?";
+		String query = "SELECT * FROM ChiTietHoaDon WHERE maHoaDon = ?";
+		List<ChiTietHoaDon> chiTietHoaDonList = new ArrayList<>();
 
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)) {
 
-			statement.setString(1, chiTietHoaDon.getThuoc().getMaThuoc());
-			statement.setString(2,
-					chiTietHoaDon.getThietBi() != null ? chiTietHoaDon.getThietBi().getMaThietBi() : null);
-			statement.setInt(3, chiTietHoaDon.getSoLuong());
-			statement.setString(4, chiTietHoaDon.getHoaDon().getMaHoaDon());
+			statement.setString(1, maHoaDon);
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				HoaDon hoaDon = new HoaDon_DAO().getHoaDonById(rs.getString("maHoaDon"));
+				SanPham thuoc = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
+
+				ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(hoaDon, thuoc, rs.getInt("soLuong"));
+				chiTietHoaDonList.add(chiTietHoaDon);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return chiTietHoaDonList;
+	}
+
+	@Override
+	public boolean updateChiTietHoaDon(ChiTietHoaDon chiTietHoaDon) {
+		String query = "UPDATE ChiTietHoaDon SET maSanPham = ?, soLuong = ? WHERE maHoaDon = ?";
+
+		try (Connection connection = DatabaseConnection.getConnection();
+				PreparedStatement statement = connection.prepareStatement(query)) {
+
+			statement.setString(1, chiTietHoaDon.getSanPham().getMaSanPham());
+			statement.setInt(2, chiTietHoaDon.getSoLuong());
 
 			int result = statement.executeUpdate();
 			return result > 0;

@@ -3,12 +3,15 @@ package pharmacy.gui;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import com.itextpdf.layout.element.List;
+
 import javafx.collections.FXCollections;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -28,25 +31,22 @@ import javafx.scene.Parent;
 public class HoaDon_GUI {
 
 	@FXML
-	private Button addInvoiceBtn;
-
-	@FXML
-	private TableColumn<HoaDon, String> createDateColumn;
-
-	@FXML
-	private TableColumn<HoaDon, String> customerNameColumn;
-
-	@FXML
-	private TableColumn<HoaDon, Void> detailColumn;
-
-	@FXML
-	private TableColumn<HoaDon, String> employeeNameColumn;
+	private TableView<HoaDon> invoiceTable;
 
 	@FXML
 	private TableColumn<HoaDon, String> idColumn;
 
 	@FXML
-	private TableView<HoaDon> invoiceTable;
+	private TableColumn<HoaDon, String> customerNameColumn;
+
+	@FXML
+	private TableColumn<HoaDon, String> employeeNameColumn;
+
+	@FXML
+	private TableColumn<HoaDon, LocalDate> createDateColumn;
+
+	@FXML
+	private TableColumn<HoaDon, Double> totalColumn;
 
 	@FXML
 	private TableColumn<HoaDon, Double> amountPaidColumn;
@@ -58,19 +58,27 @@ public class HoaDon_GUI {
 	private TableColumn<HoaDon, String> paymentMethodColumn;
 
 	@FXML
-	private TableColumn<HoaDon, Double> totalColumn;
+	private TableColumn<HoaDon, Void> detailColumn;
 
 	@FXML
-	private HBox root;
+	private DatePicker fromDate;
 
 	@FXML
-	private Button searchBtn;
+	private DatePicker toDate;
 
 	@FXML
 	private TextField searchField;
 
 	@FXML
+	private Button searchBtn;
+
+	@FXML
 	private Pane searchPane;
+
+	@FXML
+	private HBox root;
+
+	private ObservableList<HoaDon> data;
 
 	@FXML
 	public void initialize() {
@@ -80,38 +88,25 @@ public class HoaDon_GUI {
 
 	@FXML
 	public void handleinvoiceTableAction() {
-		addRow();
+		setUpTable();
 		setupTablePlaceholder();
-		handleAddHoaDonAction();
 	}
 
 	@FXML
-	public void addRow() {
+	public void setUpTable() {
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("maHoaDon"));
+		customerNameColumn
+				.setCellValueFactory(
+						cellData -> new SimpleStringProperty(cellData.getValue().getKhachHang().getHoTen()));
+		employeeNameColumn
+				.setCellValueFactory(
+						cellData -> new SimpleStringProperty(cellData.getValue().getNhanVien().getHoTen()));
 		createDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngayTao"));
+		totalColumn.setCellValueFactory(new PropertyValueFactory<>("tongTien")); // Cần thêm thuộc tính này trong HoaDon
 		amountPaidColumn.setCellValueFactory(new PropertyValueFactory<>("tienKhachDua"));
-		// changeColumn.setCellValueFactory(new PropertyValueFactory<>("changeAmount"));
-		// totalColumn.setCellValueFactory(new PropertyValueFactory<>("totalAmount"));
+		changeColumn.setCellValueFactory(new PropertyValueFactory<>("tienThay")); // Cần thêm thuộc tính này trong
 		paymentMethodColumn.setCellValueFactory(new PropertyValueFactory<>("loaiThanhToan"));
-		customerNameColumn.setCellValueFactory(cellData -> {
-			KhachHang khachHang = cellData.getValue().getKhachHang();
-
-			return new SimpleStringProperty(khachHang != null ? khachHang.getHoTen() : "");
-		});
-
-		employeeNameColumn.setCellValueFactory(cellData -> {
-			NhanVien nhanVien = cellData.getValue().getNhanVien();
-
-			return new SimpleStringProperty(nhanVien != null ? nhanVien.getHoTen() : "");
-		});
-
 		handleAddDetailButtonToColumn();
-
-		ObservableList<HoaDon> data = FXCollections.observableArrayList(new HoaDon(),
-
-				new HoaDon(),
-
-				new HoaDon());
 
 		invoiceTable.setItems(data);
 	}
@@ -196,30 +191,6 @@ public class HoaDon_GUI {
 	}
 
 	@FXML
-	public void handleAddHoaDonAction() {
-		addInvoiceBtn.setOnMouseClicked(event -> {
-			try {
-				Parent addHoaDonFrame = FXMLLoader.load(getClass().getResource("/fxml/ThemHoaDon_GUI.fxml"));
-				root.getChildren().clear();
-				root.getChildren().add(addHoaDonFrame);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-
-		addInvoiceBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransition(addInvoiceBtn, 1, 0.7, 200, () -> {
-			});
-		});
-
-		addInvoiceBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransition(addInvoiceBtn, 0.7, 1, 200, () -> {
-			});
-		});
-	}
-
-	@FXML
 	public void handleSearchHoaDonAction() {
-		// Implement search logic here
 	}
 }

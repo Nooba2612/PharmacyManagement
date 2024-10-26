@@ -1,8 +1,7 @@
 package pharmacy.entity;
 
 public class ChiTietPhieuNhap {
-	private ThietBiYTe thietBi;
-	private Thuoc thuoc;
+	private SanPham sanpham;
 	private PhieuNhap phieuNhap;
 	private int soLuong;
 	private double donGia;
@@ -11,30 +10,29 @@ public class ChiTietPhieuNhap {
 	public ChiTietPhieuNhap() {
 	}
 
-	public ChiTietPhieuNhap(Thuoc thuoc, PhieuNhap phieuNhap, ThietBiYTe thietBi, int soLuong, double donGia,
+	public ChiTietPhieuNhap(SanPham sanpham, PhieuNhap phieuNhap, int soLuong, double donGia,
 			double thue) {
-		setThuoc(thuoc);
+		setSanPham(sanpham);
 		setPhieuNhap(phieuNhap);
-		setThietBiYTe(thietBi);
 		setSoLuong(soLuong);
 		setDonGia(donGia);
 		setThue(thue);
 	}
 
 	public ChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {
-		this(chiTietPhieuNhap.getThuoc(), chiTietPhieuNhap.getPhieuNhap(), chiTietPhieuNhap.getThietBiYTe(),
+		this(chiTietPhieuNhap.getSanPham(), chiTietPhieuNhap.getPhieuNhap(),
 				chiTietPhieuNhap.getSoLuong(), chiTietPhieuNhap.getDonGia(), chiTietPhieuNhap.getThue());
 	}
 
-	public Thuoc getThuoc() {
-		return thuoc;
+	public SanPham getSanPham() {
+		return sanpham;
 	}
 
-	public void setThuoc(Thuoc thuoc) {
-		if (thuoc == null) {
+	public void setSanPham(SanPham sanpham) {
+		if (sanpham == null) {
 			throw new IllegalArgumentException("Thuốc không hợp lệ");
 		}
-		this.thuoc = thuoc;
+		this.sanpham = sanpham;
 	}
 
 	public PhieuNhap getPhieuNhap() {
@@ -81,20 +79,9 @@ public class ChiTietPhieuNhap {
 		this.thue = thue;
 	}
 
-	public ThietBiYTe getThietBiYTe() {
-		return thietBi;
-	}
-
-	public void setThietBiYTe(ThietBiYTe thietBi) {
-		if (thietBi == null) {
-			throw new IllegalArgumentException("Thiết bị y tế không hợp lệ");
-		}
-		this.thietBi = thietBi;
-	}
-
 	@Override
 	public String toString() {
-		return "ChiTietPhieuNhap{" + "thietBi=" + thietBi + ", thuoc=" + thuoc + ", phieuNhap=" + phieuNhap
+		return "ChiTietPhieuNhap{" + ", sanpham=" + sanpham + ", phieuNhap=" + phieuNhap
 				+ ", soLuong=" + soLuong + ", donGia=" + donGia + ", thue=" + thue + '}';
 	}
 }
