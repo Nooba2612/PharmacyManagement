@@ -88,7 +88,7 @@ public class NhaCungCap_GUI {
 		phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
 		emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-		handleAddButtonToActionColumn();
+		// handleAddButtonToActionColumn();
 
 		ObservableList<NhaCungCap> data = FXCollections.observableArrayList(
 				new NhaCungCap("NCC0001", "Supplier A", "0123456789", "123 Street", "supplierA@gmail.com"),

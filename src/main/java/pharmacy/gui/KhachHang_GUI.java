@@ -90,7 +90,7 @@ public class KhachHang_GUI {
 		yearColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
 		noteColumn.setCellValueFactory(new PropertyValueFactory<>("ghiChu"));
 
-		handleAddButtonToActionColumn();
+		// handleAddButtonToActionColumn();
 
 		ObservableList<KhachHang> data = FXCollections.observableArrayList(
 				new KhachHang("KH01", "Nguyen Van A", "0123456789", 100, LocalDate.parse("2023-01-01"), "Ghi chú cc",

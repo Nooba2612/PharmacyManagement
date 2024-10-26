@@ -3,13 +3,7 @@ package pharmacy.gui;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Observable;
-
-import com.itextpdf.layout.element.List;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,16 +24,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import pharmacy.bus.NhanVien_BUS;
-import pharmacy.bus.NhanVien_BUS;
-import pharmacy.entity.DanhMuc;
-import pharmacy.entity.NhanVien;
 import pharmacy.entity.NhanVien;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.StringUtil;
@@ -128,6 +117,12 @@ public class ThemNhanVien_GUI {
 	private TextField phoneField;
 
 	@FXML
+	private TextField cccdField;
+
+	@FXML
+	private TextField salaryField;
+
+	@FXML
 	private Label positionAlert;
 
 	@FXML
@@ -144,6 +139,12 @@ public class ThemNhanVien_GUI {
 
 	@FXML
 	private Label taxAlert;
+
+	@FXML
+	private Label cccdAlert;
+
+	@FXML
+	private Label salaryAlert;
 
 	private ObservableList<NhanVien> addedEmployeeList = FXCollections.observableArrayList();
 
@@ -171,7 +172,25 @@ public class ThemNhanVien_GUI {
 			return null;
 		});
 
+		TextFormatter<String> cccdFormatter = new TextFormatter<>(change -> {
+			String newText = change.getControlNewText();
+			if (newText.matches("\\d*")) {
+				return change;
+			}
+			return null;
+		});
+
+		TextFormatter<String> salaryFormatter = new TextFormatter<>(change -> {
+			String newText = change.getControlNewText();
+			if (newText.matches("\\d*")) {
+				return change;
+			}
+			return null;
+		});
+
 		phoneField.setTextFormatter(phoneFormatter);
+		cccdField.setTextFormatter(cccdFormatter);
+		salaryField.setTextFormatter(salaryFormatter);
 
 		clearDataBtn.setOnMouseEntered(event -> {
 			NodeUtil.applyFadeTransition(clearDataBtn, 1, 0.6, 200, () -> {
@@ -249,6 +268,8 @@ public class ThemNhanVien_GUI {
 			String level = levelField.getValue();
 			LocalDate birthday = birthdayField.getValue();
 			LocalDate joinDate = joinDateField.getValue();
+			String cccd = cccdField.getText();
+			Double salary = Double.parseDouble(salaryField.getText());
 			String status = "Còn làm việc";
 
 			if (birthday == null) {
@@ -266,7 +287,7 @@ public class ThemNhanVien_GUI {
 			}
 
 			NhanVien employee = new NhanVien(id, name, position, phoneNumber, email, joinDate, status, level, gender,
-					birthday);
+					birthday, salary, cccd);
 
 			if (validateForm()) {
 				new NhanVien_BUS().createEmployee(employee);

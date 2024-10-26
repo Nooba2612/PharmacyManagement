@@ -34,15 +34,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import pharmacy.bus.Thuoc_BUS;
-import pharmacy.entity.DanhMuc;
-import pharmacy.entity.Thuoc;
+import pharmacy.bus.SanPham_BUS;
+import pharmacy.entity.SanPham;
 import pharmacy.utils.NodeUtil;
 
-public class ThemThuoc_GUI {
+public class ThemSanPham_GUI {
 
 	@FXML
-	private TableColumn<Thuoc, Number> availableQuantityColumn;
+	private TableColumn<SanPham, Number> availableQuantityColumn;
 
 	@FXML
 	private Button backBtn;
@@ -60,43 +59,46 @@ public class ThemThuoc_GUI {
 	private TextField desciptionField;
 
 	@FXML
-	private TableColumn<Thuoc, String> descriptionColumn;
+	private TableColumn<SanPham, String> descriptionColumn;
 
 	@FXML
-	private TableColumn<Thuoc, LocalDate> expirationDateColumn;
+	private ComboBox<String> productTypeField;
+
+	@FXML
+	private TableColumn<SanPham, LocalDate> expirationDateColumn;
 
 	@FXML
 	private DatePicker expirationDateField;
 
 	@FXML
-	private TableColumn<Thuoc, String> idColumn;
+	private TableColumn<SanPham, String> idColumn;
 
 	@FXML
 	private TextField idField;
 
 	@FXML
-	private TableColumn<Thuoc, LocalDate> manufactureDateColumn;
+	private TableColumn<SanPham, LocalDate> manufactureDateColumn;
 
 	@FXML
 	private DatePicker manufactureDateField;
 
 	@FXML
-	private TableColumn<Thuoc, String> manufacturerColumn;
+	private TableColumn<SanPham, String> manufacturerColumn;
 
 	@FXML
 	private TextField manufacturerField;
 
 	@FXML
-	private TableView<Thuoc> medicineTable;
+	private TableView<SanPham> medicineTable;
 
 	@FXML
-	private TableColumn<Thuoc, String> nameColumn;
+	private TableColumn<SanPham, String> nameColumn;
 
 	@FXML
 	private TextField nameField;
 
 	@FXML
-	private TableColumn<Thuoc, Number> priceColumn;
+	private TableColumn<SanPham, Number> priceColumn;
 
 	@FXML
 	private TextField priceField;
@@ -111,13 +113,13 @@ public class ThemThuoc_GUI {
 	private Button submitBtn;
 
 	@FXML
-	private TableColumn<Thuoc, Number> taxColumn;
+	private TableColumn<SanPham, Number> taxColumn;
 
 	@FXML
 	private ComboBox<String> taxField;
 
 	@FXML
-	private TableColumn<Thuoc, String> unitColumn;
+	private TableColumn<SanPham, String> unitColumn;
 
 	@FXML
 	private ComboBox<String> unitField;
@@ -152,16 +154,7 @@ public class ThemThuoc_GUI {
 	@FXML
 	private Label quantityAlert;
 
-	@FXML
-	private ListView<String> taxSuggestionBox;
-
-	@FXML
-	private ListView<String> categorySuggestionBox;
-
-	@FXML
-	private ListView<String> unitSuggestionBox;
-
-	private ObservableList<Thuoc> addedMedicineList = FXCollections.observableArrayList();
+	private ObservableList<SanPham> addedMedicineList = FXCollections.observableArrayList();
 
 	@FXML
 	public void initialize() throws SQLException {
@@ -180,14 +173,6 @@ public class ThemThuoc_GUI {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		createDateField.setText(LocalDateTime.now().format(formatter));
 
-		quantityField.setText("0");
-		priceField.setText("0");
-		taxField.getSelectionModel().selectFirst();
-
-		setupAutoCompleteComboBox(unitField);
-		setupAutoCompleteComboBox(categoryField);
-		setupAutoCompleteComboBox(taxField);
-
 		TextFormatter<String> quantityFormatter = new TextFormatter<>(change -> {
 			String newText = change.getControlNewText();
 			return newText.matches("\\d*") ? change : null;
@@ -199,12 +184,6 @@ public class ThemThuoc_GUI {
 			return newText.matches("\\d*") ? change : null;
 		});
 		priceField.setTextFormatter(priceFormatter);
-
-		TextFormatter<String> taxFormatter = new TextFormatter<>(change -> {
-			String newText = change.getControlNewText();
-			return newText.matches("\\d*") ? change : null;
-		});
-		taxField.getEditor().setTextFormatter(taxFormatter);
 
 		clearDataBtn.setOnMouseEntered(event -> {
 			NodeUtil.applyFadeTransition(clearDataBtn, 1, 0.6, 200, () -> {
@@ -228,70 +207,6 @@ public class ThemThuoc_GUI {
 		handleAddMedicine();
 	}
 
-	private void setupAutoCompleteComboBox(ComboBox<String> comboBox) {
-		comboBox.setEditable(true);
-		ObservableList<String> originalItems = FXCollections.observableArrayList(comboBox.getItems());
-
-		comboBox.getEditor().textProperty().addListener((obs, oldText, newText) -> {
-			if (newText == null || newText.trim().isEmpty()) {
-				if (comboBox == unitField) {
-					hideSuggestionBox(unitSuggestionBox);
-				} else if (comboBox == taxField) {
-					hideSuggestionBox(taxSuggestionBox);
-				} else if (comboBox == categoryField) {
-					hideSuggestionBox(categorySuggestionBox);
-				}
-			} else {
-				List<String> filteredItems = originalItems.stream()
-						.filter(item -> item.toLowerCase().contains(newText.toLowerCase()))
-						.collect(Collectors.toList());
-				ObservableList<String> filteredItemList = FXCollections.observableArrayList(filteredItems);
-
-				System.out.println("Text: " + comboBox.getEditor().getText());
-
-				if (!filteredItemList.isEmpty()) {
-					if (comboBox == unitField) {
-						showSuggestionBox(unitSuggestionBox, filteredItemList);
-					} else if (comboBox == taxField) {
-						showSuggestionBox(taxSuggestionBox, filteredItemList);
-					} else if (comboBox == categoryField) {
-						showSuggestionBox(categorySuggestionBox, filteredItemList);
-					}
-				} else if (filteredItemList.isEmpty()) {
-					if (comboBox == unitField) {
-						hideSuggestionBox(unitSuggestionBox);
-					} else if (comboBox == taxField) {
-						hideSuggestionBox(taxSuggestionBox);
-					} else if (comboBox == categoryField) {
-						hideSuggestionBox(categorySuggestionBox);
-					}
-				}
-			}
-		});
-
-		comboBox.setOnAction(e -> {
-			String selectedItem = comboBox.getSelectionModel().getSelectedItem();
-			if (selectedItem != null) {
-				comboBox.getEditor().setText(selectedItem);
-			}
-		});
-	}
-
-	private void showSuggestionBox(ListView<String> suggestionBox, ObservableList<String> items) {
-		suggestionBox.setItems(items);
-		suggestionBox.setVisible(true);
-		NodeUtil.applyFadeTransition(suggestionBox, 0, 1, 300, () -> {
-		});
-		NodeUtil.applyTranslateYTransition(suggestionBox, 0, 1.1, 300, () -> {
-		});
-	}
-
-	private void hideSuggestionBox(ListView<String> suggestionBox) {
-		NodeUtil.applyFadeTransition(suggestionBox, 1, 0, 300, () -> suggestionBox.setVisible(false));
-		NodeUtil.applyTranslateYTransition(suggestionBox, 1.1, 0, 300, () -> {
-		});
-	}
-
 	@FXML
 	public void handleBackBtnClick() {
 		backBtn.setOnMouseEntered(event -> {
@@ -306,7 +221,7 @@ public class ThemThuoc_GUI {
 
 		backBtn.setOnMouseClicked(event -> {
 			try {
-				Parent customerFrame = FXMLLoader.load(getClass().getResource("/fxml/Thuoc_GUI.fxml"));
+				Parent customerFrame = FXMLLoader.load(getClass().getResource("/fxml/SanPham_GUI.fxml"));
 				root.getChildren().clear();
 				root.getChildren().add(customerFrame);
 			} catch (IOException | java.io.IOException e) {
@@ -330,8 +245,8 @@ public class ThemThuoc_GUI {
 		// add medicine
 		submitBtn.setOnAction(event -> {
 
-			String maThuoc = idField.getText().trim();
-			String tenThuoc = nameField.getText().trim();
+			String maSanPham = idField.getText().trim();
+			String tenSanPham = nameField.getText().trim();
 			String moTa = desciptionField.getText().trim();
 			String nhaSX = manufacturerField.getText().trim();
 			int soLuongTon = Integer
@@ -348,6 +263,8 @@ public class ThemThuoc_GUI {
 			LocalDate hanSuDung = expirationDateField.getValue();
 			String donViTinh = unitField.getValue();
 			String trangThai = "Có sẵn";
+			String loaiSanPham = productTypeField.getValue();
+			String danhMuc = categoryField.getValue();
 
 			if (ngaySX == null) {
 				expirationDateAlert.setText("Ngày hết hạn không được rỗng.");
@@ -363,15 +280,12 @@ public class ThemThuoc_GUI {
 				manufactureDateAlert.setVisible(false);
 			}
 
-			// lack of handle danhMuc alert
-			DanhMuc danhMuc = new DanhMuc("DM0001", trangThai, null, trangThai, soLuongTon);
-
-			Thuoc thuoc = new Thuoc(maThuoc, tenThuoc, danhMuc, ngaySX, nhaSX, ngayTao,
+			SanPham thuoc = new SanPham(maSanPham, tenSanPham, danhMuc, ngaySX, nhaSX, ngayTao,
 					LocalDate.now(), soLuongTon, donGiaBan, thue,
-					hanSuDung, moTa, donViTinh, trangThai);
+					hanSuDung, moTa, donViTinh, trangThai, loaiSanPham);
 			try {
 				if (validateForm()) {
-					new Thuoc_BUS().createThuoc(thuoc);
+					new SanPham_BUS().createSanPham(thuoc);
 					showAddMedicineSuccessModal("Thêm thuốc thành công");
 					clearForm();
 					addedMedicineList.add(thuoc);
@@ -518,25 +432,31 @@ public class ThemThuoc_GUI {
 
 		// Validate Tax field
 		String[] VALID_TAXES = { "0%", "5%", "10%", "15%", "20%" };
-		if (taxField.getValue() == null || taxField.getEditor().getText().trim().isEmpty()) {
+		String taxValue = (taxField.getValue() != null) ? taxField.getValue().trim()
+				: taxField.getEditor().getText().trim();
+
+		if (taxValue.isEmpty()) {
 			taxAlert.setText("Thuế chưa được chọn.");
 			taxAlert.setVisible(true);
 			isValid = false;
-		} else if (!Arrays.asList(VALID_TAXES).contains(taxField.getValue().trim())
-				|| !Arrays.asList(VALID_TAXES).contains(taxField.getEditor().getText().trim())) {
-
+		} else if (!Arrays.asList(VALID_TAXES).contains(taxValue)) {
+			taxAlert.setText("Thuế không hợp lệ.");
+			taxAlert.setVisible(true);
+			isValid = false;
 		} else {
 			taxAlert.setVisible(false);
 		}
 
 		// Validate Unit field
 		String[] VALID_UNITS = { "Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói" };
-		if (unitField.getValue() == null || unitField.getEditor().getText().trim().isEmpty()) {
+		String unitValue = (unitField.getValue() != null) ? unitField.getValue().trim()
+				: unitField.getEditor().getText().trim();
+
+		if (unitValue.isEmpty()) {
 			unitAlert.setText("Đơn vị tính chưa được chọn.");
 			unitAlert.setVisible(true);
 			isValid = false;
-		} else if (!Arrays.asList(VALID_UNITS).contains(unitField.getValue().trim())
-				|| !Arrays.asList(VALID_UNITS).contains(taxField.getEditor().getText().trim())) {
+		} else if (!Arrays.asList(VALID_UNITS).contains(unitValue)) {
 			unitAlert.setText("Đơn vị tính không hợp lệ.");
 			unitAlert.setVisible(true);
 			isValid = false;
@@ -594,8 +514,8 @@ public class ThemThuoc_GUI {
 	public void handleRenderAddedMedicinesTable() {
 		medicineTable.setItems(addedMedicineList);
 
-		idColumn.setCellValueFactory(new PropertyValueFactory<>("maThuoc"));
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenThuoc"));
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("maSanPham"));
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
 		manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("nhaSX"));
 		availableQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("soLuongTon"));
 		priceColumn.setCellValueFactory(new PropertyValueFactory<>("donGiaBan"));

@@ -16,7 +16,7 @@ import pharmacy.entity.ChiTietHoaDon;
 import pharmacy.entity.HoaDon;
 import pharmacy.entity.KhachHang;
 import pharmacy.entity.NhanVien;
-import pharmacy.entity.Thuoc;
+import pharmacy.entity.SanPham;
 
 public class HoaDon_DAO implements HoaDon_Interface {
 
@@ -62,7 +62,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
             if (rs.next()) {
                 KhachHang khachHang = new KhachHang_DAO().getKhachHangById(rs.getString("maKhachHang"));
                 NhanVien nhanVien = new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
-                Thuoc thuoc = new Thuoc_DAO().getThuocByMaThuoc(rs.getString("thuoc"));
+                SanPham thuoc = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("thuoc"));
                 LocalDate ngayTao = rs.getDate("ngayTao").toLocalDate();
                 double tienKhachDua = rs.getDouble("tienKhachDua");
                 double diemSuDung = rs.getDouble("diemSuDung");
@@ -92,7 +92,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
                 String maHoaDon = rs.getString("maHoaDon");
                 KhachHang khachHang = new KhachHang_DAO().getKhachHangById(rs.getString("maKhachHang"));
                 NhanVien nhanVien = new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
-                Thuoc thuoc = new Thuoc_DAO().getThuocByMaThuoc(rs.getString("thuoc"));
+                SanPham thuoc = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("thuoc"));
                 LocalDate ngayTao = rs.getDate("ngayTao").toLocalDate();
                 double tienKhachDua = rs.getDouble("tienKhachDua");
                 double diemSuDung = rs.getDouble("diemSuDung");
