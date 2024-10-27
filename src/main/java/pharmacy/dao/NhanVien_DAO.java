@@ -1,6 +1,11 @@
 package pharmacy.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +15,9 @@ import pharmacy.entity.NhanVien;
 
 public class NhanVien_DAO implements NhanVien_Interface {
 
+    @Override
     public boolean createEmployee(NhanVien nhanVien) {
-        String query = "INSERT INTO NhanVien (maNhanVien, hoTen, chucVu, soDienThoai, email, ngayVaoLam, namSinh, trangThai, trinhDo, gioiTinh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO NhanVien (maNhanVien, hoTen, chucVu, soDienThoai, email, ngayVaoLam, namSinh, trangThai, trinhDo, gioiTinh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
@@ -56,7 +62,9 @@ public class NhanVien_DAO implements NhanVien_Interface {
                         rs.getString("trangThai"),
                         rs.getString("trinhDo"),
                         rs.getString("gioiTinh"),
-                        rs.getDate("namSinh").toLocalDate());
+                        rs.getDate("namSinh").toLocalDate(), rs.getDouble("tienLuong"),
+                        rs.getString("cccd"));
+
             }
 
         } catch (SQLException e) {
@@ -141,7 +149,8 @@ public class NhanVien_DAO implements NhanVien_Interface {
                         rs.getString("trangThai"),
                         rs.getString("trinhDo"),
                         rs.getString("gioiTinh"),
-                        rs.getDate("namSinh").toLocalDate());
+                        rs.getDate("namSinh").toLocalDate(), rs.getDouble("tienLuong"),
+                        rs.getString("cccd"));
                 employees.add(nhanVien);
             }
 
@@ -233,7 +242,8 @@ public class NhanVien_DAO implements NhanVien_Interface {
                         rs.getString("trangThai"),
                         rs.getString("trinhDo"),
                         rs.getString("gioiTinh"),
-                        rs.getDate("namSinh").toLocalDate());
+                        rs.getDate("namSinh").toLocalDate(), rs.getDouble("tienLuong"),
+                        rs.getString("cccd"));
                 topEmployees.add(nhanVien);
             }
 
@@ -306,7 +316,8 @@ public class NhanVien_DAO implements NhanVien_Interface {
                         rs.getString("trangThai"),
                         rs.getString("trinhDo"),
                         rs.getString("gioiTinh"),
-                        rs.getDate("namSinh").toLocalDate());
+                        rs.getDate("namSinh").toLocalDate(), rs.getDouble("tienLuong"),
+                        rs.getString("cccd"));
                 employees.add(nv);
             }
             return employees;

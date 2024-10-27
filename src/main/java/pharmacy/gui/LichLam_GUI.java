@@ -9,34 +9,26 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import pharmacy.entity.*;
+import pharmacy.entity.LichLamViec;
+import pharmacy.entity.NhanVien;
 import pharmacy.utils.NodeUtil;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ComboBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 
 public class LichLam_GUI {
 
@@ -168,12 +160,13 @@ public class LichLam_GUI {
 				new LichLamViec("123", "Ca 1 (7h-15h)",
 						new NhanVien("MK0001", "John Doe", "Nhân viên", "0123456789", "ccc@getEmail.com",
 								LocalDate.of(2022, 5, 10),
-								"Đã nghỉ", "Đại học", "Nam", LocalDate.of(1990, 1, 1)),
+								"Đã nghỉ", "Đại học", "Nam", LocalDate.of(1990, 1, 1), 0, ""),
 						LocalDate.now()),
 				new LichLamViec(
 						"456", "Ca 2 (15h-22h)",
 						new NhanVien("MK0002", "Jane Smith", "Người quản lý", "0987654321", "ccc@getEmail.com",
-								LocalDate.of(2021, 11, 15), "Còn làm", "Đại học", "Nữ", LocalDate.of(1992, 2, 2)),
+								LocalDate.of(2021, 11, 15), "Còn làm", "Đại học", "Nữ", LocalDate.of(1992, 2, 2), 0,
+								""),
 						LocalDate.now()));
 
 		workScheduleTable.setItems(shifts);

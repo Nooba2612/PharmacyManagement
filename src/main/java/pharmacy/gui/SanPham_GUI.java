@@ -30,6 +30,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -41,9 +42,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import pharmacy.bus.Thuoc_BUS;
+import pharmacy.bus.SanPham_BUS;
+import pharmacy.entity.KhachHang;
 import pharmacy.entity.NhanVien;
-import pharmacy.entity.Thuoc;
+import pharmacy.entity.SanPham;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.PDFUtil;
 
@@ -72,40 +74,43 @@ import com.sun.prism.PixelFormat.DataType;
 
 import javafx.stage.StageStyle;
 
-public class Thuoc_GUI {
+public class SanPham_GUI {
 
 	@FXML
-	private Button addMedicineBtn;
+	private Button addSanPhamBtn;
 
 	@FXML
-	private TableColumn<Thuoc, Integer> quantityColumn;
+	private TableColumn<SanPham, Void> actionColumn;
 
 	@FXML
-	private TableColumn<Thuoc, Integer> availableQuantityColumn;
+	private TableColumn<SanPham, Integer> quantityColumn;
 
 	@FXML
-	private TableColumn<Thuoc, String> descriptionColumn;
+	private TableColumn<SanPham, Integer> availableQuantityColumn;
 
 	@FXML
-	private TableColumn<Thuoc, LocalDate> expirationDateColumn;
+	private TableColumn<SanPham, String> descriptionColumn;
 
 	@FXML
-	private TableColumn<Thuoc, String> manufacturerColumn;
+	private TableColumn<SanPham, LocalDate> expirationDateColumn;
 
 	@FXML
-	private TableColumn<Thuoc, LocalDate> manufactureDateColumn;
+	private TableColumn<SanPham, String> manufacturerColumn;
 
 	@FXML
-	private TableColumn<Thuoc, LocalDate> idColumn;
+	private TableColumn<SanPham, LocalDate> manufactureDateColumn;
 
 	@FXML
-	private TableView<Thuoc> medicineTable;
+	private TableColumn<SanPham, LocalDate> idColumn;
 
 	@FXML
-	private TableColumn<Thuoc, String> nameColumn;
+	private TableView<SanPham> medicineTable;
 
 	@FXML
-	private TableColumn<Thuoc, Double> priceColumn;
+	private TableColumn<SanPham, String> nameColumn;
+
+	@FXML
+	private TableColumn<SanPham, Double> priceColumn;
 
 	@FXML
 	private HBox root;
@@ -114,13 +119,13 @@ public class Thuoc_GUI {
 	private TextField searchField;
 
 	@FXML
-	private Button searchMedicineBtn;
+	private Button searchSanPhamBtn;
 
 	@FXML
-	private TableColumn<Thuoc, Float> taxColumn;
+	private TableColumn<SanPham, Float> taxColumn;
 
 	@FXML
-	private TableColumn<Thuoc, String> statusColumn;
+	private TableColumn<SanPham, String> statusColumn;
 
 	@FXML
 	private ComboBox<String> filter;
@@ -129,21 +134,21 @@ public class Thuoc_GUI {
 	private Button exportListBtn;
 
 	@FXML
-	private TableColumn<Thuoc, String> unitColumn;
+	private TableColumn<SanPham, String> unitColumn;
 
-	private ObservableList<Thuoc> medicineList = FXCollections.observableArrayList();
+	private ObservableList<SanPham> medicineList = FXCollections.observableArrayList();
 
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 	// methods
 	@FXML
 	public void initialize() throws SQLException {
-		handleExportMedicineList();
-		setUpMedicineTableAction();
+		handleExportSanPhamList();
+		setUpSanPhamTableAction();
 	}
 
 	@FXML
-	public void setUpMedicineTableAction() throws SQLException {
+	public void setUpSanPhamTableAction() throws SQLException {
 		filter.getItems().setAll("Tất cả thuốc", "Thuốc sắp hết hạn", "Thuốc đã hết hạn",
 				"Thuốc có số lượng tồn kho thấp");
 		filter.getSelectionModel().selectFirst();
@@ -151,17 +156,18 @@ public class Thuoc_GUI {
 		filter.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
 				try {
-					renderMedicines(newValue);
+					renderSanPhams(newValue);
 				} catch (SQLException e) {
-					Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
+					Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, e);
 				}
 			}
 		});
 
-		handleEditableMedicineTable();
-		renderMedicines(filter.getValue());
+		handleEditableSanPhamTable();
+		renderSanPhams(filter.getValue());
 		setupTablePlaceholder();
-		handleAddMedicineAction();
+		handleAddSanPhamAction();
+		addIconToActionColumn();
 	}
 
 	@FXML
@@ -172,34 +178,96 @@ public class Thuoc_GUI {
 		medicineTable.setPlaceholder(noContentLabel);
 	}
 
+	private void addIconToActionColumn() {
+		actionColumn.setCellFactory(column -> new TableCell<SanPham, Void>() {
+			private final Button actionButton = new Button();
+
+			{
+				ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/edit-icon.png")));
+				icon.setFitHeight(20);
+				icon.setFitWidth(20);
+				actionButton.setGraphic(icon);
+				actionButton.setVisible(false);
+				actionButton.setStyle("-fx-background-color: transparent;");
+
+				actionButton.setOnMouseEntered(event -> {
+					NodeUtil.applyFadeTransition(actionButton, 1, 0.7, 300, () -> {
+					});
+					NodeUtil.applyScaleTransition(actionButton, 1, 1.1, 1, 1.1, 300, () -> {
+					});
+				});
+				actionButton.setOnMouseExited(event -> {
+					NodeUtil.applyFadeTransition(actionButton, 0.7, 1, 300, () -> {
+					});
+					NodeUtil.applyScaleTransition(actionButton, 1.1, 1, 1.1, 1, 300, () -> {
+					});
+				});
+
+				actionButton.setOnAction(event -> {
+					SanPham thuoc = getTableView().getItems().get(getIndex());
+					System.out.println("Clicked on: " + thuoc.getMaSanPham());
+				});
+
+				actionButton.getStyleClass().add("action-button");
+			}
+
+			@Override
+			protected void updateItem(Void item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty) {
+					setGraphic(null);
+				} else {
+					setGraphic(actionButton);
+				}
+			}
+
+			@Override
+			public void updateIndex(int i) {
+				super.updateIndex(i);
+				if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
+					TableRow<SanPham> currentRow = getTableRow();
+					currentRow.setOnMouseEntered(event -> {
+						actionButton.setVisible(true);
+						NodeUtil.applyFadeTransition(actionButton, 0, 1, 300, () -> {
+						});
+					});
+					currentRow
+							.setOnMouseExited(event -> NodeUtil.applyFadeTransition(actionButton, 1, 0, 300, () -> {
+								actionButton.setVisible(false);
+							}));
+				}
+			}
+		});
+	}
+
 	@FXML
-	public void handleAddMedicineAction() {
-		addMedicineBtn.setOnMouseClicked(event -> {
+	public void handleAddSanPhamAction() {
+		addSanPhamBtn.setOnMouseClicked(event -> {
 			try {
-				Parent addMedicineFrame = FXMLLoader.load(getClass().getResource("/fxml/ThemThuoc_GUI.fxml"));
+				Parent addSanPhamFrame = FXMLLoader.load(getClass().getResource("/fxml/ThemSanPham_GUI.fxml"));
 				root.getChildren().clear();
-				root.getChildren().add(addMedicineFrame);
+				root.getChildren().add(addSanPhamFrame);
 
 			} catch (IOException e) {
-				Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
+				Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, e);
 			}
 		});
 
-		addMedicineBtn.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransition(addMedicineBtn, 1, 0.7, 200, () -> {
+		addSanPhamBtn.setOnMouseEntered(event -> {
+			NodeUtil.applyFadeTransition(addSanPhamBtn, 1, 0.7, 200, () -> {
 			});
 		});
 
-		addMedicineBtn.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransition(addMedicineBtn, 0.7, 1, 200, () -> {
+		addSanPhamBtn.setOnMouseExited(event -> {
+			NodeUtil.applyFadeTransition(addSanPhamBtn, 0.7, 1, 200, () -> {
 			});
 		});
 	}
 
 	@FXML
-	public void renderMedicines(String type) throws SQLException {
-		idColumn.setCellValueFactory(new PropertyValueFactory<>("maThuoc"));
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenThuoc"));
+	public void renderSanPhams(String type) throws SQLException {
+		idColumn.setCellValueFactory(new PropertyValueFactory<>("maSanPham"));
+		nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
 		manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngaySX"));
 		descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("moTa"));
 		priceColumn.setCellValueFactory(new PropertyValueFactory<>("donGiaBan"));
@@ -210,7 +278,7 @@ public class Thuoc_GUI {
 		unitColumn.setCellValueFactory(new PropertyValueFactory<>("donViTinh"));
 		statusColumn.setCellValueFactory(new PropertyValueFactory<>("trangThai"));
 
-		manufactureDateColumn.setCellFactory(col -> new TableCell<Thuoc, LocalDate>() {
+		manufactureDateColumn.setCellFactory(col -> new TableCell<SanPham, LocalDate>() {
 			@Override
 			protected void updateItem(LocalDate item, boolean empty) {
 				super.updateItem(item, empty);
@@ -222,7 +290,7 @@ public class Thuoc_GUI {
 			}
 		});
 
-		expirationDateColumn.setCellFactory(col -> new TableCell<Thuoc, LocalDate>() {
+		expirationDateColumn.setCellFactory(col -> new TableCell<SanPham, LocalDate>() {
 			@Override
 			protected void updateItem(LocalDate item, boolean empty) {
 				super.updateItem(item, empty);
@@ -235,16 +303,16 @@ public class Thuoc_GUI {
 		});
 
 		switch (type) {
-			case "Tất cả thuốc" -> medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getAllThuoc());
+			case "Tất cả thuốc" -> medicineList = FXCollections.observableArrayList(new SanPham_BUS().getAllSanPham());
 
 			case "Thuốc sắp hết hạn" ->
-				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocSapHetHanSuDung());
+				medicineList = FXCollections.observableArrayList(new SanPham_BUS().getSanPhamSapHetHanSuDung());
 
 			case "Thuốc đã hết hạn" ->
-				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocDaHetHan());
+				medicineList = FXCollections.observableArrayList(new SanPham_BUS().getSanPhamDaHetHan());
 
 			case "Thuốc có số lượng tồn kho thấp" ->
-				medicineList = FXCollections.observableArrayList(new Thuoc_BUS().getThuocSapHetTonKho());
+				medicineList = FXCollections.observableArrayList(new SanPham_BUS().getSanPhamSapHetTonKho());
 
 			default -> {
 			}
@@ -252,14 +320,14 @@ public class Thuoc_GUI {
 
 		medicineTable.setItems(medicineList);
 
-		handleSearchMedicineAction(medicineList);
+		handleSearchSanPhamAction(medicineList);
 
-		handleEditableMedicineTable();
+		handleEditableSanPhamTable();
 	}
 
 	@FXML
-	public void handleEditableMedicineTable() {
-		setColumnEditable(nameColumn, "tenThuoc");
+	public void handleEditableSanPhamTable() {
+		setColumnEditable(nameColumn, "tenSanPham");
 		setColumnEditable(descriptionColumn, "moTa");
 		setColumnEditable(priceColumn, "donGiaBan");
 		setColumnEditable(availableQuantityColumn, "soLuongTon");
@@ -281,8 +349,8 @@ public class Thuoc_GUI {
 		}
 	}
 
-	private void setFloatComboBoxColumnEditable(TableColumn<Thuoc, Float> column, String property, String[] options) {
-		column.setCellFactory(col -> new TableCell<Thuoc, Float>() {
+	private void setFloatComboBoxColumnEditable(TableColumn<SanPham, Float> column, String property, String[] options) {
+		column.setCellFactory(col -> new TableCell<SanPham, Float>() {
 			private final ComboBox<String> comboBox = new ComboBox<>();
 
 			{
@@ -336,7 +404,7 @@ public class Thuoc_GUI {
 		});
 
 		column.setOnEditCommit(event -> {
-			Thuoc medicine = event.getRowValue();
+			SanPham medicine = event.getRowValue();
 			Object newValue = event.getNewValue();
 
 			if (newValue != null) {
@@ -347,8 +415,9 @@ public class Thuoc_GUI {
 		});
 	}
 
-	private void setStringComboBoxColumnEditable(TableColumn<Thuoc, String> column, String property, String[] options) {
-		column.setCellFactory(col -> new TableCell<Thuoc, String>() {
+	private void setStringComboBoxColumnEditable(TableColumn<SanPham, String> column, String property,
+			String[] options) {
+		column.setCellFactory(col -> new TableCell<SanPham, String>() {
 			private final ComboBox<String> comboBox = new ComboBox<>();
 
 			{
@@ -360,7 +429,7 @@ public class Thuoc_GUI {
 				});
 
 				comboBox.setOnAction(event -> {
-					commitEdit((comboBox.getValue()));
+					commitEdit((comboBox.getValue().trim()));
 				});
 
 				comboBox.getItems().addAll(options);
@@ -387,7 +456,7 @@ public class Thuoc_GUI {
 			@Override
 			public void startEdit() {
 				super.startEdit();
-				comboBox.setValue(getItem());
+				comboBox.setValue(getItem().trim());
 				setGraphic(comboBox);
 				setText(null);
 				comboBox.requestFocus();
@@ -396,13 +465,13 @@ public class Thuoc_GUI {
 			@Override
 			public void cancelEdit() {
 				super.cancelEdit();
-				setText(getItem() == null ? "" : getItem());
+				setText(getItem() == null ? "" : getItem().trim());
 				setGraphic(null);
 			}
 		});
 
 		column.setOnEditCommit(event -> {
-			Thuoc medicine = event.getRowValue();
+			SanPham medicine = event.getRowValue();
 			Object newValue = event.getNewValue();
 
 			if (newValue != null) {
@@ -413,9 +482,9 @@ public class Thuoc_GUI {
 		});
 	}
 
-	private void setDateColumnEditable(TableColumn<Thuoc, LocalDate> column, String property) {
+	private void setDateColumnEditable(TableColumn<SanPham, LocalDate> column, String property) {
 
-		column.setCellFactory(col -> new TableCell<Thuoc, LocalDate>() {
+		column.setCellFactory(col -> new TableCell<SanPham, LocalDate>() {
 			private final DatePicker datePicker = new DatePicker();
 
 			{
@@ -466,7 +535,7 @@ public class Thuoc_GUI {
 		});
 
 		column.setOnEditCommit(event -> {
-			Thuoc medicine = event.getRowValue();
+			SanPham medicine = event.getRowValue();
 			Object newValue = event.getNewValue();
 
 			if (newValue != null) {
@@ -478,11 +547,11 @@ public class Thuoc_GUI {
 
 	}
 
-	private <T> void setColumnEditable(TableColumn<Thuoc, T> column, String property) {
+	private <T> void setColumnEditable(TableColumn<SanPham, T> column, String property) {
 		column.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<T>() {
 			@Override
 			public String toString(T object) {
-				return object == null ? "" : object.toString();
+				return object == null ? "" : object.toString().trim();
 			}
 
 			@Override
@@ -494,7 +563,7 @@ public class Thuoc_GUI {
 					} else if (column.getCellData(0) instanceof Integer) {
 						return (T) Integer.valueOf(string);
 					}
-					return (T) string;
+					return (T) string.trim();
 				} catch (Exception e) {
 					return null;
 				}
@@ -502,7 +571,7 @@ public class Thuoc_GUI {
 		}));
 
 		column.setOnEditCommit(event -> {
-			Thuoc medicine = event.getRowValue();
+			SanPham medicine = event.getRowValue();
 			Object newValue = event.getNewValue();
 
 			if (newValue != null) {
@@ -541,12 +610,12 @@ public class Thuoc_GUI {
 	}
 
 	@FXML
-	public <T> void showChangeTableConfirmationPopup(Thuoc medicine, Object newValue,
-			TableColumn.CellEditEvent<Thuoc, T> event, String property) {
+	public <T> void showChangeTableConfirmationPopup(SanPham medicine, Object newValue,
+			TableColumn.CellEditEvent<SanPham, T> event, String property) {
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Xác nhận thay đổi");
-		alert.setHeaderText("Thay đổi thông tin thuốc " + medicine.getTenThuoc());
-		alert.setContentText("Mã thuốc: " + medicine.getMaThuoc());
+		alert.setHeaderText("Thay đổi thông tin thuốc " + medicine.getTenSanPham());
+		alert.setContentText("Mã thuốc: " + medicine.getMaSanPham());
 
 		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 		stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
@@ -593,16 +662,16 @@ public class Thuoc_GUI {
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.isPresent() && result.get() == confirmButton) {
 			try {
-				PropertyDescriptor pd = new PropertyDescriptor(property, Thuoc.class);
+				PropertyDescriptor pd = new PropertyDescriptor(property, SanPham.class);
 				pd.getWriteMethod().invoke(medicine, newValue);
-				if (new Thuoc_BUS().updateThuoc(medicine)) {
+				if (new SanPham_BUS().updateSanPham(medicine)) {
 					System.out.println("Input successfully.");
 					event.consume();
 				} else {
 					showInvalidInputDataDialog();
 				}
 			} catch (Exception ex) {
-				Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		} else {
 			event.consume();
@@ -610,18 +679,18 @@ public class Thuoc_GUI {
 	}
 
 	@FXML
-	public void handleSearchMedicineAction(ObservableList<Thuoc> medicineList) {
-		FilteredList<Thuoc> filteredList = new FilteredList<>(medicineList, b -> true);
+	public void handleSearchSanPhamAction(ObservableList<SanPham> medicineList) {
+		FilteredList<SanPham> filteredList = new FilteredList<>(medicineList, b -> true);
 
-		searchMedicineBtn.setOnAction(event -> {
+		searchSanPhamBtn.setOnAction(event -> {
 			filteredList.setPredicate(medicine -> {
 				if (searchField.getText() == null || searchField.getText().isEmpty()) {
 					return true;
 				}
 
 				String lowerCaseFilter = searchField.getText().toLowerCase();
-				return medicine.getMaThuoc().toLowerCase().contains(lowerCaseFilter) ||
-						medicine.getTenThuoc().toLowerCase().contains(lowerCaseFilter) ||
+				return medicine.getMaSanPham().toLowerCase().contains(lowerCaseFilter) ||
+						medicine.getTenSanPham().toLowerCase().contains(lowerCaseFilter) ||
 						(Double.toString(medicine.getDonGiaBan()).contains(lowerCaseFilter)) ||
 						(medicine.getNhaSX() != null && medicine.getNhaSX().toLowerCase().contains(lowerCaseFilter)) ||
 						Integer.toString(medicine.getSoLuongTon()).contains(lowerCaseFilter) ||
@@ -644,8 +713,8 @@ public class Thuoc_GUI {
 				}
 
 				String lowerCaseFilter = newValue.toLowerCase();
-				return medicine.getMaThuoc().toLowerCase().contains(lowerCaseFilter) ||
-						medicine.getTenThuoc().toLowerCase().contains(lowerCaseFilter) ||
+				return medicine.getMaSanPham().toLowerCase().contains(lowerCaseFilter) ||
+						medicine.getTenSanPham().toLowerCase().contains(lowerCaseFilter) ||
 						(Double.toString(medicine.getDonGiaBan()).contains(lowerCaseFilter)) ||
 						(medicine.getNhaSX() != null && medicine.getNhaSX().toLowerCase().contains(lowerCaseFilter)) ||
 						Integer.toString(medicine.getSoLuongTon()).contains(lowerCaseFilter) ||
@@ -665,7 +734,7 @@ public class Thuoc_GUI {
 	}
 
 	@FXML
-	private void handleExportMedicineList() {
+	private void handleExportSanPhamList() {
 		exportListBtn.setOnMouseEntered(event -> {
 			NodeUtil.applyFadeTransition(exportListBtn, 1, 0.6, 300, () -> {
 			});
@@ -678,17 +747,17 @@ public class Thuoc_GUI {
 
 		exportListBtn.setOnAction(event -> {
 			try {
-				exportMedicinesToPdf("src/main/resources/pdf/DanhSachThuoc.pdf");
+				exportSanPhamsToPdf("src/main/resources/pdf/DanhSachSanPham.pdf");
 				PDFUtil.showPdfPreview(
-						new File(getClass().getClassLoader().getResource("pdf/DanhSachThuoc.pdf").toURI()));
+						new File(getClass().getClassLoader().getResource("pdf/DanhSachSanPham.pdf").toURI()));
 			} catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException | SQLException e) {
-				Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
+				Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, e);
 			}
 
 		});
 	}
 
-	private void exportMedicinesToPdf(String outputPdfPath) throws SQLException {
+	private void exportSanPhamsToPdf(String outputPdfPath) throws SQLException {
 		try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
 				PdfDocument pdfDoc = new PdfDocument(writer)) {
 
@@ -766,9 +835,9 @@ public class Thuoc_GUI {
 				table.addHeaderCell(new Cell().add(new Paragraph("Số lượng tồn").setFont(font).setFontSize(8))
 						.setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
-				for (Thuoc medicine : medicineList) {
-					table.addCell(new Paragraph(medicine.getMaThuoc()).setFont(font).setFontSize(8));
-					table.addCell(new Paragraph(medicine.getTenThuoc()).setFont(font).setFontSize(8));
+				for (SanPham medicine : medicineList) {
+					table.addCell(new Paragraph(medicine.getMaSanPham()).setFont(font).setFontSize(8));
+					table.addCell(new Paragraph(medicine.getTenSanPham()).setFont(font).setFontSize(8));
 					table.addCell(new Paragraph(medicine.getDonViTinh()).setFont(font).setFontSize(8));
 					table.addCell(new Paragraph(medicine.getNhaSX()).setFont(font).setFontSize(8));
 					table.addCell(new Paragraph(medicine.getNgaySX().toString()).setFont(font).setFontSize(8));
@@ -782,7 +851,7 @@ public class Thuoc_GUI {
 			}
 			System.out.println("\n\nPDF generated.\n\n");
 		} catch (IOException e) {
-			Logger.getLogger(Thuoc_GUI.class.getName()).log(Level.SEVERE, null, e);
+			Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, e);
 		}
 	}
 

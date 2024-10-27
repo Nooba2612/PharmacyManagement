@@ -14,29 +14,59 @@ public class NhanVien {
     private String trinhDo;
     private String gioiTinh;
     private LocalDate namSinh;
+    private double tienLuong;
+    private String cccd;
 
     public NhanVien() {
     }
 
     public NhanVien(String maNhanVien, String hoTen, String chucVu, String soDienThoai, String email,
             LocalDate ngayVaoLam, String trangThai, String trinhDo,
-            String gioiTinh, LocalDate namSinh) {
+            String gioiTinh, LocalDate namSinh, double tienLuong, String cccd) {
         this.maNhanVien = maNhanVien;
         this.hoTen = hoTen;
         this.chucVu = chucVu;
         this.soDienThoai = soDienThoai;
+        this.email = email;
         this.ngayVaoLam = ngayVaoLam;
         this.trangThai = trangThai;
         this.trinhDo = trinhDo;
         this.gioiTinh = gioiTinh;
         this.namSinh = namSinh;
-        this.email = email;
+        this.tienLuong = tienLuong;
+        this.cccd = cccd;
     }
 
     public NhanVien(NhanVien nv) {
         this(nv.getMaNhanVien(), nv.getHoTen(), nv.getChucVu(),
                 nv.getSoDienThoai(), nv.getEmail(), nv.getNgayVaoLam(), nv.getTrangThai(),
-                nv.getTrinhDo(), nv.getGioiTinh(), nv.getNamSinh());
+                nv.getTrinhDo(), nv.getGioiTinh(), nv.getNamSinh(),
+                nv.getTienLuong(), nv.getCccd());
+    }
+
+    public double getTienLuong() {
+        return tienLuong;
+    }
+
+    public void setTienLuong(double tienLuong) {
+        if (tienLuong < 0) {
+            throw new IllegalArgumentException("Tiền lương không được nhỏ hơn 0");
+        }
+        this.tienLuong = tienLuong;
+    }
+
+    public String getCccd() {
+        if (cccd == null || !Pattern.matches("\\d{12}", cccd)) {
+            throw new IllegalArgumentException("CCCD không hợp lệ");
+        }
+        return cccd;
+    }
+
+    public void setCccd(String cccd) {
+        if (cccd == null || !Pattern.matches("\\d{12}", cccd)) {
+            throw new IllegalArgumentException("CCCD không hợp lệ");
+        }
+        this.cccd = cccd;
     }
 
     public String getMaNhanVien() {
@@ -66,14 +96,6 @@ public class NhanVien {
 
     public String getChucVu() {
         return chucVu;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public void setChucVu(String chucVu) {
@@ -131,6 +153,14 @@ public class NhanVien {
         this.namSinh = namSinh;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "NhanVien{" +
@@ -138,12 +168,14 @@ public class NhanVien {
                 ", hoTen='" + hoTen + '\'' +
                 ", chucVu='" + chucVu + '\'' +
                 ", soDienThoai='" + soDienThoai + '\'' +
+                ", email='" + email + '\'' +
                 ", ngayVaoLam=" + ngayVaoLam +
                 ", trangThai='" + trangThai + '\'' +
-                ", email='" + email + '\'' +
                 ", trinhDo='" + trinhDo + '\'' +
                 ", gioiTinh='" + gioiTinh + '\'' +
                 ", namSinh=" + namSinh +
+                ", tienLuong=" + tienLuong +
+                ", cccd='" + cccd + '\'' +
                 '}';
     }
 }

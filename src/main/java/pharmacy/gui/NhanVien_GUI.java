@@ -1,14 +1,12 @@
 package pharmacy.gui;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.Optional;
 
@@ -44,11 +42,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 import pharmacy.bus.NhanVien_BUS;
-import pharmacy.bus.NhanVien_BUS;
-import pharmacy.entity.NhanVien;
-import pharmacy.entity.Thuoc;
-import pharmacy.entity.NhanVien;
-import pharmacy.entity.NhanVien;
 import pharmacy.entity.NhanVien;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.PDFUtil;
@@ -59,7 +52,6 @@ import java.util.logging.Logger;
 
 import com.itextpdf.io.font.PdfEncodings;
 import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;

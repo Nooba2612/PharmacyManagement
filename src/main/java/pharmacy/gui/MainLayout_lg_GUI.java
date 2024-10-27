@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -25,7 +24,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import pharmacy.bus.TaiKhoan_BUS;
 import pharmacy.utils.NodeUtil;
 
@@ -72,9 +70,6 @@ public class MainLayout_lg_GUI {
 
     @FXML
     private HBox header;
-
-    @FXML
-    private VBox category;
 
     @FXML
     private Pane logoutBtn;
@@ -166,41 +161,41 @@ public class MainLayout_lg_GUI {
             });
         }
 
-        // handle open and close category bar
+        // handle open and close menu bar
         menuBtn.setOnMouseClicked(event -> {
-            double categoryDefaultWidth = 265;
+            double menuDefaultWidth = 265;
 
-            if (category.isVisible()) {
+            if (menu.isVisible()) {
 
-                double newWidth = screenWidth + category.getPrefWidth();
+                double newWidth = screenWidth + menu.getPrefWidth();
 
-                NodeUtil.applyFadeTransition(category, 1, 0, 300, () -> {
-                    category.setVisible(false);
-                    category.setPrefWidth(0);
+                NodeUtil.applyFadeTransition(menu, 1, 0, 300, () -> {
+                    menu.setVisible(false);
+                    menu.setPrefWidth(0);
                 });
 
-                NodeUtil.applyTranslateXTransition(mainContentPane, 0, -(category.getPrefWidth()), 200, () -> {
+                NodeUtil.applyTranslateXTransition(mainContentPane, 0, -(menu.getPrefWidth()), 200, () -> {
                     mainContentPane.setTranslateX(0);
 
                 });
 
-                NodeUtil.applyTranslateXTransition(category, 0, -(category.getPrefWidth()), 200, () -> {
+                NodeUtil.applyTranslateXTransition(menu, 0, -(menu.getPrefWidth()), 200, () -> {
                     mainContentPane.setMinWidth(newWidth);
                 });
             } else {
-                category.setPrefWidth(categoryDefaultWidth);
-                category.setVisible(true);
+                menu.setPrefWidth(menuDefaultWidth);
+                menu.setVisible(true);
 
-                double newWidth = screenWidth - category.getPrefWidth();
+                double newWidth = screenWidth - menu.getPrefWidth();
 
-                NodeUtil.applyFadeTransition(category, 0, 1, 300, () -> {
-
-                });
-
-                NodeUtil.applyTranslateXTransition(category, -(category.getPrefWidth()), 0, 200, () -> {
+                NodeUtil.applyFadeTransition(menu, 0, 1, 300, () -> {
 
                 });
-                NodeUtil.applyTranslateXTransition(mainContentPane, 0, category.getPrefWidth(), 200, () -> {
+
+                NodeUtil.applyTranslateXTransition(menu, -(menu.getPrefWidth()), 0, 200, () -> {
+
+                });
+                NodeUtil.applyTranslateXTransition(mainContentPane, 0, menu.getPrefWidth(), 200, () -> {
                     mainContentPane.setMinWidth(newWidth);
                     mainContentPane.setTranslateX(0);
                 });
@@ -221,12 +216,13 @@ public class MainLayout_lg_GUI {
             case "employeesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhanVien_GUI.fxml"));
             case "workScheduleBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/LichLam_GUI.fxml"));
             case "suppliersBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhaCungCap_GUI.fxml"));
-            case "medicinesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/Thuoc_GUI.fxml"));
+            case "medicinesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/SanPham_GUI.fxml"));
             case "invoicesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/HoaDon_GUI.fxml"));
             case "equipmentsBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThietBiYTe_GUI.fxml"));
             case "goodsReceiptBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/PhieuNhap_GUI.fxml"));
-            case "categoryBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/DanhMuc_GUI.fxml"));
+            case "saleBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/BanHang_GUI.fxml"));
             case "aboutUsBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/GioiThieuChung_GUI.fxml"));
+            case "settingBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/CaiDat_GUI.fxml"));
             default -> throw new IllegalArgumentException("Không có nút nào tương ứng với ID: " + buttonId);
         }
 
@@ -293,29 +289,21 @@ public class MainLayout_lg_GUI {
         profilePopover.setVisible(false);
         profilePopover.setLayoutX(screen.getBounds().getWidth() - profilePopover.getPrefWidth() - 10);
         List<Node> profilePopoverItemList = profilePopover.getChildren();
-        Node moreIcon = userInfo.getChildren().get(2);
 
         username.setText(new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getHoTen());
         userRole.setText(new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getChucVu());
 
         userInfo.setOnMouseClicked(event -> {
-            if (profilePopover.isVisible()) {
-                userInfo.setStyle("-fx-background-color: transparent;");
-                NodeUtil.applyFadeTransition(profilePopover, 1.0, 0.0, 300, () -> profilePopover.setVisible(false));
-                NodeUtil.applyTranslateYTransition(profilePopover, 0, -20, 300, () -> {
-                });
-                NodeUtil.applyRotateTransition(moreIcon, 180, 0, 200, () -> {
-                });
-            } else {
-                profilePopover.setVisible(true);
-                NodeUtil.applyFadeTransition(profilePopover, 0.0, 1.0, 300, () -> {
-                });
-                NodeUtil.applyTranslateYTransition(profilePopover, -20, 0, 300, () -> {
-                });
-                userInfo.setStyle("-fx-background-color: #2DCB2D;");
-                NodeUtil.applyRotateTransition(moreIcon, 0, 180, 200, () -> {
-                });
+            handleProfilePopoverShowHide();
+        });
+
+        settingBtn.setOnMouseClicked(event -> {
+            try {
+                handeChangeFrame(settingBtn);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            handleProfilePopoverShowHide();
         });
 
         for (Node item : profilePopoverItemList) {
@@ -325,6 +313,29 @@ public class MainLayout_lg_GUI {
 
             item.setOnMouseExited(event -> {
                 item.setStyle("-fx-background-color: #FFF;");
+            });
+        }
+    }
+
+    @FXML
+    public void handleProfilePopoverShowHide() {
+        Node moreIcon = userInfo.getChildren().get(2);
+
+        if (profilePopover.isVisible()) {
+            userInfo.setStyle("-fx-background-color: transparent;");
+            NodeUtil.applyFadeTransition(profilePopover, 1.0, 0.0, 300, () -> profilePopover.setVisible(false));
+            NodeUtil.applyTranslateYTransition(profilePopover, 0, -20, 300, () -> {
+            });
+            NodeUtil.applyRotateTransition(moreIcon, 180, 0, 200, () -> {
+            });
+        } else {
+            profilePopover.setVisible(true);
+            NodeUtil.applyFadeTransition(profilePopover, 0.0, 1.0, 300, () -> {
+            });
+            NodeUtil.applyTranslateYTransition(profilePopover, -20, 0, 300, () -> {
+            });
+            userInfo.setStyle("-fx-background-color: #2DCB2D;");
+            NodeUtil.applyRotateTransition(moreIcon, 0, 180, 200, () -> {
             });
         }
     }

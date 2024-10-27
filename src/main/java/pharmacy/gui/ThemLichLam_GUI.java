@@ -11,7 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import pharmacy.entity.*;
+import pharmacy.entity.NhanVien;
 import pharmacy.utils.NodeUtil;
 
 public class ThemLichLam_GUI {
@@ -61,13 +61,13 @@ public class ThemLichLam_GUI {
 	public void handleSuggestEmployees() {
 		ObservableList<NhanVien> suggestedEmployees = FXCollections.observableArrayList(
 				new NhanVien("MK0001", "Nguyễn Văn A", "a@example.com", "0123456789","ccc@getEmail.com", LocalDate.of(2020, 1, 1),
-						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1990, 1, 1)),
+						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1990, 1, 1), 0, ""),
 				new NhanVien("MK0002", "Nguyễn Văn B", "b@example.com", "0123456788","ccc@getEmail.com", LocalDate.of(2020, 1, 1),
-						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1991, 1, 1)),
+						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1991, 1, 1), 0, ""),
 				new NhanVien("MK0003", "Nguyễn Văn C", "c@example.com", "0123456787","ccc@getEmail.com", LocalDate.of(2020, 1, 1),
-						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1992, 1, 1)),
+						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1992, 1, 1), 0, ""),
 				new NhanVien("MK0004", "Nguyễn Văn D", "d@example.com", "0123456786","ccc@getEmail.com", LocalDate.of(2020, 1, 1),
-						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1993, 1, 1)));
+						"Hoạt động", "Cấp 1", "Nam", LocalDate.of(1993, 1, 1), 0, ""));
 
 		employeeList.getItems().addAll(suggestedEmployees);
 

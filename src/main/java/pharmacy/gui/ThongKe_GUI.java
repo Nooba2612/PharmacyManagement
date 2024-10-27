@@ -89,10 +89,10 @@ public class ThongKe_GUI {
 	private Text totalInvoiceQuantity;
 
 	@FXML
-	private Text totalMedicineLowExpirationQuantity;
+	private Text totalProductLowExpirationQuantity;
 
 	@FXML
-	private Text totalMedicineLowQuantity;
+	private Text totalProductLowQuantity;
 
 	@FXML
 	private Text totalMedicineQuantity;
@@ -448,15 +448,15 @@ public class ThongKe_GUI {
 
 		totalEmployeeQuantity.setText(Integer.toString(new NhanVien_BUS().countEmployees()));
 
-		totalEquipmentQuantity.setText(Integer.toString(new ThietBiYTe_BUS().countThietBiYTe()));
-
 		totalInvoiceQuantity.setText(Integer.toString(new HoaDon_BUS().countHoaDon()));
 
-		totalMedicineLowExpirationQuantity.setText(Integer.toString(new Thuoc_BUS().countThuocSapHetHanSuDung()));
+		totalProductLowExpirationQuantity.setText(Integer.toString(new SanPham_BUS().countSanPhamSapHetHanSuDung()));
 
-		totalMedicineLowQuantity.setText(Integer.toString(new Thuoc_BUS().countThuocSapHetTonKho()));
+		totalProductLowQuantity.setText(Integer.toString(new SanPham_BUS().countSanPhamSapHetTonKho()));
 
-		totalMedicineQuantity.setText(Integer.toString(new Thuoc_BUS().countThuoc()));
+		totalMedicineQuantity.setText(Integer.toString(new SanPham_BUS().countThuoc()));
+
+		totalEquipmentQuantity.setText(Integer.toString(new SanPham_BUS().countThietBiYTe()));
 
 		totalRevenue.setText(new HoaDon_BUS().calculateTotalRevenue());
 
@@ -544,76 +544,31 @@ public class ThongKe_GUI {
 
 	@FXML
 	public void renderTopSaleProductTable(String selectedType, LocalDate date) throws SQLException {
-		List<Thuoc> topMedicineList = new ArrayList<>();
-		List<ThietBiYTe> topEquipmentList = new ArrayList<>();
-		List<SanPham> productList = new ArrayList<>();
+		List<SanPham> topProductList = new ArrayList<>();
 
 		switch (selectedType) {
 			case "Ngày":
-				topMedicineList = new Thuoc_BUS().getTopSaleThuocByDate(date.toString());
-				topEquipmentList = new ThietBiYTe_BUS().getTopSaleThietBiYTeByDate(date.toString());
-				for (Thuoc item : topMedicineList) {
-					int soLuongDaBan = new Thuoc_BUS().getSoldQuantityById(item.getMaThuoc(), date.toString());
-					SanPham sanPham = new SanPham(item.getMaThuoc(), item.getTenThuoc(), "Thuốc", soLuongDaBan,
-							item.getDonGiaBan());
-					productList.add(sanPham);
-				}
+				topProductList = new SanPham_BUS().getTopSaleSanPhamByDate(date.toString());
 
-				for (ThietBiYTe item : topEquipmentList) {
-					int soLuongDaBan = new Thuoc_BUS().getSoldQuantityById(item.getMaThietBi(), date.toString());
-					SanPham sanPham = new SanPham(item.getMaThietBi(), item.getTenThietBi(), "Thiết bị y tế",
-							soLuongDaBan,
-							item.getDonGiaBan());
-					productList.add(sanPham);
-				}
 				break;
 
 			case "Tháng":
 				YearMonth yearMonth = YearMonth.of(date.getYear(), date.getMonth());
-				topMedicineList = new Thuoc_BUS().getTopSaleThuocByDate(yearMonth.toString());
-				topEquipmentList = new ThietBiYTe_BUS().getTopSaleThietBiYTeByDate(yearMonth.toString());
+				topProductList = new SanPham_BUS().getTopSaleSanPhamByDate(yearMonth.toString());
 
-				for (Thuoc item : topMedicineList) {
-					int soLuongDaBan = new Thuoc_BUS().getSoldQuantityById(item.getMaThuoc(), yearMonth.toString());
-					SanPham sanPham = new SanPham(item.getMaThuoc(), item.getTenThuoc(), "Thuốc", soLuongDaBan,
-							item.getDonGiaBan());
-					productList.add(sanPham);
-				}
-
-				for (ThietBiYTe item : topEquipmentList) {
-					int soLuongDaBan = new Thuoc_BUS().getSoldQuantityById(item.getMaThietBi(), yearMonth.toString());
-					SanPham sanPham = new SanPham(item.getMaThietBi(), item.getTenThietBi(), "Thiết bị y tế",
-							soLuongDaBan,
-							item.getDonGiaBan());
-					productList.add(sanPham);
-				}
 				break;
 
 			case "Năm":
 				String year = String.valueOf(date.getYear());
-				topMedicineList = new Thuoc_BUS().getTopSaleThuocByDate(year);
-				topEquipmentList = new ThietBiYTe_BUS().getTopSaleThietBiYTeByDate(year);
-				for (Thuoc item : topMedicineList) {
-					int soLuongDaBan = new Thuoc_BUS().getSoldQuantityById(item.getMaThuoc(), year.toString());
-					SanPham sanPham = new SanPham(item.getMaThuoc(), item.getTenThuoc(), "Thuốc", soLuongDaBan,
-							item.getDonGiaBan());
-					productList.add(sanPham);
-				}
+				topProductList = new SanPham_BUS().getTopSaleSanPhamByDate(year);
 
-				for (ThietBiYTe item : topEquipmentList) {
-					int soLuongDaBan = new Thuoc_BUS().getSoldQuantityById(item.getMaThietBi(), year.toString());
-					SanPham sanPham = new SanPham(item.getMaThietBi(), item.getTenThietBi(), "Thiết bị y tế",
-							soLuongDaBan,
-							item.getDonGiaBan());
-					productList.add(sanPham);
-				}
 				break;
 
 			default:
 				break;
 		}
 
-		ObservableList<SanPham> observableList = FXCollections.observableArrayList(productList);
+		ObservableList<SanPham> observableList = FXCollections.observableArrayList(topProductList);
 
 		productTopColumn.setCellValueFactory(
 				cellData -> new SimpleIntegerProperty(observableList.indexOf(cellData.getValue()) + 1).asObject());
@@ -622,7 +577,6 @@ public class ThongKe_GUI {
 		productNameColumn.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
 		productTypeColumn.setCellValueFactory(new PropertyValueFactory<>("loaiSanPham"));
 		productPriceColumn.setCellValueFactory(new PropertyValueFactory<>("donGiaBan"));
-		soldQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("soLuongDaBan"));
 
 		topProductTable.setItems(observableList);
 	}
