@@ -1,117 +1,159 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane prefHeight="777.0" prefWidth="1243.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="435.0" layoutY="8.0" prefHeight="47.0" prefWidth="373.0" text="Thành viên trong nhóm">
-         <font>
-            <Font name="System Bold" size="32.0" />
-         </font>
-      </Label>
-      <Line endX="806.800048828125" endY="-57.000003814697266" layoutX="385.0" layoutY="118.0" startX="-327.6000061035156" startY="-57.000003814697266" />
-      <Pane layoutX="81.0" layoutY="119.0" prefHeight="190.0" prefWidth="387.0" style="-fx-background-color: #fff; -fx-border-color: #ccc; -fx-border-width: 0 2px 2px 0;">
+      <Pane prefHeight="756.0" prefWidth="1266.0" style="-fx-background-color: #fff;">
          <children>
-            <ImageView fitHeight="91.0" fitWidth="94.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="171.0" fitWidth="363.0" layoutX="46.0" layoutY="35.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../images/Thien.png" />
+                  <Image url="@../images/LogoIUH.jpg" />
                </image>
             </ImageView>
-            <Text layoutX="111.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thân Hoàng Thiên Thiên" wrappingWidth="228.0">
+            <Text layoutX="739.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BỘ CÔNG THƯƠNG">
                <font>
-                  <Font size="21.0" />
+                  <Font size="24.0" />
                </font>
             </Text>
-            <Text layoutX="111.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="22687721" wrappingWidth="228.0">
+            <Text layoutX="533.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TRƯỜNG ĐẠI HỌC CÔNG NGHIỆP THÀNH PHỐ HỒ CHÍ MINH" wrappingWidth="834.9523620605469">
                <font>
-                  <Font size="21.0" />
+                  <Font size="24.0" />
                </font>
             </Text>
-            <Button layoutX="243.0" layoutY="134.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="105.0" style="-fx-background-color: #339966;" text="Xem thêm" textFill="WHITE">
+            <Text layoutX="686.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="KHOA CÔNG NGHỆ THÔNG TIN">
                <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
-         </children>
-      </Pane>
-      <Pane layoutX="680.0" layoutY="119.0" prefHeight="190.0" prefWidth="387.0" style="-fx-background-color: #fff; -fx-border-color: #ccc; -fx-border-width: 0 2px 2px 0;">
-         <children>
-            <ImageView fitHeight="91.0" fitWidth="94.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/Man.png" />
-               </image>
-            </ImageView>
-            <Text layoutX="129.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nguyễn Phan Minh Mẫn">
-               <font>
-                  <Font size="21.0" />
+                  <Font size="24.0" />
                </font>
             </Text>
-            <Text layoutX="128.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="22679171" wrappingWidth="228.0">
+            <Text layoutX="467.0" layoutY="269.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MÔN: PHÁT TRIỂN ỨNG DỤNG">
                <font>
-                  <Font size="21.0" />
+                  <Font size="24.0" />
                </font>
             </Text>
-            <Button layoutX="251.0" layoutY="134.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="105.0" style="-fx-background-color: #339966;" text="Xem thêm" textFill="WHITE">
+            <Text layoutX="906.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LỚP HỌC PHẦN: DHKTPM18B">
                <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
-         </children>
-      </Pane>
-      <Pane layoutX="81.0" layoutY="363.0" prefHeight="190.0" prefWidth="387.0" style="-fx-background-color: #fff; -fx-border-color: #ccc; -fx-border-width: 0 2px 2px 0;">
-         <children>
-            <ImageView fitHeight="91.0" fitWidth="94.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/Nguyen.png" />
-               </image>
-            </ImageView>
-            <Text layoutX="113.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đặng Phúc Nguyên">
-               <font>
-                  <Font size="21.0" />
+                  <Font size="24.0" />
                </font>
             </Text>
-            <Text layoutX="113.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="22728691" wrappingWidth="228.0">
+            <Text layoutX="906.0" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" text="GIẢNG VIÊN: TRẦN THỊ ANH THI">
                <font>
-                  <Font size="21.0" />
+                  <Font size="24.0" />
                </font>
             </Text>
-            <Button layoutX="240.0" layoutY="134.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="105.0" style="-fx-background-color: #339966;" text="Xem thêm" textFill="WHITE">
+            <HBox layoutX="-1.0" layoutY="274.0" prefHeight="483.0" prefWidth="1266.0">
+               <children>
+                  <Pane prefHeight="483.0" prefWidth="1266.0">
+                     <children>
+                        <Text layoutX="680.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="THÀNH VIÊN TRONG NHÓM" wrappingWidth="316.86328125">
+                           <font>
+                              <Font name="System Bold" size="22.0" />
+                           </font>
+                        </Text>
+                        <Pane layoutX="457.0" layoutY="84.0" prefHeight="151.0" prefWidth="353.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Man.png" />
+                                 </image>
+                              </ImageView>
+                              <Text layoutX="148.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nguyễn Phan Minh Mẫn">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Text>
+                              <Text layoutX="209.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="22679171">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="865.0" layoutY="75.0" prefHeight="151.0" prefWidth="353.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Thien.png" />
+                                 </image>
+                              </ImageView>
+                              <Text layoutX="148.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thân Hoàng Thiên Thiên">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Text>
+                              <Text layoutX="209.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="22687721">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="457.0" layoutY="276.0" prefHeight="151.0" prefWidth="353.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Vy.png" />
+                                 </image>
+                              </ImageView>
+                              <Text layoutX="177.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vũ Ngọc Thúy Vy">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Text>
+                              <Text layoutX="209.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="22653241">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </Pane>
+                        <Pane layoutX="881.0" layoutY="267.0" prefHeight="151.0" prefWidth="353.0">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="195.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Nguyen.png" />
+                                 </image>
+                              </ImageView>
+                              <Text layoutX="177.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Đặng Phúc Nguyên">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Text>
+                              <Text layoutX="209.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="22728691">
+                                 <font>
+                                    <Font size="19.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </Pane>
+                        <Text layoutX="139.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MEDKIT" wrappingWidth="116.32550048828102">
+                           <font>
+                              <Font name="System Bold" size="30.0" />
+                           </font>
+                        </Text>
+                        <Line endX="242.4476318359375" endY="-127.5" layoutX="183.0" layoutY="130.0" startX="242.4476318359375" startY="353.20001220703125" />
+                        <ImageView fitHeight="175.0" fitWidth="145.0" layoutX="125.0" layoutY="195.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Logo.jpg" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </Pane>
+               </children>
+            </HBox>
+            <Line endX="930.84765625" layoutX="288.0" layoutY="276.0" startX="-230.7523956298828" />
+            <Text layoutX="533.0" layoutY="234.0" strokeType="OUTSIDE" strokeWidth="0.0" text="BÁO CÁO CUỐI KỲ">
                <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
-         </children>
-      </Pane>
-      <Pane layoutX="680.0" layoutY="363.0" prefHeight="190.0" prefWidth="387.0" style="-fx-background-color: #fff; -fx-border-color: #ccc; -fx-border-width: 0 2px 2px 0;">
-         <children>
-            <ImageView fitHeight="91.0" fitWidth="94.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/Vy.png" />
-               </image>
-            </ImageView>
-            <Text layoutX="122.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Võ Ngọc Thúy Vy">
-               <font>
-                  <Font size="21.0" />
+                  <Font size="24.0" />
                </font>
             </Text>
-            <Text layoutX="122.0" layoutY="97.0" strokeType="OUTSIDE" strokeWidth="0.0" text="22653241" wrappingWidth="228.0">
-               <font>
-                  <Font size="21.0" />
-               </font>
-            </Text>
-            <Button layoutX="245.0" layoutY="134.0" mnemonicParsing="false" prefHeight="42.0" prefWidth="105.0" style="-fx-background-color: #339966;" text="Xem thêm" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Button>
          </children>
       </Pane>
    </children>
-</Pane>
+</HBox>

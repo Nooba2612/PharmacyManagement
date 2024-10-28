@@ -22,7 +22,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="774.0" prefWidth="1242.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.BanHang_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="774.0" prefWidth="1242.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.BanHang_GUI">
     <children>
           <Pane prefHeight="822.0" prefWidth="1500.0" style="-fx-background-color: #fff;">
               <children>
@@ -37,7 +37,7 @@
                           <Font name="System Bold" size="14.0" />
                       </font>
                   </Label>
-                  <Label fx:id="employeeName" layoutX="153.0" layoutY="60.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="43.0" prefWidth="248.0" style="-fx-background-color: #f0f0f0; -fx-padding: 10px 15px; -fx-background-radius: 5px;" text="Đặng Phúc Nguyên" textFill="#767676">
+                  <Label fx:id="employeeName" layoutX="153.0" layoutY="60.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="43.0" prefWidth="248.0" style="-fx-background-color: #f0f0f0; -fx-padding: 10px 15px; -fx-background-radius: 5px;" text="Trần Thị B" textFill="#767676">
                       <font>
                           <Font size="14.0" />
                       </font>
@@ -140,7 +140,7 @@
                           <Cursor fx:constant="HAND" />
                       </cursor>
                   </ComboBox>
-                  <Button fx:id="exportInvoiceBtn" alignment="CENTER" layoutX="971.0" layoutY="678.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="236.0" style="-fx-background-color: #339933;" text="Xuất hóa đơn" textAlignment="CENTER" textFill="WHITE">
+                  <Button fx:id="exportInvoiceBtn" alignment="CENTER" layoutX="971.0" layoutY="678.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="236.0" style="-fx-background-color: #339933;" text="In hóa đơn" textAlignment="CENTER" textFill="WHITE">
                       <graphic>
                           <ImageView fitHeight="28.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                               <image>
