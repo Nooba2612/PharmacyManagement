@@ -2,7 +2,6 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -17,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.KhachHang_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.KhachHang_GUI">
 	<children>
 		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
 			<children>
@@ -85,12 +84,7 @@
 								</Button>
 							</children>
 						</Pane>
-                  <ComboBox fx:id="filter" layoutX="229.0" layoutY="27.0" prefHeight="40.0" prefWidth="174.0" promptText="Tất cả khách hàng" style="-fx-background-color: #f0f0f0;">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ComboBox>
-                  <Button fx:id="exportListBtn" layoutX="428.0" layoutY="27.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="In danh sách" textFill="WHITE">
+                  <Button fx:id="exportListBtn" layoutX="258.0" layoutY="27.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="In danh sách" textFill="WHITE">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
