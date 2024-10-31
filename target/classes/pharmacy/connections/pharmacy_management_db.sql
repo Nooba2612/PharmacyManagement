@@ -1,6 +1,7 @@
-﻿USE MASTER 
+﻿/*
+USE MASTER 
 DROP DATABASE medkit_pharmacy_management;
-CREATE DATABASE medkit_pharmacy_management;
+*/
 USE medkit_pharmacy_management;
 -- Nhân Viên
 CREATE TABLE NhanVien (
@@ -10,7 +11,7 @@ CREATE TABLE NhanVien (
     soDienThoai NVARCHAR(10) NOT NULL UNIQUE,
     email NVARCHAR(225) NOT NULL CHECK (email LIKE '%_@gmail.com'),
     ngayVaoLam DATETIME NOT NULL,
-    namSinh DATE NOT NULL CHECK (YEAR(GETDATE()) - YEAR(namSinh) >= 22),
+    namSinh DATETIME NOT NULL CHECK (YEAR(GETDATE()) - YEAR(namSinh) >= 22),
     trangThai NVARCHAR(50) CHECK (
         trangThai IN (N'Còn làm việc', N'Nghỉ phép', N'Đã nghỉ việc')
     ),
@@ -29,40 +30,28 @@ CREATE TABLE TaiKhoan (
 -- ISLOGGEDIN : 1
 UPDATE TaiKhoan
 SET isLoggedIn = 1
-WHERE tenDangNhap = 'MK0001' -- Sản Phẩm
-    CREATE TABLE SanPham (
-        maSanPham NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maSanPham LIKE 'SP____'),
-        tenSanPham NVARCHAR(255) NOT NULL,
-        danhMuc NVARCHAR(50) NOT NULL,
-        loaiSanPham NVARCHAR(50) NOT NULL,
-        ngaySX DATETIME NOT NULL,
-        nhaSX NVARCHAR(255) NOT NULL,
-        ngayTao DATETIME DEFAULT GETDATE(),
-        ngayCapNhat DATETIME DEFAULT GETDATE(),
-        soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
-        donGiaBan FLOAT NOT NULL CHECK (donGiaBan > 0),
-        thue FLOAT NOT NULL CHECK (
-            thue >= 0
-            AND thue <= 1
-        ),
-        hanSuDung DATETIME NOT NULL,
-        donViTinh NVARCHAR(50) NOT NULL CHECK (
-            donViTinh IN (
-                N'Cái',
-                N'Chiếc',
-                N'Bộ',
-                N'Hộp',
-                N'Gói',
-                N'Viên',
-                N'Vỉ',
-                N'Chai',
-                N'Ống',
-                N'Gói'
-            )
-        ),
-        moTa NVARCHAR(255),
-        trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn'
-    );
+
+-- Sản Phẩm
+CREATE TABLE SanPham (
+    maSanPham      NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maSanPham LIKE 'SP____'),
+    tenSanPham     NVARCHAR(255) NOT NULL,
+    danhMuc        NVARCHAR(50) NOT NULL,
+    loaiSanPham    NVARCHAR(50) NOT NULL,
+    ngaySX         DATETIME NOT NULL,
+    nhaSX          NVARCHAR(255) NOT NULL,
+    ngayTao        DATETIME DEFAULT GETDATE(),
+    ngayCapNhat    DATETIME DEFAULT GETDATE(),
+    soLuongTon     INT NOT NULL CHECK (soLuongTon >= 0),
+    donGiaBan      DECIMAL(18, 0) NOT NULL CHECK (donGiaBan > 0),
+    thue           FLOAT NOT NULL CHECK (thue >= 0 AND thue <= 1),
+    hanSuDung      DATETIME NOT NULL,
+    donViTinh      NVARCHAR(50) NOT NULL CHECK (
+                     donViTinh IN (N'Cái', N'Chiếc', N'Bộ', N'Hộp', N'Gói', 
+                                   N'Viên', N'Vỉ', N'Chai', N'Ống', N'Gói')
+                   ),
+    moTa           NVARCHAR(255),
+    trangThai      NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn'
+);
 -- Cập nhật trạng thái sản phẩm
 /*
  -- Hết hạn
@@ -104,7 +93,7 @@ CREATE TABLE KhachHang (
     maKhachHang NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maKhachHang LIKE 'KH____'),
     hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),
     soDienThoai CHAR(10) NOT NULL UNIQUE CHECK (LEN(soDienThoai) = 10),
-    namSinh DATE,
+    namSinh DATETIME,
     diemTichLuy INT DEFAULT 0,
     gioiTinh NVARCHAR(15) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác')),
     ghiChu NVARCHAR(255)
@@ -114,9 +103,9 @@ CREATE TABLE HoaDon (
     maKhachHang NVARCHAR(50) NOT NULL,
     maNhanVien NVARCHAR(50) NOT NULL,
     ngayTao DATETIME NOT NULL,
-    tienKhachDua FLOAT NOT NULL CHECK (tienKhachDua > 0),
-    tongTien FLOAT NOT NULL CHECK (tongTien > 0),
-    tienThua FLOAT NOT NULL CHECK (tienThua > 0),
+    tienKhachDua DECIMAL(18, 0) NOT NULL CHECK (tienKhachDua > 0),
+    tongTien DECIMAL(18, 0) NOT NULL CHECK (tongTien > 0),
+    tienThua DECIMAL(18, 0) NOT NULL CHECK (tienThua > 0),
     diemSuDung FLOAT CHECK (diemSuDung >= 0),
     loaiThanhToan NVARCHAR(50) CHECK (loaiThanhToan IN (N'Tiền mặt', N'Chuyển khoản')),
     CONSTRAINT FK_HoaDon_NhanVien FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
@@ -126,7 +115,7 @@ CREATE TABLE ChiTietHoaDon (
     maHoaDon NVARCHAR(50) NOT NULL,
     maSanPham NVARCHAR(50) NOT NULL,
     soLuong INT NOT NULL CHECK (soLuong > 0),
-    donGiaNhap FLOAT NOT NULL CHECK (donGiaNhap > 0),
+    donGiaNhap DECIMAL(18, 0) NOT NULL CHECK (donGiaNhap > 0),
     thue FLOAT NOT NULL CHECK (
         thue >= 0
         AND thue <= 1
@@ -157,7 +146,7 @@ CREATE TABLE ChiTietPhieuNhap (
     maSanPham NVARCHAR(50) NOT NULL,
     maPhieuNhap NVARCHAR(50) NOT NULL,
     soLuong INT NOT NULL CHECK (soLuong > 0),
-    donGia FLOAT NOT NULL CHECK (donGia > 0),
+    donGia DECIMAL(18, 0) NOT NULL CHECK (donGia > 0),
     thue FLOAT NOT NULL CHECK (
         thue >= 0
         AND thue <= 1
@@ -888,7 +877,7 @@ VALUES (
         N'Công ty Dược XYZ',
         50,
         150000,
-        0.05,
+        0.1,
         '2026-06-01',
         N'Chiếc',
         N'Nhiệt kế điện tử chính xác, dễ sử dụng.',
@@ -903,7 +892,7 @@ VALUES (
         N'Công ty Dược UVW',
         30,
         500000,
-        0.05,
+        0.1,
         '2026-07-01',
         N'Chiếc',
         N'Máy đo oxy cầm tay phục vụ đo nồng độ oxy máu.',
@@ -918,7 +907,7 @@ VALUES (
         N'Công ty Dược RST',
         40,
         600000,
-        0.05,
+        0.1,
         '2026-08-01',
         N'Chiếc',
         N'Máy thử đường huyết nhỏ gọn, dễ sử dụng.',
@@ -933,7 +922,7 @@ VALUES (
         N'Công ty Dược PQR',
         25,
         200000,
-        0.05,
+        0.1,
         '2026-09-01',
         N'Chiếc',
         N'Ống nghe y tế chất lượng cao.',
@@ -948,7 +937,7 @@ VALUES (
         N'Công ty Dược OPQ',
         35,
         350000,
-        0.05,
+        0.1,
         '2026-10-01',
         N'Chiếc',
         N'Nhiệt kế hồng ngoại đo nhiệt độ nhanh chóng.',
@@ -1038,7 +1027,7 @@ VALUES (
         N'Công ty Dược STU',
         500,
         100000,
-        0.05,
+        0.1,
         '2025-06-01',
         N'Hộp',
         N'Khẩu trang y tế 4 lớp đạt chuẩn.',
@@ -1053,7 +1042,7 @@ VALUES (
         N'Công ty Dược VWX',
         300,
         80000,
-        0.05,
+        0.1,
         '2025-07-01',
         N'Hộp',
         N'Găng tay y tế dùng 1 lần.',
@@ -1068,7 +1057,7 @@ VALUES (
         N'Công ty Dược YZ',
         250,
         60000,
-        0.05,
+        0.1,
         '2025-08-01',
         N'Hộp',
         N'Bông băng y tế đảm bảo vệ sinh.',
@@ -1083,7 +1072,7 @@ VALUES (
         N'Công ty Dược ABC',
         200,
         90000,
-        0.05,
+        0.1,
         '2025-09-01',
         N'Hộp',
         N'Que thử đường huyết dùng cho máy đo.',
@@ -1098,7 +1087,7 @@ VALUES (
         N'Công ty Dược DEF',
         400,
         120000,
-        0.05,
+        0.1,
         '2025-10-01',
         N'Hộp',
         N'Khẩu trang N95 bảo vệ hô hấp.',
@@ -1113,7 +1102,7 @@ VALUES (
         N'Công ty Dược GHI',
         300,
         50000,
-        0.05,
+        0.1,
         '2025-06-01',
         N'Chai',
         N'Dung dịch rửa tay sát khuẩn nhanh.',
@@ -1128,7 +1117,7 @@ VALUES (
         N'Công ty Dược JKL',
         500,
         25000,
-        0.05,
+        0.1,
         '2025-07-01',
         N'Chai',
         N'Nước muối sinh lý dùng cho mắt và mũi.',
@@ -1143,7 +1132,7 @@ VALUES (
         N'Công ty Dược MNO',
         200,
         75000,
-        0.05,
+        0.1,
         '2025-08-01',
         N'Chai',
         N'Dung dịch sát khuẩn dụng cụ y tế.',
@@ -1158,7 +1147,7 @@ VALUES (
         N'Công ty Dược OPQ',
         150,
         65000,
-        0.05,
+        0.1,
         '2025-09-01',
         N'Chai',
         N'Dung dịch rửa vết thương nhanh.',
@@ -1173,234 +1162,48 @@ VALUES (
         N'Công ty Dược UVW',
         250,
         55000,
-        0.05,
+        0.1,
         '2025-10-01',
         N'Chai',
         N'Dung dịch vệ sinh tay khô tiện lợi.',
         N'Còn hàng'
     );
 -- Khách hàng
-INSERT INTO KhachHang (
-        maKhachHang,
-        hoTen,
-        soDienThoai,
-        namSinh,
-        diemTichLuy,
-        gioiTinh,
-        ghiChu
-    )
-VALUES (
-        'KH0001',
-        N'Nguyễn Văn An',
-        '0912345678',
-        '1990-01-15',
-        19300,
-        N'Nam',
-        N'Khách hàng thân thiết'
-    ),
-    (
-        'KH0002',
-        N'Trần Thị Bích',
-        '0923456781',
-        '1985-05-20',
-        20000,
-        N'Nữ',
-        N'Khách hàng thân thiết'
-    ),
-    (
-        'KH0003',
-        N'Phạm Thùy Dung',
-        '0934567892',
-        '1992-08-13',
-        50789,
-        N'Nữ',
-        N'Khách hàng lẻ'
-    ),
-    (
-        'KH0004',
-        N'Lê Văn Bình',
-        '0945678913',
-        '1988-03-10',
-        3099,
-        N'Nam',
-        N'Khách hàng thân thiết'
-    ),
-    (
-        'KH0005',
-        N'Hoàng Mai Anh',
-        '0956789124',
-        '1995-12-25',
-        1201,
-        N'Nữ',
-        N'Khách hàng lẻ'
-    ),
-    (
-        'KH0006',
-        N'Nguyễn Đức Cường',
-        '0967891235',
-        '1993-07-22',
-        2250,
-        N'Nam',
-        N'Khách hàng thân thiết'
-    ),
-    (
-        'KH0007',
-        N'Trịnh Thị Hồng',
-        '0978912346',
-        '1989-11-30',
-        182220,
-        N'Nữ',
-        N'Khách hàng lẻ'
-    ),
-    (
-        'KH0008',
-        N'Bùi Quốc Huy',
-        '0989123457',
-        '1994-09-16',
-        90331,
-        N'Nam',
-        N'Khách hàng thân thiết'
-    ),
-    (
-        'KH0009',
-        N'Đỗ Minh Tuấn',
-        '0991234568',
-        '1987-02-05',
-        210222,
-        N'Nam',
-        N'Khách hàng lẻ'
-    ),
-    (
-        'KH0010',
-        N'Vũ Ngọc Lan',
-        '0902345679',
-        '1991-04-18',
-        6022919,
-        N'Nữ',
-        N'Khách hàng thân thiết'
-    );
+INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gioiTinh, ghiChu) 
+VALUES 
+    ('KH0001', N'Nguyễn Văn An', '0912345678', '1990-01-15', 19300, N'Nam', N'Khách hàng thân thiết'),
+    ('KH0002', N'Trần Thị Bích', '0923456781', '1985-05-20', 20000, N'Nữ', N'Khách hàng thân thiết'),
+    ('KH0003', N'Phạm Thùy Dung', '0934567892', '1992-08-13', 50789, N'Nữ', N'Khách hàng lẻ'),
+    ('KH0004', N'Lê Văn Bình', '0945678913', '1988-03-10', 3099, N'Nam', N'Khách hàng thân thiết'),
+    ('KH0005', N'Hoàng Mai Anh', '0956789124', '1995-12-25', 1201, N'Nữ', N'Khách hàng lẻ'),
+    ('KH0006', N'Nguyễn Đức Cường', '0967891235', '1993-07-22', 2250, N'Nam', N'Khách hàng thân thiết'),
+    ('KH0007', N'Trịnh Thị Hồng', '0978912346', '1989-11-30', 182220, N'Nữ', N'Khách hàng lẻ'),
+    ('KH0008', N'Bùi Quốc Huy', '0989123457', '1994-09-16', 90331, N'Nam', N'Khách hàng thân thiết'),
+    ('KH0009', N'Đỗ Minh Tuấn', '0991234568', '1987-02-05', 210222, N'Nam', N'Khách hàng lẻ'),
+    ('KH0010', N'Vũ Ngọc Lan', '0902345679', '1991-04-18', 6022919, N'Nữ', N'Khách hàng thân thiết');
+
 -- Thêm dữ liệu vào bảng HoaDon
 INSERT INTO HoaDon (
-        maHoaDon,
-        maKhachHang,
-        maNhanVien,
-        ngayTao,
-        tienKhachDua,
-        tongTien,
-        tienThua,
-        diemSuDung,
-        loaiThanhToan
-    )
-VALUES (
-        'HD0001',
-        'KH0001',
-        'MK0001',
-        '2024-10-01 10:00:00',
-        200000,
-        180000,
-        20000,
-        0,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0002',
-        'KH0002',
-        'MK0002',
-        '2024-10-02 11:00:00',
-        300000,
-        250000,
-        50000,
-        10,
-        N'Chuyển khoản'
-    ),
-    (
-        'HD0003',
-        'KH0003',
-        'MK0001',
-        '2024-10-03 12:30:00',
-        150000,
-        130000,
-        20000,
-        0,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0004',
-        'KH0004',
-        'MK0003',
-        '2024-10-04 14:15:00',
-        500000,
-        450000,
-        50000,
-        5,
-        N'Chuyển khoản'
-    ),
-    (
-        'HD0005',
-        'KH0005',
-        'MK0002',
-        '2024-10-05 09:45:00',
-        250000,
-        200000,
-        50000,
-        0,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0006',
-        'KH0006',
-        'MK0003',
-        '2024-10-06 15:30:00',
-        600000,
-        580000,
-        20000,
-        15,
-        N'Chuyển khoản'
-    ),
-    (
-        'HD0007',
-        'KH0007',
-        'MK0001',
-        '2024-10-07 13:20:00',
-        800000,
-        700000,
-        100000,
-        0,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0008',
-        'KH0008',
-        'MK0002',
-        '2024-10-08 10:10:00',
-        1000000,
-        950000,
-        50000,
-        0,
-        N'Chuyển khoản'
-    ),
-    (
-        'HD0009',
-        'KH0009',
-        'MK0003',
-        '2024-10-09 11:00:00',
-        200000,
-        180000,
-        20000,
-        20,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0010',
-        'KH0010',
-        'MK0001',
-        '2024-10-10 16:00:00',
-        300000,
-        280000,
-        20000,
-        10,
-        N'Chuyển khoản'
-    );
+    maHoaDon,
+    maKhachHang,
+    maNhanVien,
+    ngayTao,
+    tienKhachDua,
+    tongTien,
+    tienThua,
+    diemSuDung,
+    loaiThanhToan
+) VALUES 
+    ('HD0001', 'KH0001', 'MK0001', '2024-10-01 10:00:00', 200000, 180000, 20000, 0, N'Tiền mặt'),
+    ('HD0002', 'KH0002', 'MK0002', '2024-10-02 11:00:00', 300000, 250000, 50000, 10, N'Chuyển khoản'),
+    ('HD0003', 'KH0003', 'MK0001', '2024-10-03 12:30:00', 150000, 130000, 20000, 0, N'Tiền mặt'),
+    ('HD0004', 'KH0004', 'MK0003', '2024-10-04 14:15:00', 500000, 450000, 50000, 5, N'Chuyển khoản'),
+    ('HD0005', 'KH0005', 'MK0002', '2024-10-05 09:45:00', 250000, 200000, 50000, 0, N'Tiền mặt'),
+    ('HD0006', 'KH0006', 'MK0003', '2024-10-06 15:30:00', 600000, 580000, 20000, 15, N'Chuyển khoản'),
+    ('HD0007', 'KH0007', 'MK0001', '2024-10-07 13:20:00', 800000, 700000, 100000, 0, N'Tiền mặt'),
+    ('HD0008', 'KH0008', 'MK0002', '2024-10-08 10:10:00', 1000000, 950000, 50000, 0, N'Chuyển khoản'),
+    ('HD0009', 'KH0009', 'MK0003', '2024-10-09 11:00:00', 200000, 180000, 20000, 20, N'Tiền mặt'),
+    ('HD0010', 'KH0010', 'MK0001', '2024-10-10 16:00:00', 300000, 280000, 20000, 10, N'Chuyển khoản');
 -- Thêm dữ liệu vào bảng ChiTietHoaDon
 INSERT INTO ChiTietHoaDon (maHoaDon, maSanPham, soLuong, donGiaNhap, thue)
 VALUES ('HD0001', 'SP0001', 5, 10000, 0.08),
@@ -1461,72 +1264,18 @@ VALUES (
         N'asus@gmail.com'
     );
 -- Thêm dữ liệu vào bảng PhieuNhap
-INSERT INTO PhieuNhap (
-        maPhieuNhap,
-        maNhanVien,
-        maNhaCungCap,
-        thoiGianNhap
-    )
-VALUES (
-        'PN0001',
-        'MK0001',
-        'NCC0001',
-        '2024-10-01 08:30:00'
-    ),
-    (
-        'PN0002',
-        'MK0002',
-        'NCC0002',
-        '2024-10-02 09:45:00'
-    ),
-    (
-        'PN0003',
-        'MK0003',
-        'NCC0003',
-        '2024-10-03 10:00:00'
-    ),
-    (
-        'PN0004',
-        'MK0004',
-        'NCC0004',
-        '2024-10-04 11:15:00'
-    ),
-    (
-        'PN0005',
-        'MK0005',
-        'NCC0005',
-        '2024-10-05 13:20:00'
-    ),
-    (
-        'PN0006',
-        'MK0006',
-        'NCC0001',
-        '2024-10-06 14:35:00'
-    ),
-    (
-        'PN0007',
-        'MK0007',
-        'NCC0002',
-        '2024-10-07 15:50:00'
-    ),
-    (
-        'PN0008',
-        'MK0008',
-        'NCC0003',
-        '2024-10-08 16:05:00'
-    ),
-    (
-        'PN0009',
-        'MK0009',
-        'NCC0004',
-        '2024-10-09 17:15:00'
-    ),
-    (
-        'PN0010',
-        'MK0010',
-        'NCC0005',
-        '2024-10-10 18:25:00'
-    );
+INSERT INTO PhieuNhap (maPhieuNhap, maNhanVien, maNhaCungCap, thoiGianNhap) VALUES 
+    ('PN0001', 'MK0001', 'NCC0001', '2024-10-01 08:30:00'),
+    ('PN0002', 'MK0002', 'NCC0002', '2024-10-02 09:45:00'),
+    ('PN0003', 'MK0003', 'NCC0003', '2024-10-03 10:00:00'),
+    ('PN0004', 'MK0004', 'NCC0004', '2024-10-04 11:15:00'),
+    ('PN0005', 'MK0005', 'NCC0005', '2024-10-05 13:20:00'),
+    ('PN0006', 'MK0006', 'NCC0001', '2024-10-06 14:35:00'),
+    ('PN0007', 'MK0007', 'NCC0002', '2024-10-07 15:50:00'),
+    ('PN0008', 'MK0008', 'NCC0003', '2024-10-08 16:05:00'),
+    ('PN0009', 'MK0009', 'NCC0004', '2024-10-09 17:15:00'),
+    ('PN0010', 'MK0010', 'NCC0005', '2024-10-10 18:25:00');
+
 -- Thêm dữ liệu vào bảng ChiTietPhieuNhap
 INSERT INTO ChiTietPhieuNhap (maSanPham, maPhieuNhap, soLuong, donGia, thue)
 VALUES ('SP0001', 'PN0001', 50, 50000, 0.08),
