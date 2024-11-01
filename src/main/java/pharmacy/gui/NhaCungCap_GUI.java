@@ -1,9 +1,39 @@
 package pharmacy.gui;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.itextpdf.io.font.PdfEncodings;
+import com.itextpdf.io.image.ImageDataFactory;
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.font.PdfFont;
+import com.itextpdf.kernel.font.PdfFontFactory;
+import com.itextpdf.kernel.font.PdfFontFactory.EmbeddingStrategy;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
+import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.properties.UnitValue;
+import com.itextpdf.layout.properties.VerticalAlignment;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,8 +51,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import pharmacy.bus.NhaCungCap_BUS;
 import pharmacy.entity.*;
 import pharmacy.utils.NodeUtil;
+import pharmacy.utils.PDFUtil;
 
 public class NhaCungCap_GUI {
 
@@ -51,7 +83,7 @@ public class NhaCungCap_GUI {
 	private HBox root;
 
 	@FXML
-	private Button searchBtn;
+	private Button searchNCCBtn;
 
 	@FXML
 	private TextField searchField;
@@ -64,37 +96,44 @@ public class NhaCungCap_GUI {
 
 	@FXML
 	private TableColumn<NhaCungCap, String> taxNumberColumn;
+	
+	@FXML
+	private Button exportListBtn;
+	
+	private ObservableList<NhaCungCap> supplierList = FXCollections.observableArrayList();
+
 
 	// methods
 	@FXML
 	public void initialize() {
 		handleSupplierTableAction();
-		handleSearchSupplierAction();
+		handleExportNhaCungCapList();
 	}
 
 	@FXML
 	public void handleSupplierTableAction() {
-		addRow();
+		renderNhaCungCap();
+		handleSearchSupplierAction(supplierList);
 		handleEditableSupplierTable();
 		setupTablePlaceholder();
 		handleAddSupplierAction();
 	}
 
 	@FXML
-	public void addRow() {
-		idColumn.setCellValueFactory(new PropertyValueFactory<>("maNCC"));
-		nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenNCC"));
-		addressColumn.setCellValueFactory(new PropertyValueFactory<>("diaChi"));
-		phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
-		emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+	public void renderNhaCungCap() {
+	    // Set up cell value factories for each column based on supplier properties
+	    idColumn.setCellValueFactory(new PropertyValueFactory<>("maNCC"));
+	    nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenNCC"));
+	    addressColumn.setCellValueFactory(new PropertyValueFactory<>("diaChi"));
+	    phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
+	    emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
-		// handleAddButtonToActionColumn();
-
-		ObservableList<NhaCungCap> data = FXCollections.observableArrayList(
-				new NhaCungCap("NCC0001", "Supplier A", "0123456789", "123 Street", "supplierA@gmail.com"),
-				new NhaCungCap("NCC0002", "Supplier B", "0987654321", "456 Street", "supplierB@gmail.com"));
-
-		supplierTable.setItems(data);
+	    
+	    
+	    supplierList.addAll(new NhaCungCap_BUS().getAllNhaCungCap());
+	    handleSearchSupplierAction(supplierList);
+	    // Set data to the TableView
+	    supplierTable.setItems(supplierList);
 	}
 
 	@FXML
@@ -234,9 +273,152 @@ public class NhaCungCap_GUI {
 		});
 	}
 
-	@FXML
-	public void handleSearchSupplierAction() {
+	public void handleSearchSupplierAction(ObservableList<NhaCungCap> nhaCungCapList) {
+	    FilteredList<NhaCungCap> filteredList = new FilteredList<>(nhaCungCapList, b -> true);
 
+	    searchNCCBtn.setOnAction(event -> {
+	        filteredList.setPredicate(nhaCungCap -> {
+	            if (searchField.getText() == null || searchField.getText().isEmpty()) {
+	                return true;
+	            }
+
+	            String lowerCaseFilter = searchField.getText().toLowerCase();
+	            return nhaCungCap.getMaNCC().toLowerCase().contains(lowerCaseFilter) ||
+	                   nhaCungCap.getTenNCC().toLowerCase().contains(lowerCaseFilter) ||
+	                   nhaCungCap.getSoDienThoai().contains(lowerCaseFilter) ||
+	                   nhaCungCap.getDiaChi().toLowerCase().contains(lowerCaseFilter) ||
+	                   nhaCungCap.getEmail().toLowerCase().contains(lowerCaseFilter);
+	        });
+	    });
+
+	    searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+	        filteredList.setPredicate(nhaCungCap -> {
+	            if (newValue == null || newValue.isEmpty()) {
+	                return true; 
+	            }
+
+	            String lowerCaseFilter = newValue.toLowerCase();
+	            return nhaCungCap.getMaNCC().toLowerCase().contains(lowerCaseFilter) ||
+	                   nhaCungCap.getTenNCC().toLowerCase().contains(lowerCaseFilter) ||
+	                   nhaCungCap.getSoDienThoai().contains(lowerCaseFilter) ||
+	                   nhaCungCap.getDiaChi().toLowerCase().contains(lowerCaseFilter) ||
+	                   nhaCungCap.getEmail().toLowerCase().contains(lowerCaseFilter);
+	        });
+	    });
+
+	    
+	    supplierTable.setItems(filteredList.isEmpty() ? nhaCungCapList : filteredList);
 	}
+	
+	private void exportNhaCungCapToPdf(String outputPdfPath) throws SQLException {
+	    try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
+	         PdfDocument pdfDoc = new PdfDocument(writer)) {
+
+	        // Apply font
+	        URL fontUrl = getClass().getClassLoader().getResource("fonts/Roboto/Roboto-Regular.ttf");
+	        Path fontPath;
+	        try {
+	            fontPath = Path.of(fontUrl.toURI());
+	        } catch (URISyntaxException e) {
+	            throw new IOException("Invalid URI syntax for font URL", e);
+	        }
+	        PdfFont font = PdfFontFactory.createFont(Files.readAllBytes(fontPath), PdfEncodings.IDENTITY_H,
+	                EmbeddingStrategy.PREFER_EMBEDDED);
+
+	        // Define primary color
+	        String primaryColorHex = "#339933";
+	        DeviceRgb primaryColor = new DeviceRgb(
+	                Integer.parseInt(primaryColorHex.substring(1, 3)),
+	                Integer.parseInt(primaryColorHex.substring(3, 5)),
+	                Integer.parseInt(primaryColorHex.substring(5, 7)));
+
+	        try (Document document = new Document(pdfDoc)) {
+	            // Header
+	            Table headerTable = new Table(2);
+	            headerTable.setWidth(UnitValue.createPercentValue(40))
+	                       .setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+	            com.itextpdf.layout.element.Image logo = new com.itextpdf.layout.element.Image(
+	                    ImageDataFactory.create(getClass().getClassLoader().getResource("images/pharmacy-icon.png")));
+	            logo.scaleToFit(80, 80);
+	            Cell logoCell = new Cell().add(logo).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER);
+	            headerTable.addCell(logoCell);
+
+	            Paragraph name = new Paragraph("MEDKIT")
+	                    .setFont(font)
+	                    .setFontSize(30)
+	                    .setBold()
+	                    .setFontColor(primaryColor)
+	                    .setTextAlignment(TextAlignment.CENTER);
+	            Cell nameCell = new Cell().add(name).setVerticalAlignment(VerticalAlignment.MIDDLE)
+	                                       .setBorder(Border.NO_BORDER);
+	            headerTable.addCell(nameCell);
+	            document.add(headerTable.setMarginBottom(10));
+
+	            // Title
+	            document.add(new Paragraph("DANH SÁCH NHÀ CUNG CẤP")
+	                    .setFont(font)
+	                    .setFontSize(20)
+	                    .setBold()
+	                    .setTextAlignment(TextAlignment.CENTER)
+	                    .setMarginTop(20)
+	                    .setMarginBottom(20));
+
+
+	         // Create the supplier table with appropriate column widths
+	            Table table = new Table(new float[] { 1, 2, 2, 2, 2 }); // Adjust column ratios according to your needs
+	            table.setWidth(UnitValue.createPercentValue(100));
+
+	            // Add table header for suppliers
+	            table.addHeaderCell(new Cell().add(new Paragraph("Mã NCC").setFont(font).setFontSize(8))
+	                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
+	            table.addHeaderCell(new Cell().add(new Paragraph("Tên NCC").setFont(font).setFontSize(8))
+	                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
+	            table.addHeaderCell(new Cell().add(new Paragraph("Số điện thoại").setFont(font).setFontSize(8))
+	                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
+	            table.addHeaderCell(new Cell().add(new Paragraph("Địa chỉ").setFont(font).setFontSize(8))
+	                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
+	            table.addHeaderCell(new Cell().add(new Paragraph("Email").setFont(font).setFontSize(8))
+	                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
+
+	            for (NhaCungCap supplier : supplierList) {
+	                table.addCell(new Cell().add(new Paragraph(supplier.getMaNCC()).setFont(font)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getTenNCC()).setFont(font)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getSoDienThoai()).setFont(font)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getDiaChi()).setFont(font)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getEmail()).setFont(font)));
+	            }
+	            document.add(table);
+	        }
+	        System.out.println("\n\nPDF of supplier list generated.\n\n");
+	    } catch (IOException e) {
+	        Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, e);
+	    }
+	}
+	
+	@FXML
+	private void handleExportNhaCungCapList() {
+		exportListBtn.setOnMouseEntered(event -> {
+			NodeUtil.applyFadeTransition(exportListBtn, 1, 0.6, 300, () -> {
+			});
+		});
+
+		exportListBtn.setOnMouseExited(event -> {
+			NodeUtil.applyFadeTransition(exportListBtn, 0.6, 1, 300, () -> {
+			});
+		});
+
+		exportListBtn.setOnAction(event -> {
+			try {
+				exportNhaCungCapToPdf("src/main/resources/pdf/DanhSachNhaCungCap.pdf"); 
+				PDFUtil.showPdfPreview(
+						new File(getClass().getClassLoader().getResource("pdf/DanhSachNhaCungCap.pdf").toURI()));
+			} catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException | SQLException e) {
+				Logger.getLogger(KhachHang_GUI.class.getName()).log(Level.SEVERE, null, e);
+			}
+		});
+	}
+
+
 
 }
