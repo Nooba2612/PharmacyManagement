@@ -36,4 +36,6 @@ public interface SanPham_Interface {
 	int countThuoc();
 
 	int countThietBiYTe();
+
+	void refreshSanPham();
 }
