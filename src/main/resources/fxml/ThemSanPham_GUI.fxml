@@ -6,6 +6,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -73,28 +74,32 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </Button>
-                  <TableView fx:id="medicineTable" editable="true" layoutX="29.0" layoutY="505.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="223.0" prefWidth="1202.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
-                     <columns>
-                        <TableColumn fx:id="idColumn" prefWidth="87.99999696016312" text="Mã sản phẩm" />
-                        <TableColumn fx:id="nameColumn" prefWidth="139.99996948242188" text="Tên sản phẩm" />
-                        <TableColumn fx:id="manufactureDateColumn" prefWidth="112.80000305175781" text="Ngày sản xuất" />
-                        <TableColumn fx:id="manufacturerColumn" prefWidth="102.39996337890625" text="Nhà sản xuất" />
-                        <TableColumn fx:id="availableQuantityColumn" prefWidth="105.5999755859375" text="Số lượng tồn" />
-                        <TableColumn fx:id="priceColumn" prefWidth="107.99993896484375" resizable="false" text="Đơn giá" />
-                        <TableColumn fx:id="taxColumn" prefWidth="83.20001220703125" text="Thuế" />
-                        <TableColumn fx:id="unitColumn" prefWidth="92.0" text="Đơn vị tính" />
-                        <TableColumn fx:id="descriptionColumn" prefWidth="91.20001220703125" text="Mô tả" />
-                        <TableColumn fx:id="expirationDateColumn" prefWidth="100.79998779296875" text="Hạn sử dụng" />
-                        <TableColumn fx:id="categoryColumn" prefWidth="75.0" text="Danh mục" />
-                        <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Loại" />
-                     </columns>
-                     <cursor>
-                        <Cursor fx:constant="TEXT" />
-                     </cursor>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="29.0" layoutY="505.0">
+                     <content>
+                        <TableView fx:id="productTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="223.0" prefWidth="1202.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
+                           <columns>
+                              <TableColumn fx:id="idColumn" prefWidth="87.99999696016312" text="Mã sản phẩm" />
+                              <TableColumn fx:id="nameColumn" prefWidth="139.99996948242188" text="Tên sản phẩm" />
+                              <TableColumn fx:id="manufactureDateColumn" prefWidth="112.80000305175781" text="Ngày sản xuất" />
+                              <TableColumn fx:id="manufacturerColumn" prefWidth="102.39996337890625" text="Nhà sản xuất" />
+                              <TableColumn fx:id="availableQuantityColumn" prefWidth="105.5999755859375" text="Số lượng tồn" />
+                              <TableColumn fx:id="priceColumn" prefWidth="107.99993896484375" resizable="false" text="Đơn giá" />
+                              <TableColumn fx:id="taxColumn" prefWidth="83.20001220703125" text="Thuế" />
+                              <TableColumn fx:id="unitColumn" prefWidth="92.0" text="Đơn vị tính" />
+                              <TableColumn fx:id="descriptionColumn" prefWidth="91.20001220703125" text="Mô tả" />
+                              <TableColumn fx:id="expirationDateColumn" prefWidth="100.79998779296875" text="Hạn sử dụng" />
+                              <TableColumn fx:id="categoryColumn" prefWidth="75.0" text="Danh mục" />
+                              <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Loại" />
+                           </columns>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                     </content>
+                  </ScrollPane>
                   <Text fill="#918f8f" layoutX="127.0" layoutY="484.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sản phẩm đã thêm">
                      <font>
                         <Font name="System Bold" size="22.0" />
@@ -117,21 +122,21 @@
                      </cursor>
                   </Button>
                   <GridPane layoutX="32.0" layoutY="105.0" prefHeight="272.0" prefWidth="1195.0">
-                    <columnConstraints>
+                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="553.3999633789062" minWidth="10.0" percentWidth="21.0" prefWidth="373.20000000000005" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="393.20001220703125" minWidth="4.400012207031239" prefWidth="56.799969482421886" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.7999877929688" minWidth="10.0" percentWidth="21.0" prefWidth="199.00003051757812" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="393.20001220703125" minWidth="4.400012207031239" prefWidth="56.799969482421886" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.7999877929688" minWidth="10.0" percentWidth="21.0" prefWidth="199.00003051757812" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="539.7999877929688" minWidth="10.0" prefWidth="30.399999999999977" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="540.4000244140625" minWidth="10.0" percentWidth="21.0" prefWidth="231.0" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="540.4000244140625" minWidth="10.0" prefWidth="33.400036621093705" />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="540.4000244140625" minWidth="10.0" percentWidth="21.0" prefWidth="393.39996337890625" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
                      <children>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                            <children>
@@ -177,7 +182,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Text>
-                              <TextField fx:id="idField" prefHeight="30.0" prefWidth="540.0" promptText="Nhập mã sản phẩm" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                              <TextField fx:id="idField" editable="false" prefHeight="30.0" prefWidth="540.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
@@ -386,7 +391,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </ComboBox>
-                              <Label fx:id="categoryAlert1" text="Loại sản phẩm không được bỏ trống." textFill="#e12626" visible="false">
+                              <Label fx:id="productTypeAlert" text="Loại sản phẩm không được bỏ trống." textFill="#e12626" visible="false">
                                  <font>
                                     <Font size="13.0" />
                                  </font>

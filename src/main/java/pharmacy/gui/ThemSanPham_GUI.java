@@ -5,9 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.itextpdf.io.exceptions.IOException;
 
 import javafx.collections.FXCollections;
@@ -21,7 +18,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -34,6 +30,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import pharmacy.bus.NhanVien_BUS;
 import pharmacy.bus.SanPham_BUS;
 import pharmacy.entity.SanPham;
 import pharmacy.utils.NodeUtil;
@@ -89,7 +86,7 @@ public class ThemSanPham_GUI {
 	private TextField manufacturerField;
 
 	@FXML
-	private TableView<SanPham> medicineTable;
+	private TableView<SanPham> productTable;
 
 	@FXML
 	private TableColumn<SanPham, String> nameColumn;
@@ -137,6 +134,9 @@ public class ThemSanPham_GUI {
 	private Label manufactureDateAlert;
 
 	@FXML
+	private Label productTypeAlert;
+
+	@FXML
 	private Label manufacturerAlert;
 
 	@FXML
@@ -154,7 +154,13 @@ public class ThemSanPham_GUI {
 	@FXML
 	private Label quantityAlert;
 
-	private ObservableList<SanPham> addedMedicineList = FXCollections.observableArrayList();
+	@FXML
+	private TableColumn<SanPham, String> productTypeColumn;
+
+	@FXML
+	private TableColumn<SanPham, String> categoryColumn;
+
+	private ObservableList<SanPham> addedProductList = FXCollections.observableArrayList();
 
 	@FXML
 	public void initialize() throws SQLException {
@@ -166,9 +172,26 @@ public class ThemSanPham_GUI {
 	@FXML
 	public void setUpForm() throws SQLException {
 		unitField.getItems().addAll("Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói");
-		categoryField.getItems().addAll("Thuốc giảm đau", "Thuốc kháng sinh", "Thuốc kháng viêm", "Thuốc chống dị ứng",
-				"Thuốc hạ sốt");
 		taxField.getItems().addAll("0%", "5%", "10%", "15%", "20%");
+		idField.setText(generateId());
+
+		productTypeField.getItems().addAll("Thuốc", "Thiết bị y tế");
+		categoryField.setDisable(true);
+
+		productTypeField.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			categoryField.getItems().clear();
+			if (newValue != null) {
+				if (newValue.equals("Thuốc")) {
+					categoryField.setDisable(false);
+					categoryField.getItems().addAll("Giảm đau", "Hạ sốt", "Kháng sinh", "Chống viêm", "Vitamin",
+							"An thần", "Siro", "Khác");
+				} else if (newValue.equals("Thiết bị y tế")) {
+					categoryField.getItems().addAll("Dụng cụ y tế", "Sản phẩm bảo vệ cá nhân", "Dung dịch vệ sinh",
+							"Khác");
+					categoryField.setDisable(false);
+				}
+			}
+		});
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		createDateField.setText(LocalDateTime.now().format(formatter));
@@ -194,17 +217,28 @@ public class ThemSanPham_GUI {
 			});
 		});
 		clearDataBtn.setOnMouseClicked(event -> {
-			clearForm();
+			try {
+				clearForm();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		});
 
 		// handle if table empty
-		if (addedMedicineList.isEmpty()) {
-			Label noMedicineLabel = new Label("Không có thuốc nào trong bảng.");
-			noMedicineLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #339933;");
-			medicineTable.setPlaceholder(noMedicineLabel);
+		if (addedProductList.isEmpty()) {
+			Label noProductLabel = new Label("Không có thuốc nào trong bảng.");
+			noProductLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #339933;");
+			productTable.setPlaceholder(noProductLabel);
 		}
 
-		handleAddMedicine();
+		handleAddProduct();
+	}
+
+	private String generateId() throws SQLException {
+		int productNumber = new SanPham_BUS().countSanPham();
+		String id = String.format("SP%04d", productNumber + 1);
+
+		return id;
 	}
 
 	@FXML
@@ -231,7 +265,7 @@ public class ThemSanPham_GUI {
 	}
 
 	@FXML
-	public void handleAddMedicine() throws SQLException {
+	public void handleAddProduct() throws SQLException {
 		submitBtn.setOnMouseEntered(event -> {
 			NodeUtil.applyFadeTransition(submitBtn, 1, 0.6, 200, () -> {
 			});
@@ -242,7 +276,7 @@ public class ThemSanPham_GUI {
 		});
 		submitBtn.setCursor(Cursor.HAND);
 
-		// add medicine
+		// add product
 		submitBtn.setOnAction(event -> {
 
 			String maSanPham = idField.getText().trim();
@@ -280,16 +314,16 @@ public class ThemSanPham_GUI {
 				manufactureDateAlert.setVisible(false);
 			}
 
-			SanPham thuoc = new SanPham(maSanPham, tenSanPham, danhMuc, ngaySX, nhaSX, ngayTao,
+			SanPham sanPham = new SanPham(maSanPham, tenSanPham, danhMuc, ngaySX, nhaSX, ngayTao,
 					LocalDate.now(), soLuongTon, donGiaBan, thue,
 					hanSuDung, moTa, donViTinh, trangThai, loaiSanPham);
 			try {
 				if (validateForm()) {
-					new SanPham_BUS().createSanPham(thuoc);
-					showAddMedicineSuccessModal("Thêm thuốc thành công");
+					new SanPham_BUS().createSanPham(sanPham);
+					showAddProductSuccessModal("Thêm thuốc thành công");
 					clearForm();
-					addedMedicineList.add(thuoc);
-					handleRenderAddedMedicinesTable();
+					addedProductList.add(sanPham);
+					handleRenderAddedProductsTable();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -299,11 +333,10 @@ public class ThemSanPham_GUI {
 	}
 
 	@FXML
-	private void showAddMedicineSuccessModal(String message) {
+	private void showAddProductSuccessModal(String message) {
 		Stage modalStage = new Stage();
 		modalStage.setResizable(false);
 		modalStage.initModality(Modality.APPLICATION_MODAL);
-		modalStage.initStyle(StageStyle.UNDECORATED);
 
 		ImageView icon = new ImageView(new Image(
 				getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));
@@ -448,7 +481,7 @@ public class ThemSanPham_GUI {
 		}
 
 		// Validate Unit field
-		String[] VALID_UNITS = { "Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói" };
+		String[] VALID_UNITS = { "Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói", "Cái", "Chiếc", "Bộ" };
 		String unitValue = (unitField.getValue() != null) ? unitField.getValue().trim()
 				: unitField.getEditor().getText().trim();
 
@@ -464,14 +497,37 @@ public class ThemSanPham_GUI {
 			unitAlert.setVisible(false);
 		}
 
-		// Validate Unit field
-		if (categoryField.getValue() == null || categoryField.getEditor().getText().trim().isEmpty()) {
-			categoryAlert.setText("Danh mục chưa được chọn.");
-			categoryAlert.setVisible(true);
+		// Validate Product type field
+		String[] VALID_TYPES = { "Thuốc", "Thiết bị y tế" };
+		String productTypeValue = (productTypeField.getValue() != null) ? productTypeField.getValue().trim()
+				: productTypeField.getEditor().getText().trim();
+
+		if (productTypeValue.isEmpty()) {
+			productTypeAlert.setText("Loại sản phẩm chưa được chọn.");
+			productTypeAlert.setVisible(true);
+			isValid = false;
+		} else if (!Arrays.asList(VALID_TYPES).contains(productTypeValue)) {
+			productTypeAlert.setText("Loại sản phẩm không hợp lệ.");
+			productTypeAlert.setVisible(true);
 			isValid = false;
 		} else {
-			categoryAlert.setVisible(false);
+			productTypeAlert.setVisible(false);
 		}
+
+		// Validate Category field
+        String[] VALID_CATEGORIES = { "giảm đau", "hạ sốt", "kháng sinh", "chống viêm",
+                "vitamin", "an thần", "siro", "dụng cụ y tế", "sản phẩm bảo vệ cá nhân", "dung dịch vệ sinh", "khác" };
+        if (categoryField.getValue() == null || categoryField.getEditor().getText().trim().isEmpty()) {
+            categoryAlert.setText("Danh mục chưa được chọn.");
+            categoryAlert.setVisible(true);
+            isValid = false;
+        } else if (!Arrays.asList(VALID_CATEGORIES).contains(categoryField.getValue().toLowerCase())) {
+            unitAlert.setText("Đơn vị tính không hợp lệ.");
+            unitAlert.setVisible(true);
+            isValid = false;
+        } else {
+            categoryAlert.setVisible(false);
+        }
 
 		// Validate Expiration Date
 		if (expirationDateField.getValue() == null) {
@@ -495,11 +551,11 @@ public class ThemSanPham_GUI {
 	}
 
 	@FXML
-	public void clearForm() {
+	public void clearForm() throws SQLException {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 		createDateField.setText(LocalDateTime.now().format(formatter));
 		categoryField.setValue("");
-		idField.setText("");
+		idField.setText(generateId());
 		nameField.setText("");
 		manufacturerField.setText("");
 		priceField.setText("");
@@ -508,11 +564,12 @@ public class ThemSanPham_GUI {
 		manufactureDateField.setValue(null);
 		unitField.setValue("");
 		taxField.setValue("");
+		productTypeField.setValue("");
 	}
 
 	@FXML
-	public void handleRenderAddedMedicinesTable() {
-		medicineTable.setItems(addedMedicineList);
+	public void handleRenderAddedProductsTable() {
+		productTable.setItems(addedProductList);
 
 		idColumn.setCellValueFactory(new PropertyValueFactory<>("maSanPham"));
 		nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
@@ -524,6 +581,8 @@ public class ThemSanPham_GUI {
 		expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("hanSuDung"));
 		descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("moTa"));
 		unitColumn.setCellValueFactory(new PropertyValueFactory<>("donViTinh"));
+		productTypeColumn.setCellValueFactory(new PropertyValueFactory<>("loaiSanPham"));
+		categoryColumn.setCellValueFactory(new PropertyValueFactory<>("danhMuc"));
 
 	}
 }

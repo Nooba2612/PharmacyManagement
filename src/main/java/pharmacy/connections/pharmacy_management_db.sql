@@ -30,39 +30,73 @@ CREATE TABLE TaiKhoan (
 UPDATE TaiKhoan
 SET isLoggedIn = 1
 WHERE tenDangNhap = 'MK0001' -- Sản Phẩm
-    CREATE TABLE SanPham (
-        maSanPham NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maSanPham LIKE 'SP____'),
-        tenSanPham NVARCHAR(255) NOT NULL,
-        danhMuc NVARCHAR(50) NOT NULL,
-        loaiSanPham NVARCHAR(50) NOT NULL,
-        ngaySX DATETIME NOT NULL,
-        nhaSX NVARCHAR(255) NOT NULL,
-        ngayTao DATETIME DEFAULT GETDATE(),
-        ngayCapNhat DATETIME DEFAULT GETDATE(),
-        soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
-        donGiaBan FLOAT NOT NULL CHECK (donGiaBan > 0),
-        thue FLOAT NOT NULL CHECK (
-            thue >= 0
-            AND thue <= 1
-        ),
-        hanSuDung DATETIME NOT NULL,
-        donViTinh NVARCHAR(50) NOT NULL CHECK (
-            donViTinh IN (
-                N'Cái',
-                N'Chiếc',
-                N'Bộ',
-                N'Hộp',
-                N'Gói',
-                N'Viên',
-                N'Vỉ',
-                N'Chai',
-                N'Ống',
-                N'Gói'
-            )
-        ),
-        moTa NVARCHAR(255),
-        trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn'
-    );
+CREATE TABLE SanPham (
+    maSanPham NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maSanPham LIKE 'SP____'),
+    tenSanPham NVARCHAR(255) NOT NULL,
+    danhMuc NVARCHAR(50) NOT NULL,
+    loaiSanPham NVARCHAR(50) NOT NULL,
+    ngaySX DATETIME NOT NULL,
+    nhaSX NVARCHAR(255) NOT NULL,
+    ngayTao DATETIME DEFAULT GETDATE(),
+    ngayCapNhat DATETIME DEFAULT GETDATE(),
+    soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
+    donGiaBan FLOAT NOT NULL CHECK (donGiaBan > 0),
+    thue FLOAT NOT NULL CHECK (
+        thue >= 0
+        AND thue <= 1
+    ),
+    hanSuDung DATETIME NOT NULL,
+    donViTinh NVARCHAR(50) NOT NULL CHECK (
+        donViTinh IN (
+            N'Cái',
+            N'Chiếc',
+            N'Bộ',
+            N'Hộp',
+            N'Gói',
+            N'Viên',
+            N'Vỉ',
+            N'Chai',
+            N'Ống',
+            N'Gói'
+        )
+    ),
+    moTa NVARCHAR(255),
+    trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn'
+);
+CREATE TABLE NhatKyThayDoiSanPham (
+    maSanPham NVARCHAR(50) NOT NULL,
+    tenSanPham NVARCHAR(255) NOT NULL,
+    danhMuc NVARCHAR(50) NOT NULL,
+    loaiSanPham NVARCHAR(50) NOT NULL,
+    ngaySX DATETIME NOT NULL,
+    nhaSX NVARCHAR(255) NOT NULL,
+    ngayTao DATETIME DEFAULT GETDATE(),
+    ngayCapNhat DATETIME DEFAULT GETDATE(),
+    soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
+    donGiaBan FLOAT NOT NULL CHECK (donGiaBan > 0),
+    thue FLOAT NOT NULL CHECK (
+        thue >= 0
+        AND thue <= 1
+    ),
+    hanSuDung DATETIME NOT NULL,
+    donViTinh NVARCHAR(50) NOT NULL CHECK (
+        donViTinh IN (
+            N'Cái',
+            N'Chiếc',
+            N'Bộ',
+            N'Hộp',
+            N'Gói',
+            N'Viên',
+            N'Vỉ',
+            N'Chai',
+            N'Ống',
+            N'Gói'
+        )
+    ),
+    moTa NVARCHAR(255),
+    trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn',
+	updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 -- Cập nhật trạng thái sản phẩm
 /*
  -- Hết hạn
@@ -109,6 +143,7 @@ CREATE TABLE KhachHang (
     gioiTinh NVARCHAR(15) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác')),
     ghiChu NVARCHAR(255)
 );
+
 CREATE TABLE HoaDon (
     maHoaDon NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (MaHoaDon LIKE 'HD____'),
     maKhachHang NVARCHAR(50) NOT NULL,
@@ -1400,7 +1435,7 @@ VALUES (
         20000,
         10,
         N'Chuyển khoản'
-    );
+    )
 -- Thêm dữ liệu vào bảng ChiTietHoaDon
 INSERT INTO ChiTietHoaDon (maHoaDon, maSanPham, soLuong, donGiaNhap, thue)
 VALUES ('HD0001', 'SP0001', 5, 10000, 0.08),
