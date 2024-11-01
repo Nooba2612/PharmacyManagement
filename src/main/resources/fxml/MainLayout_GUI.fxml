@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Pane maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="829.0" prefWidth="1498.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.MainLayout_GUI">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.MainLayout_GUI">
 	<BorderPane id="wrapper" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="829.0" prefWidth="1498.0">
 		<top>
 			<Pane id="header" prefHeight="75.0" prefWidth="898.0" style="-fx-background-color: #339933;" BorderPane.alignment="CENTER">
@@ -338,7 +338,7 @@
 		<effect>
 			<DropShadow offsetX="-1.0" offsetY="2.0">
 				<color>
-					<Color red="0.6000000238418579" green="0.6000000238418579" blue="0.6000000238418579" />
+					<Color blue="0.6000000238418579" green="0.6000000238418579" red="0.6000000238418579" />
 				</color>
 			</DropShadow>
 		</effect>
