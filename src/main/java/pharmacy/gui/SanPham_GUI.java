@@ -333,7 +333,7 @@ public class SanPham_GUI {
 		setColumnEditable(availableQuantityColumn, "soLuongTon");
 		setColumnEditable(manufacturerColumn, "nhaSX");
 		setDateColumnEditable(manufactureDateColumn, "ngaySX");
-		setFloatComboBoxColumnEditable(taxColumn, "thue", new String[] { "0%", "5%", "10%", "15%", "20%" });
+		setFloatComboBoxColumnEditable(taxColumn, "thue", new String[] { "8%", "10%" });
 		setDateColumnEditable(expirationDateColumn, "hanSuDung");
 		setStringComboBoxColumnEditable(unitColumn, "donViTinh",
 				new String[] { "Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói" });

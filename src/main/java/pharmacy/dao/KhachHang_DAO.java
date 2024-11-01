@@ -33,16 +33,18 @@ public class KhachHang_DAO implements KhachHang_Interface {
 
 	@Override
 	public boolean updateKhachHang(KhachHang kh) {
-		String query = "UPDATE KhachHang SET hoTen = ?, soDienThoai = ?, namSinh = ?, diemTichLuy = ?, ghiChu = ? WHERE maKhachHang = ?";
+		String query = "UPDATE KhachHang SET hoTen = ?, soDienThoai = ?, namSinh = ?, diemTichLuy = ?, gioiTinh = ?, ghiChu = ? WHERE maKhachHang = ?";
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)) {
+			
 			statement.setString(1, kh.getHoTen());
 			statement.setString(2, kh.getSoDienThoai());
-			statement.setInt(3, kh.getNamSinh().getYear());
+			statement.setDate(3, Date.valueOf(kh.getNamSinh()));
 			statement.setInt(4, kh.getDiemTichLuy());
-			statement.setString(5, kh.getGhiChu());
-			statement.setString(6, kh.getMaKhachHang());
-
+			statement.setString(5, kh.getGioiTinh());
+			statement.setString(6, kh.getGhiChu());
+			statement.setString(7, kh.getMaKhachHang());
+			
 			int rowsAffected = statement.executeUpdate();
 			return rowsAffected > 0;
 		} catch (SQLException e) {

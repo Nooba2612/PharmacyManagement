@@ -5,11 +5,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,8 +42,13 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -56,6 +63,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
@@ -114,15 +122,14 @@ public class KhachHang_GUI {
 	// methods
 	@FXML
 	public void initialize() {
-		handleCustomerTableAction();
 		handleExportKhachHangList();
+		handleCustomerTableAction();
 	}
 
 	@FXML
 	public void handleCustomerTableAction() {
-		renderKhachHangs();
-		handleSeacrhCustomerAction(customerList);
 		handleEditableCustomerTable();
+		renderKhachHangs();
 		setupTablePlaceholder();
 		handleAddCustomerAction();
 	}
@@ -135,7 +142,7 @@ public class KhachHang_GUI {
 		pointsColumn.setCellValueFactory(new PropertyValueFactory<>("diemTichLuy"));
 		yearColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
 		noteColumn.setCellValueFactory(new PropertyValueFactory<>("ghiChu"));
-		genderColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
+		genderColumn.setCellValueFactory(new PropertyValueFactory<>("gioiTinh"));
 		// handleAddButtonToActionColumn();
 		yearColumn.setCellFactory(col -> new TableCell<KhachHang, LocalDate>() {
 			@Override
@@ -150,9 +157,10 @@ public class KhachHang_GUI {
 		});
 		
 		customerList.addAll(new KhachHang_BUS().getAllKhachHang());
-		
 		customerTable.setItems(customerList);
-
+		handleSeacrhCustomerAction(customerList);
+		handleEditableCustomerTable();
+		
 	}
 
 	@FXML
@@ -236,23 +244,11 @@ public class KhachHang_GUI {
 
 	@FXML
 	public void handleEditableCustomerTable() {
-		nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		nameColumn.setOnEditCommit(event -> {
-			KhachHang customer = event.getRowValue();
-			customer.setHoTen(event.getNewValue());
-		});
-
-		phoneColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		phoneColumn.setOnEditCommit(event -> {
-			KhachHang customer = event.getRowValue();
-			customer.setSoDienThoai(event.getNewValue());
-		});
-
-		noteColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-		noteColumn.setOnEditCommit(event -> {
-			KhachHang customer = event.getRowValue();
-			customer.setGhiChu(event.getNewValue());
-		});
+		setColumnEditable(nameColumn, "hoTen");
+		setColumnEditable(phoneColumn, "soDienThoai");
+		setColumnEditable(genderColumn, "gioiTinh");	
+		setDateColumnEditable(yearColumn, "namSinh");
+		setColumnEditable(noteColumn, "ghiChu");
 	}
 
 	@FXML
@@ -310,7 +306,265 @@ public class KhachHang_GUI {
 
 	    customerTable.setItems(filteredList.isEmpty() ? khachHangList : filteredList);
 	}
+	
+	private void setDateColumnEditableForCustomer(TableColumn<KhachHang, LocalDate> column, String property) {
+	    column.setCellFactory(col -> new TableCell<KhachHang, LocalDate>() {
+	        private final DatePicker datePicker = new DatePicker();
 
+	        {
+	            datePicker.setEditable(true);
+	            datePicker.setOnAction(event -> commitEdit(datePicker.getValue()));
+	            datePicker.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+	                if (!isNowFocused && isEditing()) {
+	                    cancelEdit();
+	                }
+	            });
+	        }
+
+	        @Override
+	        protected void updateItem(LocalDate item, boolean empty) {
+	            super.updateItem(item, empty);
+	            if (empty) {
+	                setText(null);
+	                setGraphic(null);
+	            } else {
+	                if (isEditing()) {
+	                    datePicker.setValue(getItem());
+	                    setGraphic(datePicker);
+	                    setText(null);
+	                } else {
+	                    setText(item == null ? "" : formatter.format(item));
+	                    setGraphic(null);
+	                }
+	            }
+	        }
+
+	        @Override
+	        public void startEdit() {
+	            super.startEdit();
+	            datePicker.setValue(getItem());
+	            setGraphic(datePicker);
+	            setText(null);
+	            datePicker.requestFocus();
+	        }
+
+	        @Override
+	        public void cancelEdit() {
+	            super.cancelEdit();
+	            setText(getItem() == null ? "" : formatter.format(getItem()));
+	            setGraphic(null);
+	        }
+	    });
+
+	    column.setOnEditCommit(event -> {
+	        KhachHang customer = event.getRowValue();
+	        LocalDate newValue = event.getNewValue();
+
+	        if (newValue != null) {
+	            showChangeTableConfirmationPopup(customer, newValue, event, property);
+	        } else {
+	            showInvalidInputDataDialog();
+	        }
+	    });
+	}
+	
+	private void setDateColumnEditable(TableColumn<KhachHang, LocalDate> column, String property) {
+
+		column.setCellFactory(col -> new TableCell<KhachHang, LocalDate>() {
+			private final DatePicker datePicker = new DatePicker();
+
+			{
+				datePicker.setEditable(true);
+				datePicker.setOnAction(event -> commitEdit(datePicker.getValue()));
+				datePicker.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+					if (!isNowFocused && isEditing()) {
+						cancelEdit();
+					}
+				});
+			}
+
+			@Override
+			protected void updateItem(LocalDate item, boolean empty) {
+
+				super.updateItem(item, empty);
+				if (empty) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					if (isEditing()) {
+						datePicker.setValue(getItem());
+						setGraphic(datePicker);
+						setText(null);
+					} else {
+						setText(item == null ? "" : formatter.format(item));
+						setGraphic(null);
+					}
+				}
+			}
+
+			@Override
+			public void startEdit() {
+				super.startEdit();
+				datePicker.setValue(getItem());
+				setGraphic(datePicker);
+				setText(null);
+				datePicker.requestFocus();
+			}
+
+			@Override
+			public void cancelEdit() {
+				super.cancelEdit();
+				setText(getItem() == null ? "" : formatter.format(getItem()));
+				setGraphic(null);
+			}
+
+		});
+
+		column.setOnEditCommit(event -> {
+			KhachHang customer = event.getRowValue();
+			Object newValue = event.getNewValue();
+
+			if (newValue != null) {
+				showChangeTableConfirmationPopup(customer, newValue, event, property);
+			} else {
+				showInvalidInputDataDialog();
+			}
+		});
+
+	}
+	
+	private <T> void setColumnEditable(TableColumn<KhachHang, T> column, String property) {
+		column.setCellFactory(TextFieldTableCell.forTableColumn(new StringConverter<T>() {
+			@Override
+			public String toString(T object) {
+				return object == null ? "" : object.toString().trim();
+			}
+
+			@Override
+			@SuppressWarnings("unchecked")
+			public T fromString(String string) {
+				try {
+					if (column.getCellData(0) instanceof Double) {
+						return (T) Double.valueOf(string);
+					} else if (column.getCellData(0) instanceof Integer) {
+						return (T) Integer.valueOf(string);
+					}
+					return (T) string.trim();
+				} catch (Exception e) {
+					return null;
+				}
+			}
+		}));
+	
+		column.setOnEditCommit(event -> {
+			KhachHang customer= event.getRowValue();
+			Object newValue = event.getNewValue();
+
+			if (newValue != null) {
+				showChangeTableConfirmationPopup(customer, newValue, event, property);
+			} else {
+				showInvalidInputDataDialog();
+			}
+		});
+	}
+	@FXML
+	public <T> void showChangeTableConfirmationPopup(KhachHang customer, Object newValue,
+	        TableColumn.CellEditEvent<KhachHang, T> event, String property) {
+	    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+	    alert.setTitle("Xác nhận thay đổi");
+	    alert.setHeaderText("Thay đổi thông tin khách hàng " + customer.getHoTen());
+	    alert.setContentText("Mã khách hàng: " + customer.getMaKhachHang());
+
+	    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+	    stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
+	    stage.initStyle(StageStyle.UNDECORATED);
+
+	    ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/confirmation-icon.png")));
+	    icon.setFitHeight(48);
+	    icon.setFitWidth(48);
+	    alert.setGraphic(icon);
+
+	    ButtonType confirmButton = new ButtonType("Xác nhận", ButtonData.OK_DONE);
+	    ButtonType cancelButton = new ButtonType("Hủy", ButtonData.CANCEL_CLOSE);
+
+	    alert.getButtonTypes().setAll(confirmButton, cancelButton);
+
+	    Node confirmBtn = alert.getDialogPane().lookupButton(confirmButton);
+	    Node cancelBtn = alert.getDialogPane().lookupButton(cancelButton);
+
+	    confirmBtn.setStyle(
+	            "-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+	    cancelBtn.setStyle(
+	            "-fx-background-color: red; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+
+	    confirmBtn.setOnMouseEntered(e -> {
+	        NodeUtil.applyFadeTransition(confirmBtn, 1, 0.6, 300, () -> {
+	        });
+	    });
+
+	    confirmBtn.setOnMouseExited(e -> {
+	        NodeUtil.applyFadeTransition(confirmBtn, 0.6, 1, 300, () -> {
+	        });
+	    });
+
+	    cancelBtn.setOnMouseEntered(e -> {
+	        NodeUtil.applyFadeTransition(cancelBtn, 1, 0.6, 300, () -> {
+	        });
+	    });
+
+	    cancelBtn.setOnMouseExited(e -> {
+	        NodeUtil.applyFadeTransition(cancelBtn, 0.6, 1, 300, () -> {
+	        });
+	    });
+
+	    Optional<ButtonType> result = alert.showAndWait();
+	    if (result.isPresent() && result.get() == confirmButton) {
+	        try {
+	            PropertyDescriptor pd = new PropertyDescriptor(property, KhachHang.class);
+	            pd.getWriteMethod().invoke(customer, newValue);
+	            if (new KhachHang_BUS().updateKhachHang(customer)) {
+	                System.out.println("Input successfully.");
+	                event.consume();
+	            } else {
+	                showInvalidInputDataDialog();
+	            }
+	        } catch (Exception ex) {
+	            Logger.getLogger(KhachHang_GUI.class.getName()).log(Level.SEVERE, null, ex);
+	        }
+	    } else {
+	        event.consume();
+	    }
+	}
+
+	@FXML
+	private void showInvalidInputDataDialog() {
+	    Alert alert = new Alert(Alert.AlertType.ERROR);
+	    alert.setTitle("Không thể nhập dữ liệu");
+	    alert.setHeaderText("Giá trị nhập không phù hợp.");
+	    alert.setContentText("Vui lòng kiểm tra lại dữ liệu bạn đã nhập.");
+
+	    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+
+	    ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
+	    icon.setFitHeight(48);
+	    icon.setFitWidth(48);
+	    alert.setGraphic(icon);
+
+	    alert.getButtonTypes().clear();
+
+	    ButtonType confirmButton = new ButtonType("Xác nhận");
+	    alert.getButtonTypes().add(confirmButton);
+
+	    Node confirmBtn = alert.getDialogPane().lookupButton(confirmButton);
+	    confirmBtn.setStyle(
+	            "-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+
+	    stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
+
+	    alert.showAndWait();
+	}
+
+	
 	private void exportKhachHangToPdf(String outputPdfPath) throws SQLException {
 	    try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
 	         PdfDocument pdfDoc = new PdfDocument(writer)) {
@@ -345,7 +599,7 @@ public class KhachHang_GUI {
 	            Cell logoCell = new Cell().add(logo).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER);
 	            headerTable.addCell(logoCell);
 
-	            Paragraph name = new Paragraph("MEDKIT")
+	            Paragraph name = new Paragraph("MEDKIT ")
 	                    .setFont(font)
 	                    .setFontSize(30)
 	                    .setBold()

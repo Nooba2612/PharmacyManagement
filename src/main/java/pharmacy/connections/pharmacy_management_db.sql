@@ -98,6 +98,7 @@ CREATE TABLE KhachHang (
     gioiTinh NVARCHAR(15) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác')),
     ghiChu NVARCHAR(255)
 );
+
 CREATE TABLE HoaDon (
     maHoaDon NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (MaHoaDon LIKE 'HD____'),
     maKhachHang NVARCHAR(50) NOT NULL,

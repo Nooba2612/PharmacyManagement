@@ -20,7 +20,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="650.0" prefWidth="1060.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.ThemKhachHang_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="650.0" prefWidth="1060.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.ThemKhachHang_GUI">
 	<children>
 		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="1059.0" style="-fx-background-color: #fff;">
 			<children>
@@ -124,7 +124,7 @@
             								<Cursor fx:constant="TEXT" />
             							</cursor>
             						</TextField>
-                        <Label text="Label" visible="false" />
+                        <Label fx:id="nameAlert" text="Label" visible="false" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -135,7 +135,7 @@
                            </font>
                         </Text>
                         <DatePicker fx:id="birthdayField" prefHeight="45.0" prefWidth="439.0" promptText="Ngày sinh của khách hàng" style="-fx-background-color: #f0f0f0; -fx-border-color: #f0f0f0;" />
-                        <Label text="Label" visible="false" />
+                        <Label fx:id="birthDateAlert" text="Label" visible="false" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
@@ -153,7 +153,7 @@
             								<Cursor fx:constant="TEXT" />
             							</cursor>
             						</TextField>
-                        <Label text="Label" visible="false" />
+                        <Label fx:id="phoneAlert" text="Label" visible="false" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
@@ -168,7 +168,7 @@
             								<Cursor fx:constant="HAND" />
             							</cursor>
             						</ComboBox>
-                        <Label text="Label" visible="false" />
+                        <Label fx:id="genderAlert" text="Label" visible="false" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
@@ -188,7 +188,7 @@
                                     <Cursor fx:constant="TEXT" />
                                  </cursor>
                               </TextField>
-                              <Label text="Label" visible="false" />
+                              <Label fx:id="noteAlert" text="Label" visible="false" />
                            </children>
                         </VBox>
                      </children></VBox>
@@ -199,7 +199,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="nameField1" prefHeight="43.0" prefWidth="338.0" promptText="KHXXXX" style="-fx-background-color: #f0f0f0;">
+                        <TextField fx:id="idField" prefHeight="43.0" prefWidth="338.0" promptText="KHXXXX" style="-fx-background-color: #f0f0f0;">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -228,7 +228,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="submitBtn1" alignment="CENTER" layoutX="807.0" layoutY="368.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="81.0" style="-fx-background-color: #f0f0f0;" text="Undo" textAlignment="CENTER">
+            <Button fx:id="submitBtn11" alignment="CENTER" layoutX="807.0" layoutY="368.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="81.0" style="-fx-background-color: #f0f0f0;" text="Undo" textAlignment="CENTER">
                <graphic>
                   <ImageView fitHeight="22.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                      <image>
