@@ -77,12 +77,11 @@ public class KhachHang_DAO implements KhachHang_Interface {
 				String maKhachHang = rs.getString("maKhachHang");
 				String hoTen = rs.getString("hoTen");
 				String soDienThoai = rs.getString("soDienThoai");
-				int namSinhInt = rs.getInt("namSinh");
+				LocalDate namSinh = rs.getDate("namSinh") != null ? rs.getDate("namSinh").toLocalDate() : null;
 				int diemTichLuy = rs.getInt("diemTichLuy");
 				String ghiChu = rs.getString("ghiChu");
 				String gioiTinh = rs.getString("gioiTinh");
 
-				LocalDate namSinh = LocalDate.of(namSinhInt, 1, 1);
 				KhachHang kh = new KhachHang(maKhachHang, hoTen, soDienThoai, diemTichLuy, namSinh, ghiChu, gioiTinh);
 				khachHangList.add(kh);
 			}

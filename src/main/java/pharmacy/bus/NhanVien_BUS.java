@@ -27,7 +27,7 @@ public class NhanVien_BUS {
         }
 
         if (nhanVien.getEmail() == null ||
-                nhanVien.getEmail().matches("(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$")) {
+                !nhanVien.getEmail().matches("(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$")) {
             return false;
         }
 
@@ -45,26 +45,32 @@ public class NhanVien_BUS {
         }
 
         if (nhanVien.getChucVu() == null || nhanVien.getChucVu().isEmpty() ||
-                (!nhanVien.getChucVu().equals("Nhân viên") &&
-                        !nhanVien.getChucVu().equals("Người quản lý"))) {
+                !(nhanVien.getChucVu().equals("Nhân viên") || nhanVien.getChucVu().equals("Người quản lý"))) {
             return false;
         }
 
         if (nhanVien.getTrangThai() == null || nhanVien.getTrangThai().isEmpty() ||
-                (!nhanVien.getTrangThai().equals("Còn làm việc") &&
-                        !nhanVien.getTrangThai().equals("Nghỉ việc tạm thời") &&
-                        !nhanVien.getTrangThai().equals("Nghỉ việc hẳn"))) {
-
+                !(nhanVien.getTrangThai().equals("Còn làm việc") ||
+                        nhanVien.getTrangThai().equals("Nghỉ phép") ||
+                        nhanVien.getTrangThai().equals("Đã nghỉ việc"))) {
             return false;
         }
 
-        boolean result = nhanVienDAO.updateEmployee(nhanVien);
-
-        if (!result) {
-            System.err.println("Error update table in database.");
+        if (nhanVien.getGioiTinh() == null || nhanVien.getGioiTinh().isEmpty() ||
+                !(nhanVien.getGioiTinh().equals("Nam") ||
+                        nhanVien.getGioiTinh().equals("Nữ") ||
+                        nhanVien.getGioiTinh().equals("Khác"))) {
+            return false;
         }
 
-        return result;
+        if (nhanVien.getTrinhDo() == null || nhanVien.getTrinhDo().isEmpty() ||
+                !(nhanVien.getTrinhDo().equals("Đại học") ||
+                        nhanVien.getTrinhDo().equals("Cao đẳng") ||
+                        nhanVien.getTrinhDo().equals("Cao học"))) {
+            return false;
+        }
+
+        return nhanVienDAO.updateEmployee(nhanVien);
     }
 
     public boolean deleteEmployee(String maNhanVien) {

@@ -4,13 +4,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 
-
-<VBox alignment="CENTER" prefHeight="774.0" prefWidth="955.0"
-	style="-fx-background-color: white;"
-	xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="CENTER" prefHeight="698.0" prefWidth="955.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<ImageView fitHeight="788.0" fitWidth="770.0"
-			pickOnBounds="true" preserveRatio="true">
+		<ImageView fitHeight="718.0" fitWidth="731.0" pickOnBounds="true" preserveRatio="true">
 			<image>
 				<Image url="@../images/medical.jpg" />
 			</image>
