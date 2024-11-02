@@ -1,6 +1,8 @@
 ﻿/*
 USE MASTER 
 DROP DATABASE medkit_pharmacy_management;
+CREATE DATABASE medkit_pharmacy_management;
+
 */
 
 USE medkit_pharmacy_management;

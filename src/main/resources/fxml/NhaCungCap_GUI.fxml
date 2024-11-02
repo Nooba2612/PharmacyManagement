@@ -16,10 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER"
-	maxHeight=" .7976931348623157E308" maxWidth=" .7976931348623157E308"
-	xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="pharmacy.gui.NhaCungCap_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight=" .7976931348623157E308" maxWidth=" .7976931348623157E308" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.NhaCungCap_GUI">
 	<children>
 		<Pane maxHeight="   .7976931348623157E308"
 			maxWidth="   .7976931348623157E308" minHeight="-Infinity"
@@ -105,13 +102,9 @@
 										<Font size="13.0" />
 									</font>
 								</TextField>
-								<Button fx:id="searchBtn" layoutX="181.0" layoutY="-3.0"
-									mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0"
-									style="-fx-background-color: transparent;"
-									textAlignment="CENTER">
+								<Button fx:id="searchBtn" layoutX="181.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0" style="-fx-background-color: transparent;" textAlignment="CENTER">
 									<graphic>
-										<ImageView fitHeight="20.0" fitWidth="17.0"
-											pickOnBounds="true" preserveRatio="true">
+										<ImageView fitHeight="20.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
 											<image>
 												<Image url="@../images/search-icon.png" />
 											</image>

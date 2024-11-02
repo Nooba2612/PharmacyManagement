@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="732.0" prefWidth="1018.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.ThemNhaCungCap_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="732.0" prefWidth="1018.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.ThemNhaCungCap_GUI">
 	<children>
 		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0" prefWidth="1015.0" style="-fx-background-color: #fff;">
 			<children>
@@ -219,6 +219,18 @@
                   <Cursor fx:constant="TEXT" />
                </cursor>
             </TableView>
+            <Button fx:id="clearDataBtn" layoutX="841.0" layoutY="12.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="152.0" style="-fx-background-color: transparent;" text="Làm mới">
+               <graphic>
+                  <ImageView fitHeight="37.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/circle-arrows-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Button>
 			</children>
 		</Pane>
 	</children>
