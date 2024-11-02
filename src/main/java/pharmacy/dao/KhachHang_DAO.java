@@ -11,6 +11,10 @@ import pharmacy.entity.KhachHang;
 
 public class KhachHang_DAO implements KhachHang_Interface {
 
+	private Connection connection;
+	private PreparedStatement statement;
+	private String query;
+	
 	@Override
 	public boolean addKhachHang(KhachHang kh) {
 		String query = "INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, ghiChu) VALUES (?, ?, ?, ?, ?, ?)";
@@ -31,6 +35,39 @@ public class KhachHang_DAO implements KhachHang_Interface {
 		return false;
 	}
 
+	@Override
+	public boolean createKhachHang(KhachHang customer) {
+	    String query = "INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gioiTinh,  ghiChu) "
+	            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+	    try {
+	        statement = connection.prepareStatement(query);
+	        statement.setString(1, customer.getMaKhachHang());
+	        statement.setString(2, customer.getHoTen());
+	        statement.setString(3, customer.getSoDienThoai());
+	        statement.setDate(4, Date.valueOf(customer.getNamSinh()));
+	        statement.setInt(5, customer.getDiemTichLuy());
+	        statement.setString(6, customer.getGioiTinh());
+	        statement.setString(7, customer.getGhiChu());
+
+	        int result = statement.executeUpdate();
+	        return result > 0;
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    } finally {
+	        if (statement != null) {
+	            try {
+	                statement.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	}
+
+	
 	@Override
 	public boolean updateKhachHang(KhachHang kh) {
 		String query = "UPDATE KhachHang SET hoTen = ?, soDienThoai = ?, namSinh = ?, diemTichLuy = ?, gioiTinh = ?, ghiChu = ? WHERE maKhachHang = ?";

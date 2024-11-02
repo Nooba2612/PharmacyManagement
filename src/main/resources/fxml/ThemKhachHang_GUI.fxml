@@ -71,6 +71,7 @@
                   <TableColumn fx:id="idColumn" prefWidth="117.60001069307327" sortable="false" text="Mã khách hàng" />
                   <TableColumn fx:id="nameColumn" prefWidth="194.40000915527344" text="Tên khách hàng" />
                   <TableColumn fx:id="phoneColumn" prefWidth="184.7999267578125" sortable="false" text="Số điện thoại" />
+                  <TableColumn fx:id="genderColumn" prefWidth="184.7999267578125" sortable="false" text="Giới tính" />
                   <TableColumn fx:id="yearColumn" prefWidth="116.00006103515625" sortable="false" text="Năm sinh" />
                   <TableColumn fx:id="pointsColumn" prefWidth="111.2000732421875" text="Điểm tích lũy" />
                   <TableColumn fx:id="noteColumn" prefWidth="135.199951171875" text="Ghi chú" />

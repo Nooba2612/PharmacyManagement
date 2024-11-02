@@ -20,4 +20,6 @@ public interface KhachHang_Interface {
 	List<KhachHang> getNewCustomerByDate(String date) ;
 
 	List<KhachHang> getTopCustomer();
+
+	boolean createKhachHang(KhachHang customer);
 }

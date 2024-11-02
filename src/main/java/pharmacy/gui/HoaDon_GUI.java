@@ -566,17 +566,17 @@ public class HoaDon_GUI {
                 table.addHeaderCell(new Cell().add(new Paragraph("Số lượng tồn").setFont(font).setFontSize(8))
                         .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
-                for (HoaDon invoice : invoiceList) {
-                    table.addCell(new Paragraph(invoice.getMaSanPham()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getTenSanPham()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getDonViTinh()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getNhaSX()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getNgaySX().toString()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getHanSuDung().toString()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getTrangThai()).setFont(font).setFontSize(8));
-                    table.addCell(
-                            new Paragraph(String.valueOf(invoice.getSoLuongTon())).setFont(font).setFontSize(8));
-                }
+//                for (HoaDon invoice : invoiceList) {
+//                    table.addCell(new Paragraph(invoice.getMaSanPham()).setFont(font).setFontSize(8));
+//                    table.addCell(new Paragraph(invoice.getTenSanPham()).setFont(font).setFontSize(8));
+//                    table.addCell(new Paragraph(invoice.getDonViTinh()).setFont(font).setFontSize(8));
+//                    table.addCell(new Paragraph(invoice.getNhaSX()).setFont(font).setFontSize(8));
+//                    table.addCell(new Paragraph(invoice.getNgaySX().toString()).setFont(font).setFontSize(8));
+//                    table.addCell(new Paragraph(invoice.getHanSuDung().toString()).setFont(font).setFontSize(8));
+//                    table.addCell(new Paragraph(invoice.getTrangThai()).setFont(font).setFontSize(8));
+//                    table.addCell(
+//                            new Paragraph(String.valueOf(invoice.getSoLuongTon())).setFont(font).setFontSize(8));
+//                }
 
                 document.add(table);
             }
