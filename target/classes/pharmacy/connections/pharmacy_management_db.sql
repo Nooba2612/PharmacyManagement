@@ -2,6 +2,7 @@
 USE MASTER 
 DROP DATABASE medkit_pharmacy_management;
 */
+
 USE medkit_pharmacy_management;
 -- Nhân Viên
 CREATE TABLE NhanVien (
@@ -30,40 +31,65 @@ CREATE TABLE TaiKhoan (
 -- ISLOGGEDIN : 1
 UPDATE TaiKhoan
 SET isLoggedIn = 1
-WHERE tenDangNhap = 'MK0001' -- Sản Phẩm
-    CREATE TABLE SanPham (
-        maSanPham NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maSanPham LIKE 'SP____'),
-        tenSanPham NVARCHAR(255) NOT NULL,
-        danhMuc NVARCHAR(50) NOT NULL,
-        loaiSanPham NVARCHAR(50) NOT NULL,
-        ngaySX DATETIME NOT NULL,
-        nhaSX NVARCHAR(255) NOT NULL,
-        ngayTao DATETIME DEFAULT GETDATE(),
-        ngayCapNhat DATETIME DEFAULT GETDATE(),
-        soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
-        donGiaBan FLOAT NOT NULL CHECK (donGiaBan > 0),
-        thue FLOAT NOT NULL CHECK (
-            thue >= 0
-            AND thue <= 1
-        ),
-        hanSuDung DATETIME NOT NULL,
-        donViTinh NVARCHAR(50) NOT NULL CHECK (
-            donViTinh IN (
-                N'Cái',
-                N'Chiếc',
-                N'Bộ',
-                N'Hộp',
-                N'Gói',
-                N'Viên',
-                N'Vỉ',
-                N'Chai',
-                N'Ống',
-                N'Gói'
-            )
-        ),
-        moTa NVARCHAR(255),
-        trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn'
-    );
+
+-- Sản Phẩm
+CREATE TABLE SanPham (
+    maSanPham NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maSanPham LIKE 'SP____'),
+    tenSanPham NVARCHAR(255) NOT NULL,
+    danhMuc NVARCHAR(50) NOT NULL,
+    loaiSanPham NVARCHAR(50) NOT NULL,
+    ngaySX DATETIME NOT NULL,
+    nhaSX NVARCHAR(255) NOT NULL,
+    ngayTao DATETIME DEFAULT GETDATE(),
+    ngayCapNhat DATETIME DEFAULT GETDATE(),
+    soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
+    donGiaBan DECIMAL(18, 0) NOT NULL CHECK (donGiaBan > 0),
+    thue FLOAT NOT NULL CHECK (
+        thue >= 0
+        AND thue <= 1
+    ),
+    hanSuDung DATETIME NOT NULL,
+    donViTinh NVARCHAR(50) NOT NULL CHECK (
+        donViTinh IN (N'Cái', N'Chiếc', N'Bộ', N'Hộp', N'Gói', 
+					 N'Viên', N'Vỉ', N'Chai', N'Ống', N'Gói')),
+    moTa NVARCHAR(255),
+    trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn'
+);
+CREATE TABLE NhatKyThayDoiSanPham (
+    maSanPham NVARCHAR(50) NOT NULL,
+    tenSanPham NVARCHAR(255) NOT NULL,
+    danhMuc NVARCHAR(50) NOT NULL,
+    loaiSanPham NVARCHAR(50) NOT NULL,
+    ngaySX DATETIME NOT NULL,
+    nhaSX NVARCHAR(255) NOT NULL,
+    ngayTao DATETIME DEFAULT GETDATE(),
+    ngayCapNhat DATETIME DEFAULT GETDATE(),
+    soLuongTon INT NOT NULL CHECK (soLuongTon >= 0),
+    donGiaBan DECIMAL(18, 0) NOT NULL CHECK (donGiaBan > 0),
+    thue FLOAT NOT NULL CHECK (
+        thue >= 0
+        AND thue <= 1
+    ),
+    hanSuDung DATETIME NOT NULL,
+    donViTinh NVARCHAR(50) NOT NULL CHECK (
+        donViTinh IN (
+            N'Cái',
+            N'Chiếc',
+            N'Bộ',
+            N'Hộp',
+            N'Gói',
+            N'Viên',
+            N'Vỉ',
+            N'Chai',
+            N'Ống',
+            N'Gói'
+        )
+    ),
+    moTa NVARCHAR(255),
+    trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn',
+);
+
+
 -- Cập nhật trạng thái sản phẩm
 /*
  -- Hết hạn
@@ -1197,126 +1223,26 @@ VALUES
 
 -- Thêm dữ liệu vào bảng HoaDon
 INSERT INTO HoaDon (
-        maHoaDon,
-        maKhachHang,
-        maNhanVien,
-        ngayTao,
-        tienKhachDua,
-        tongTien,
-        tienThua,
-        diemSuDung,
-        loaiThanhToan
-    )
-VALUES (
-        'HD0001',
-        'KH0001',
-        'MK0001',
-        '2024-10-01 10:00:00',
-        200000,
-        180000,
-        20000,
-        0,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0002',
-        'KH0002',
-        'MK0002',
-        '2024-10-02 11:00:00',
-        300000,
-        250000,
-        50000,
-        10,
-        N'Chuyển khoản'
-    ),
-    (
-        'HD0003',
-        'KH0003',
-        'MK0001',
-        '2024-10-03 12:30:00',
-        150000,
-        130000,
-        20000,
-        0,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0004',
-        'KH0004',
-        'MK0003',
-        '2024-10-04 14:15:00',
-        500000,
-        450000,
-        50000,
-        5,
-        N'Chuyển khoản'
-    ),
-    (
-        'HD0005',
-        'KH0005',
-        'MK0002',
-        '2024-10-05 09:45:00',
-        250000,
-        200000,
-        50000,
-        0,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0006',
-        'KH0006',
-        'MK0003',
-        '2024-10-06 15:30:00',
-        600000,
-        580000,
-        20000,
-        15,
-        N'Chuyển khoản'
-    ),
-    (
-        'HD0007',
-        'KH0007',
-        'MK0001',
-        '2024-10-07 13:20:00',
-        800000,
-        700000,
-        100000,
-        0,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0008',
-        'KH0008',
-        'MK0002',
-        '2024-10-08 10:10:00',
-        1000000,
-        950000,
-        50000,
-        0,
-        N'Chuyển khoản'
-    ),
-    (
-        'HD0009',
-        'KH0009',
-        'MK0003',
-        '2024-10-09 11:00:00',
-        200000,
-        180000,
-        20000,
-        20,
-        N'Tiền mặt'
-    ),
-    (
-        'HD0010',
-        'KH0010',
-        'MK0001',
-        '2024-10-10 16:00:00',
-        300000,
-        280000,
-        20000,
-        10,
-        N'Chuyển khoản'
-    );
+    maHoaDon,
+    maKhachHang,
+    maNhanVien,
+    ngayTao,
+    tienKhachDua,
+    tongTien,
+    tienThua,
+    diemSuDung,
+    loaiThanhToan
+) VALUES 
+    ('HD0001', 'KH0001', 'MK0001', '2024-10-01 10:00:00', 200000, 180000, 20000, 0, N'Tiền mặt'),
+    ('HD0002', 'KH0002', 'MK0002', '2024-10-02 11:00:00', 300000, 250000, 50000, 10, N'Chuyển khoản'),
+    ('HD0003', 'KH0003', 'MK0001', '2024-10-03 12:30:00', 150000, 130000, 20000, 0, N'Tiền mặt'),
+    ('HD0004', 'KH0004', 'MK0003', '2024-10-04 14:15:00', 500000, 450000, 50000, 5, N'Chuyển khoản'),
+    ('HD0005', 'KH0005', 'MK0002', '2024-10-05 09:45:00', 250000, 200000, 50000, 0, N'Tiền mặt'),
+    ('HD0006', 'KH0006', 'MK0003', '2024-10-06 15:30:00', 600000, 580000, 20000, 15, N'Chuyển khoản'),
+    ('HD0007', 'KH0007', 'MK0001', '2024-10-07 13:20:00', 800000, 700000, 100000, 0, N'Tiền mặt'),
+    ('HD0008', 'KH0008', 'MK0002', '2024-10-08 10:10:00', 1000000, 950000, 50000, 0, N'Chuyển khoản'),
+    ('HD0009', 'KH0009', 'MK0003', '2024-10-09 11:00:00', 200000, 180000, 20000, 20, N'Tiền mặt'),
+    ('HD0010', 'KH0010', 'MK0001', '2024-10-10 16:00:00', 300000, 280000, 20000, 10, N'Chuyển khoản');
 -- Thêm dữ liệu vào bảng ChiTietHoaDon
 INSERT INTO ChiTietHoaDon (maHoaDon, maSanPham, soLuong, donGiaNhap, thue)
 VALUES ('HD0001', 'SP0001', 5, 10000, 0.08),
