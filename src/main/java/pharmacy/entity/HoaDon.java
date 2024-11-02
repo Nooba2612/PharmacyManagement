@@ -1,11 +1,13 @@
 package pharmacy.entity;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HoaDon {
+import pharmacy.bus.SanPham_BUS;
 
+public class HoaDon {
 	private String maHoaDon;
 	private KhachHang khachHang;
 	private NhanVien nhanVien;
@@ -14,49 +16,45 @@ public class HoaDon {
 	private double diemSuDung;
 	private String loaiThanhToan;
 	private List<ChiTietHoaDon> chiTietHoaDonList;
+	private Double tienThua;
+	private Double tongTien;
 
 	public HoaDon() {
 		chiTietHoaDonList = new ArrayList<>();
 	}
 
 	public HoaDon(String maHoaDon, KhachHang khachHang, NhanVien nhanVien, LocalDate ngayTao, double tienKhachDua,
-			double diemSuDung, String loaiThanhToan, List<ChiTietHoaDon> chiTietHoaDonList) {
-		if (maHoaDon == null || !maHoaDon.matches("HD\\d{6}\\d{5}")) {
-			throw new IllegalArgumentException("Mã hóa đơn không hợp lệ");
-		}
+			double diemSuDung, String loaiThanhToan, List<ChiTietHoaDon> chiTietHoaDonList) throws SQLException {
 		this.maHoaDon = maHoaDon;
-
-		if (khachHang == null) {
-			throw new IllegalArgumentException("Khách hàng không hợp lệ");
-		}
 		this.khachHang = khachHang;
-
-		if (nhanVien == null) {
-			throw new IllegalArgumentException("Nhân viên không hợp lệ");
-		}
 		this.nhanVien = nhanVien;
-
-		if (ngayTao == null) {
-			throw new IllegalArgumentException("Ngày tạo không hợp lệ");
-		}
 		this.ngayTao = ngayTao;
-
-		if (tienKhachDua < 0) {
-			throw new IllegalArgumentException("Tiền khách đưa không hợp lệ");
-		}
 		this.tienKhachDua = tienKhachDua;
-
-		if (diemSuDung < 0) {
-			throw new IllegalArgumentException("Điểm sử dụng không hợp lệ");
-		}
 		this.diemSuDung = diemSuDung;
-
-		if (!loaiThanhToan.equals("Tiền mặt") && !loaiThanhToan.equals("Chuyển khoản")) {
-			throw new IllegalArgumentException("Loại thanh toán không hợp lệ");
-		}
 		this.loaiThanhToan = loaiThanhToan;
-
 		this.chiTietHoaDonList = chiTietHoaDonList != null ? chiTietHoaDonList : new ArrayList<>();
+		this.tongTien = 0.0;
+		if (chiTietHoaDonList != null && !chiTietHoaDonList.isEmpty()) {
+			for (ChiTietHoaDon cthd : chiTietHoaDonList) {
+				if (cthd != null && cthd.getMaSanPham() != null) {
+					SanPham sp = new SanPham_BUS().getSanPhamByMaSanPham(cthd.getMaSanPham());
+					if (sp != null) {
+						this.tongTien += (sp.getDonGiaBan() * cthd.getSoLuong())
+								- (sp.getDonGiaBan() * cthd.getSoLuong() * cthd.getThue());
+					}
+				}
+			}
+		}
+
+		this.tienThua = tienKhachDua - tongTien;
+	}
+
+	public Double getTienThua() {
+		return tienThua;
+	}
+
+	public Double getTongTien() {
+		return tongTien;
 	}
 
 	public String getMaHoaDon() {
@@ -64,9 +62,6 @@ public class HoaDon {
 	}
 
 	public void setMaHoaDon(String maHoaDon) {
-		if (maHoaDon == null || !maHoaDon.matches("HD\\d{6}\\d{5}")) {
-			throw new IllegalArgumentException("Mã hóa đơn không hợp lệ");
-		}
 		this.maHoaDon = maHoaDon;
 	}
 
@@ -75,9 +70,6 @@ public class HoaDon {
 	}
 
 	public void setKhachHang(KhachHang khachHang) {
-		if (khachHang == null) {
-			throw new IllegalArgumentException("Khách hàng không hợp lệ");
-		}
 		this.khachHang = khachHang;
 	}
 
@@ -86,9 +78,6 @@ public class HoaDon {
 	}
 
 	public void setNhanVien(NhanVien nhanVien) {
-		if (nhanVien == null) {
-			throw new IllegalArgumentException("Nhân viên không hợp lệ");
-		}
 		this.nhanVien = nhanVien;
 	}
 
@@ -97,9 +86,6 @@ public class HoaDon {
 	}
 
 	public void setNgayTao(LocalDate ngayTao) {
-		if (ngayTao == null) {
-			throw new IllegalArgumentException("Ngày tạo không hợp lệ");
-		}
 		this.ngayTao = ngayTao;
 	}
 
@@ -108,9 +94,6 @@ public class HoaDon {
 	}
 
 	public void setTienKhachDua(double tienKhachDua) {
-		if (tienKhachDua < 0) {
-			throw new IllegalArgumentException("Tiền khách đưa không hợp lệ");
-		}
 		this.tienKhachDua = tienKhachDua;
 	}
 
@@ -119,9 +102,6 @@ public class HoaDon {
 	}
 
 	public void setDiemSuDung(double diemSuDung) {
-		if (diemSuDung < 0) {
-			throw new IllegalArgumentException("Điểm sử dụng không hợp lệ");
-		}
 		this.diemSuDung = diemSuDung;
 	}
 
@@ -130,9 +110,6 @@ public class HoaDon {
 	}
 
 	public void setLoaiThanhToan(String loaiThanhToan) {
-		if (!loaiThanhToan.equals("Tiền mặt") && !loaiThanhToan.equals("Chuyển khoản")) {
-			throw new IllegalArgumentException("Loại thanh toán không hợp lệ");
-		}
 		this.loaiThanhToan = loaiThanhToan;
 	}
 
@@ -141,9 +118,6 @@ public class HoaDon {
 	}
 
 	public void setChiTietHoaDonList(List<ChiTietHoaDon> chiTietHoaDonList) {
-		if (chiTietHoaDonList == null) {
-			throw new IllegalArgumentException("Danh sách chi tiết hóa đơn không hợp lệ");
-		}
 		this.chiTietHoaDonList = chiTietHoaDonList;
 	}
 

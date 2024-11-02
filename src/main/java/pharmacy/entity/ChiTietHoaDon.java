@@ -1,30 +1,19 @@
 package pharmacy.entity;
 
 public class ChiTietHoaDon {
-	private SanPham sanpham;
+	private String maHoaDon;
+	private String maSanPham;
 	private int soLuong;
+	private Float thue;
 
 	public ChiTietHoaDon() {
 	}
 
-	public ChiTietHoaDon(HoaDon hoaDon, SanPham sanpham, int soLuong) {
-
-		if (sanpham == null) {
-			throw new IllegalArgumentException("Thuốc không hợp lệ");
-		}
-		this.sanpham = sanpham;
-
-		if (soLuong < 0) {
-			throw new IllegalArgumentException("Số lượng không hợp lệ");
-		}
+	public ChiTietHoaDon(String maHoaDon, String maSanPham, int soLuong, Float thue) {
+		this.maHoaDon = maHoaDon;
+		this.maSanPham = maSanPham;
 		this.soLuong = soLuong;
-	}
-
-	public ChiTietHoaDon(ChiTietHoaDon chiTietHoaDon) {
-		if (chiTietHoaDon != null) {
-			this.sanpham = chiTietHoaDon.sanpham;
-			this.soLuong = chiTietHoaDon.soLuong;
-		}
+		this.thue = thue;
 	}
 
 	public int getSoLuong() {
@@ -32,25 +21,36 @@ public class ChiTietHoaDon {
 	}
 
 	public void setSoLuong(int soLuong) {
-		if (soLuong < 0) {
-			throw new IllegalArgumentException("Số lượng không hợp lệ");
-		}
 		this.soLuong = soLuong;
 	}
 
-	public SanPham getSanPham() {
-		return sanpham;
+	public Float getThue() {
+		return thue;
 	}
 
-	public void setSanPham(SanPham sanpham) {
-		if (sanpham == null) {
-			throw new IllegalArgumentException("Thuốc không hợp lệ");
-		}
-		this.sanpham = sanpham;
+	public void setThue(Float thue) {
+		this.thue = thue;
+	}
+
+	public String getMaSanPham() {
+		return maSanPham;
+	}
+
+	public void setMaSanPham(String maSanPham) {
+		this.maSanPham = maSanPham;
+	}
+
+	public String getMaHoaDon() {
+		return maHoaDon;
+	}
+
+	public void setMaHoaDon(String maHoaDon) {
+		this.maHoaDon = maHoaDon;
 	}
 
 	@Override
 	public String toString() {
-		return "ChiTietHoaDon{" + ", sanpham=" + sanpham + ", soLuong=" + soLuong + '}';
+		return "ChiTietHoaDon{" + ", maSanPham=" + maSanPham + ", soLuong=" + soLuong + '}' + ", maHoaDon=" + maHoaDon
+				+ '}';
 	}
 }

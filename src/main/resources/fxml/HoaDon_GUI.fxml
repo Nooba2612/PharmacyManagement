@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.HoaDon_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.HoaDon_GUI">
 	<children>
 		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1179.0">
 			<children>
@@ -35,13 +35,14 @@
 								<TableView fx:id="invoiceTable" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/InvoiceTableStyles.css" tableMenuButtonVisible="true">
 									<columns>
 										<TableColumn fx:id="idColumn" prefWidth="104.80001145601273" text="Mã hóa đơn" />
-										<TableColumn fx:id="customerNameColumn" prefWidth="146.4000244140625" text="Tên khách hàng" />
-										<TableColumn fx:id="employeeNameColumn" prefWidth="150.40000915527344" sortable="false" text="Tên nhân viên" />
-										<TableColumn fx:id="totalColumn" prefWidth="133.60006713867188" sortable="false" text="Tổng hóa đơn" />
-										<TableColumn fx:id="amountPaidColumn" prefWidth="133.5999755859375" text="Tiền khách đưa" />
-										<TableColumn fx:id="changeColumn" prefWidth="98.39996337890625" text="Tiền thừa" />
-										<TableColumn fx:id="paymentMethodColumn" prefWidth="137.60003662109375" text="Hình thức thanh toán" />
-										<TableColumn fx:id="createDateColumn" prefWidth="140.0" text="Thời gian tạo" />
+										<TableColumn fx:id="customerNameColumn" prefWidth="126.40000915527344" text="Tên khách hàng" />
+										<TableColumn fx:id="employeeNameColumn" prefWidth="114.39999389648438" sortable="false" text="Tên nhân viên" />
+										<TableColumn fx:id="totalColumn" prefWidth="121.59991455078125" sortable="false" text="Tổng hóa đơn" />
+										<TableColumn fx:id="amountPaidColumn" prefWidth="131.199951171875" text="Tiền khách đưa" />
+										<TableColumn fx:id="changeColumn" prefWidth="90.39996337890625" text="Tiền thừa" />
+										<TableColumn fx:id="paymentMethodColumn" prefWidth="144.00006103515625" text="Hình thức thanh toán" />
+                              <TableColumn fx:id="usedPointsColumn" prefWidth="98.4000244140625" text="Điểm sử dụng" />
+										<TableColumn fx:id="createDateColumn" prefWidth="95.20001220703125" text="Thời gian tạo" />
 										<TableColumn fx:id="detailColumn" editable="false" prefWidth="117.59991455078125" sortable="false" text="Chi tiết hóa đơn" />
 									</columns>
 									<columnResizePolicy>
@@ -74,31 +75,46 @@
 								</Button>
 							</children>
 						</Pane>
-						<Label layoutX="368.0" layoutY="34.0" prefHeight="40.0" prefWidth="72.0" text="Từ ngày  :">
+						<Label layoutX="35.0" layoutY="36.0" prefHeight="40.0" prefWidth="72.0" text="Từ ngày  :">
 							<font>
 								<Font name="System Bold" size="13.0" />
 							</font>
 						</Label>
-						<DatePicker fx:id="fromDate" layoutX="440.0" layoutY="36.0" prefHeight="40.0" prefWidth="175.0" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;">
+						<DatePicker fx:id="fromDate" layoutX="107.0" layoutY="38.0" prefHeight="40.0" prefWidth="175.0" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;">
 							<cursor>
 								<Cursor fx:constant="TEXT" />
 							</cursor>
 						</DatePicker>
-						<Text layoutX="629.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="13.19677734375">
+						<Text layoutX="296.0" layoutY="65.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="13.19677734375">
 							<font>
 								<Font size="33.0" />
 							</font>
 						</Text>
-						<Label layoutX="650.0" layoutY="34.0" prefHeight="40.0" prefWidth="82.0" text="Đến ngày  :">
+						<Label layoutX="317.0" layoutY="36.0" prefHeight="40.0" prefWidth="82.0" text="Đến ngày  :">
 							<font>
 								<Font name="System Bold" size="13.0" />
 							</font>
 						</Label>
-						<DatePicker fx:id="toDate" layoutX="732.0" layoutY="37.0" prefHeight="40.0" prefWidth="175.0" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;">
+						<DatePicker fx:id="toDate" layoutX="399.0" layoutY="39.0" prefHeight="40.0" prefWidth="175.0" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;">
 							<cursor>
 								<Cursor fx:constant="TEXT" />
 							</cursor>
 						</DatePicker>
+                  <Button fx:id="refreshBtn" layoutX="615.0" layoutY="39.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="126.0" style="-fx-background-color: #d1d1d1;" text="Làm mới">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/circle-arrows-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Button>
 					</children>
 					<effect>
 						<DropShadow height="10.0" radius="4.5" width="10.0">

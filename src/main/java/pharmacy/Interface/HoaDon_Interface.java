@@ -1,5 +1,6 @@
 package pharmacy.Interface;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import pharmacy.entity.HoaDon;
@@ -26,5 +27,7 @@ public interface HoaDon_Interface {
 	double calculateRevenueByYear(int year);
 	
 	double calculateRevenueByEmployee(String maNhanVien, String date);
+
+	List<HoaDon> getInvoiceByDate(LocalDate fromDate, LocalDate toDate);
 
 }

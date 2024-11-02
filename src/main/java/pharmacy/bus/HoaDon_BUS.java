@@ -1,6 +1,7 @@
 package pharmacy.bus;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import pharmacy.dao.HoaDon_DAO;
@@ -55,6 +56,10 @@ public class HoaDon_BUS {
 
 	public double calculateRevenueByEmployee(String maNhanVien, String date) {
 		return hoaDonDAO.calculateRevenueByEmployee(maNhanVien, date);
+	}
+
+	public List<HoaDon> getInvoiceByDate(LocalDate fromDate, LocalDate toDate) {
+		return hoaDonDAO.getInvoiceByDate(fromDate, toDate);
 	}
 
 }
