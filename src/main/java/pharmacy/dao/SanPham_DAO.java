@@ -62,8 +62,8 @@ public class SanPham_DAO implements SanPham_Interface {
 
 	@Override
 	public SanPham getSanPhamByMaSanPham(String maSanPham) {
-		query = "SELECT * FROM SanPham WHERE maSanPham = ? WHERE d = 0";
-
+		query = "SELECT * FROM SanPham WHERE maSanPham = ?";
+		
 		try {
 			statement = connection.prepareStatement(query);
 			statement.setString(1, maSanPham);

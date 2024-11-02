@@ -6,7 +6,7 @@ import pharmacy.dao.ChiTietPhieuNhap_DAO;
 import pharmacy.entity.ChiTietPhieuNhap;
 
 public class ChiTietPhieuNhap_BUS {
-    private ChiTietPhieuNhap_DAO chiTietPhieuNhapDAO;
+    private final ChiTietPhieuNhap_DAO chiTietPhieuNhapDAO;
 
     public ChiTietPhieuNhap_BUS() {
         chiTietPhieuNhapDAO = new ChiTietPhieuNhap_DAO();

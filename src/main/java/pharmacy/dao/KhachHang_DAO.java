@@ -98,18 +98,17 @@ public class KhachHang_DAO implements KhachHang_Interface {
 		String query = "SELECT * FROM KhachHang WHERE maKhachHang = ?";
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setString(1, maKhachHang);
 			ResultSet rs = statement.executeQuery();
 
-			statement.setString(1, maKhachHang);
 			if (rs.next()) {
 				String hoTen = rs.getString("hoTen");
 				String soDienThoai = rs.getString("soDienThoai");
-				int namSinhInt = rs.getInt("namSinh");
+				LocalDate namSinh = rs.getDate("namSinh").toLocalDate();
 				int diemTichLuy = rs.getInt("diemTichLuy");
 				String ghiChu = rs.getString("ghiChu");
 				String gioiTinh = rs.getString("gioiTinh");
 
-				LocalDate namSinh = LocalDate.of(namSinhInt, 1, 1);
 				return new KhachHang(maKhachHang, hoTen, soDienThoai, diemTichLuy, namSinh, ghiChu, gioiTinh);
 			}
 		} catch (SQLException e) {

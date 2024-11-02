@@ -89,7 +89,7 @@
                                         <TableColumn fx:id="descriptionColumn" prefWidth="79.20001220703125" text="Mô tả" />
                                         <TableColumn fx:id="expirationDateColumn" prefWidth="107.20001220703125" text="Hạn sử dụng" />
                                         <TableColumn fx:id="categoryColumn" prefWidth="79.20001220703125" text="Danh mục" />
-                                        <TableColumn fx:id="typeColumn" prefWidth="72.80010986328125" text="Loại" />
+                                        <TableColumn fx:id="productTypeColumn" prefWidth="72.80010986328125" text="Loại" />
                               <TableColumn fx:id="employeeColumn" text="Người sửa" />
                               <TableColumn fx:id="updatedAtColumn" prefWidth="101.5999755859375" text="Thời gian sửa" />
                                     </columns>
@@ -142,7 +142,7 @@
                             <children>
                                 <VBox prefHeight="200.0" prefWidth="100.0">
                                     <children>
-                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thời gian tạo:">
+                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thời gian chỉnh sửa:">
                                             <font>
                                                 <Font name="System Bold" size="14.0" />
                                             </font>

@@ -10,8 +10,6 @@ import java.util.List;
 import pharmacy.Interface.ChiTietHoaDon_Interface;
 import pharmacy.connections.DatabaseConnection;
 import pharmacy.entity.ChiTietHoaDon;
-import pharmacy.entity.HoaDon;
-import pharmacy.entity.SanPham;
 
 public class ChiTietHoaDon_DAO implements ChiTietHoaDon_Interface {
 
@@ -22,7 +20,7 @@ public class ChiTietHoaDon_DAO implements ChiTietHoaDon_Interface {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)) {
 
-			statement.setString(2, chiTietHoaDon.getSanPham().getMaSanPham());
+			statement.setString(2, chiTietHoaDon.getMaSanPham());
 			statement.setInt(3, chiTietHoaDon.getSoLuong());
 
 			int result = statement.executeUpdate();
@@ -46,10 +44,9 @@ public class ChiTietHoaDon_DAO implements ChiTietHoaDon_Interface {
 			ResultSet rs = statement.executeQuery();
 
 			while (rs.next()) {
-				HoaDon hoaDon = new HoaDon_DAO().getHoaDonById(rs.getString("maHoaDon"));
-				SanPham thuoc = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
 
-				ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(hoaDon, thuoc, rs.getInt("soLuong"));
+				ChiTietHoaDon chiTietHoaDon = new ChiTietHoaDon(rs.getString("maHoaDon"), rs.getString("maSanPham"),
+						rs.getInt("soLuong"), rs.getFloat("thue"));
 				chiTietHoaDonList.add(chiTietHoaDon);
 			}
 
@@ -66,7 +63,7 @@ public class ChiTietHoaDon_DAO implements ChiTietHoaDon_Interface {
 		try (Connection connection = DatabaseConnection.getConnection();
 				PreparedStatement statement = connection.prepareStatement(query)) {
 
-			statement.setString(1, chiTietHoaDon.getSanPham().getMaSanPham());
+			statement.setString(1, chiTietHoaDon.getMaSanPham());
 			statement.setInt(2, chiTietHoaDon.getSoLuong());
 
 			int result = statement.executeUpdate();
