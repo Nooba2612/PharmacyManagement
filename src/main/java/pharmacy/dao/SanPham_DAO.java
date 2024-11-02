@@ -17,7 +17,6 @@ import pharmacy.entity.SanPham;
 public class SanPham_DAO implements SanPham_Interface {
 	private Connection connection;
 	private PreparedStatement statement;
-	private ResultSet rs;
 	private String query;
 
 	public SanPham_DAO() throws SQLException {
@@ -26,22 +25,23 @@ public class SanPham_DAO implements SanPham_Interface {
 
 	@Override
 	public boolean createSanPham(SanPham thuoc) {
-		String query = "INSERT INTO SanPham (maSanPham, tenSanPham, danhMuc, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String query = "INSERT INTO SanPham (maSanPham, tenSanPham, danhMuc, loaiSanPham, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			statement = connection.prepareStatement(query);
 			statement.setString(1, thuoc.getMaSanPham());
 			statement.setString(2, thuoc.getTenSanPham());
 			statement.setString(3, thuoc.getDanhMuc());
-			statement.setDate(4, Date.valueOf(thuoc.getNgaySX()));
-			statement.setString(5, thuoc.getNhaSX());
-			statement.setInt(6, thuoc.getSoLuongTon());
-			statement.setDouble(7, thuoc.getDonGiaBan());
-			statement.setFloat(8, thuoc.getThue());
-			statement.setDate(9, Date.valueOf(thuoc.getHanSuDung()));
-			statement.setString(10, thuoc.getDonViTinh());
-			statement.setString(11, thuoc.getMoTa());
+			statement.setString(4, thuoc.getDanhMuc());
+			statement.setDate(5, Date.valueOf(thuoc.getNgaySX()));
+			statement.setString(6, thuoc.getNhaSX());
+			statement.setInt(7, thuoc.getSoLuongTon());
+			statement.setDouble(8, thuoc.getDonGiaBan());
+			statement.setFloat(9, thuoc.getThue());
+			statement.setDate(10, Date.valueOf(thuoc.getHanSuDung()));
+			statement.setString(11, thuoc.getDonViTinh());
+			statement.setString(12, thuoc.getMoTa());
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -88,7 +88,7 @@ public class SanPham_DAO implements SanPham_Interface {
 	@Override
 	public boolean updateSanPham(SanPham thuoc) {
 		query = "UPDATE SanPham SET tenSanPham = ?, ngaySX = ?, nhaSX = ?, ngayCapNhat = ?, soLuongTon = ?, "
-				+ "donGiaBan = ?, thue = ?, hanSuDung = ?, moTa = ?, donViTinh = ?, trangThai = ? WHERE maSanPham = ?";
+				+ "donGiaBan = ?, thue = ?, hanSuDung = ?, moTa = ?, donViTinh = ?, trangThai = ?, loaiSanPham = ?, danhMuc = ? WHERE maSanPham = ?";
 
 		try {
 			statement = connection.prepareStatement(query);
@@ -103,7 +103,9 @@ public class SanPham_DAO implements SanPham_Interface {
 			statement.setString(9, thuoc.getMoTa());
 			statement.setString(10, thuoc.getDonViTinh());
 			statement.setString(11, thuoc.getTrangThai());
-			statement.setString(12, thuoc.getMaSanPham());
+			statement.setString(12, thuoc.getLoaiSanPham());
+			statement.setString(13, thuoc.getDanhMuc());
+			statement.setString(14, thuoc.getMaSanPham());
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -136,7 +138,7 @@ public class SanPham_DAO implements SanPham_Interface {
 
 		try {
 			statement = connection.prepareStatement(query);
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 
 			while (rs.next()) {
 				SanPham thuoc = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
@@ -172,12 +174,12 @@ public class SanPham_DAO implements SanPham_Interface {
 
 	@Override
 	public int countThuoc() {
-		query = "SELECT COUNT(*) FROM SanPham WHERE loaiSanPham = 'Thuốc'";
+		query = "SELECT COUNT(*) FROM SanPham WHERE loaiSanPham = N'Thuốc'";
 		int count = 0;
 
 		try {
 			statement = connection.prepareStatement(query);
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
 				count = rs.getInt(1);
 			}
@@ -187,8 +189,9 @@ public class SanPham_DAO implements SanPham_Interface {
 		return count;
 	}
 
+	@Override
 	public int countThietBiYTe() {
-		query = "SELECT COUNT(*) FROM SanPham WHERE loaiSanPham = 'Thiết bị'";
+		query = "SELECT COUNT(*) FROM SanPham WHERE loaiSanPham = N'Thiết bị y tế'";
 		int count = 0;
 
 		try {
@@ -205,7 +208,7 @@ public class SanPham_DAO implements SanPham_Interface {
 
 	public List<SanPham> getSanPhamSapHetTonKho() {
 		List<SanPham> thuocsSapHetTonKho = new ArrayList<>();
-		query = "SELECT * FROM SanPham WHERE soLuongTon < 15";
+		query = "SELECT * FROM SanPham WHERE soLuongTon <= 10";
 
 		try {
 			statement = connection.prepareStatement(query);
@@ -332,6 +335,7 @@ public class SanPham_DAO implements SanPham_Interface {
 	public List<SanPham> getTopSaleSanPhamByDate(String date) {
 		String[] dateParts = date.split("[/-]");
 		List<SanPham> thuocList = new ArrayList<>();
+		ResultSet rs;
 
 		switch (dateParts.length) {
 			case 3:
@@ -411,7 +415,7 @@ public class SanPham_DAO implements SanPham_Interface {
 			statement = connection.prepareStatement(query);
 			statement.setString(1, maSanPham);
 
-			rs = statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 
 			if (rs.next()) {
 				result = rs.getInt("soLuongBan");
@@ -421,6 +425,44 @@ public class SanPham_DAO implements SanPham_Interface {
 		}
 
 		return result;
+	}
+
+	@Override
+	public void refreshSanPham() {
+
+		// Update statements for various statuses
+		String updateExpired = "UPDATE SanPham SET trangThai = N'Hết hạn' WHERE hanSuDung < ?";
+		String updateExpiringSoon = "UPDATE SanPham SET trangThai = N'Sắp hết hạn' WHERE hanSuDung BETWEEN ? AND ?";
+		String updateLowStock = "UPDATE SanPham SET trangThai = N'Tồn kho thấp' WHERE soLuongTon < ?";
+		String updateOutOfStock = "UPDATE SanPham SET trangThai = N'Hết hàng' WHERE soLuongTon = 0";
+		String updateInStock = "UPDATE SanPham SET trangThai = N'Có sẵn' WHERE soLuongTon > 0 AND hanSuDung >= ?";
+
+		try {
+			statement = connection.prepareStatement(updateInStock);
+			statement.setDate(1, Date.valueOf(LocalDate.now()));
+			statement.executeUpdate();
+
+			statement = connection.prepareStatement(updateExpired);
+			statement.setDate(1, Date.valueOf(LocalDate.now()));
+			statement.executeUpdate();
+
+			LocalDate today = LocalDate.now();
+			LocalDate expiringSoonDate = today.plusDays(30);
+			statement = connection.prepareStatement(updateExpiringSoon);
+			statement.setDate(1, Date.valueOf(today));
+			statement.setDate(2, Date.valueOf(expiringSoonDate));
+			statement.executeUpdate();
+
+			statement = connection.prepareStatement(updateLowStock);
+			statement.setInt(1, 10);
+			statement.executeUpdate();
+
+			statement = connection.prepareStatement(updateOutOfStock);
+			statement.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

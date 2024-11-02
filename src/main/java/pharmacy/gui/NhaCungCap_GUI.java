@@ -382,11 +382,11 @@ public class NhaCungCap_GUI {
 	                    .setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
 	            for (NhaCungCap supplier : supplierList) {
-	                table.addCell(new Cell().add(new Paragraph(supplier.getMaNCC()).setFont(font)));
-	                table.addCell(new Cell().add(new Paragraph(supplier.getTenNCC()).setFont(font)));
-	                table.addCell(new Cell().add(new Paragraph(supplier.getSoDienThoai()).setFont(font)));
-	                table.addCell(new Cell().add(new Paragraph(supplier.getDiaChi()).setFont(font)));
-	                table.addCell(new Cell().add(new Paragraph(supplier.getEmail()).setFont(font)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getMaNCC()).setFont(font).setFontSize(8)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getTenNCC()).setFont(font).setFontSize(8)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getSoDienThoai()).setFont(font).setFontSize(8)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getDiaChi()).setFont(font).setFontSize(8)));
+	                table.addCell(new Cell().add(new Paragraph(supplier.getEmail()).setFont(font).setFontSize(8)));
 	            }
 	            document.add(table);
 	        }
