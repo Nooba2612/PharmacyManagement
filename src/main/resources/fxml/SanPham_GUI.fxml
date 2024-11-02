@@ -17,65 +17,36 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308"
-	maxWidth="1.7976931348623157E308" prefHeight="756.0" prefWidth="1270.0"
-	xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="pharmacy.gui.SanPham_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="756.0" prefWidth="1270.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.SanPham_GUI">
 	<children>
-		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-			minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1266.0">
+		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1266.0">
 			<children>
-				<Text id="mainTitle" fill="#9e9e9e" layoutX="14.0" layoutY="68.0"
-					strokeType="OUTSIDE" strokeWidth="0.0" text="Danh sách sản phẩm"
-					textAlignment="CENTER">
+				<Text id="mainTitle" fill="#9e9e9e" layoutX="14.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Danh sách sản phẩm" textAlignment="CENTER">
 					<font>
 						<Font name="Arial Bold" size="25.0" />
 					</font>
 				</Text>
-				<Pane layoutX="6.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity"
-					prefHeight="564.0" prefWidth="1244.0" style="-fx-background-color: #fff;">
+				<Pane layoutX="6.0" layoutY="110.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="564.0" prefWidth="1244.0" style="-fx-background-color: #fff;">
 					<children>
-						<Line endX="1172.4000244140625" layoutX="52.0" layoutY="84.0"
-							startX="-34.00000762939453" stroke="#cccccc" strokeWidth="2.0" />
-						<ScrollPane id="expiredSanPhamTablePane" fitToHeight="true"
-							fitToWidth="true" layoutX="12.0" layoutY="107.0" prefHeight="421.0"
-							prefWidth="1220.0" style="-fx-background-color: #fff;">
+						<Line endX="1172.4000244140625" layoutX="52.0" layoutY="84.0" startX="-34.00000762939453" stroke="#cccccc" strokeWidth="2.0" />
+						<ScrollPane id="expiredSanPhamTablePane" fitToHeight="true" fitToWidth="true" layoutX="12.0" layoutY="107.0" prefHeight="421.0" prefWidth="1220.0" style="-fx-background-color: #fff;">
 							<content>
-								<TableView fx:id="medicineTable" editable="true"
-									minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0"
-									prefWidth="880.0" style="-fx-background-color: #FFF;"
-									stylesheets="@../css/TableStyles.css"
-									tableMenuButtonVisible="true">
+								<TableView fx:id="productTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
 									<columns>
-										<TableColumn fx:id="idColumn" prefWidth="66.39998894929886"
-											text="Mã SP" />
-										<TableColumn fx:id="nameColumn"
-											prefWidth="79.19997024536133" text="Tên SP" />
-										<TableColumn fx:id="manufactureDateColumn"
-											prefWidth="112.00001525878906" text="Ngày sản xuất" />
-										<TableColumn fx:id="expirationDateColumn"
-											prefWidth="100.00001525878906" text="Hạn sử dụng" />
-										<TableColumn fx:id="manufacturerColumn"
-											prefWidth="113.60003662109375" text="Nhà sản xuất" />
-										<TableColumn fx:id="availableQuantityColumn"
-											prefWidth="98.39999389648438" text="Số lượng tồn" />
-										<TableColumn fx:id="priceColumn"
-											prefWidth="93.60003662109375" resizable="false"
-											text="Đơn giá" />
-										<TableColumn fx:id="taxColumn" prefWidth="77.60003662109375"
-											text="Thuế" />
-										<TableColumn fx:id="unitColumn"
-											prefWidth="87.20001220703125" text="Đơn vị tính" />
-										<TableColumn fx:id="descriptionColumn"
-											prefWidth="80.79998779296875" text="Mô tả" />
-										<TableColumn fx:id="statusColumn"
-											prefWidth="85.60003662109375" text="Trạng thái" />
-										<TableColumn fx:id="productTypeColumn"
-											prefWidth="72.7999267578125" text="Loại SP" />
-										<TableColumn fx:id="categoryColumn"
-											prefWidth="71.9998779296875" text="Danh mục" />
-										<TableColumn fx:id="actionColumn" prefWidth="93.60009765625"
-											text="Hành động" />
+										<TableColumn fx:id="idColumn" prefWidth="66.39998894929886" text="Mã SP" />
+										<TableColumn fx:id="nameColumn" prefWidth="71.1999740600586" text="Tên SP" />
+										<TableColumn fx:id="manufactureDateColumn" prefWidth="104.00001525878906" text="Ngày sản xuất" />
+										<TableColumn fx:id="expirationDateColumn" prefWidth="96.80006408691406" text="Hạn sử dụng" />
+										<TableColumn fx:id="manufacturerColumn" prefWidth="121.60003662109375" text="Nhà sản xuất" />
+										<TableColumn fx:id="availableQuantityColumn" prefWidth="96.80001831054688" text="Số lượng tồn" />
+										<TableColumn fx:id="priceColumn" prefWidth="87.20001220703125" resizable="false" text="Đơn giá" />
+										<TableColumn fx:id="taxColumn" prefWidth="64.79998779296875" text="Thuế" />
+										<TableColumn fx:id="unitColumn" prefWidth="88.79998779296875" text="Đơn vị tính" />
+										<TableColumn fx:id="descriptionColumn" prefWidth="83.20001220703125" text="Mô tả" />
+										<TableColumn fx:id="statusColumn" prefWidth="85.60003662109375" text="Trạng thái" />
+										<TableColumn fx:id="productTypeColumn" prefWidth="66.3997802734375" text="Loại SP" />
+										<TableColumn fx:id="categoryColumn" prefWidth="97.60009765625" text="Danh mục" />
+										<TableColumn fx:id="actionColumn" editable="false" prefWidth="93.60009765625" sortable="false" text="Hành động" />
 									</columns>
 									<cursor>
 										<Cursor fx:constant="TEXT" />
@@ -86,10 +57,7 @@
 								</TableView>
 							</content>
 						</ScrollPane>
-						<Button fx:id="addSanPhamBtn" layoutX="17.0" layoutY="24.0"
-							mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0"
-							style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));"
-							text="Thêm sản phẩm" textFill="WHITE">
+						<Button fx:id="addSanPhamBtn" layoutX="17.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Thêm sản phẩm" textFill="WHITE">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
@@ -97,32 +65,23 @@
 								<Font name="System Bold" size="12.0" />
 							</font>
 							<graphic>
-								<ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true"
-									preserveRatio="true">
+								<ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
 									<image>
 										<Image url="@../images/plus-icon.png" />
 									</image>
 								</ImageView>
 							</graphic>
 						</Button>
-						<Pane fx:id="searchPane" layoutX="1004.0" layoutY="21.0" prefHeight="46.0"
-							prefWidth="221.0" style="-fx-background-color: #f0f0f0;">
+						<Pane fx:id="searchPane" layoutX="1004.0" layoutY="21.0" prefHeight="46.0" prefWidth="221.0" style="-fx-background-color: #f0f0f0;">
 							<children>
-								<TextField fx:id="searchField" layoutX="7.0" layoutY="6.0"
-									prefHeight="34.0" prefWidth="174.0"
-									promptText="Nhập nội dung tìm kiếm"
-									style="-fx-background-color: transparent;">
+								<TextField fx:id="searchField" layoutX="7.0" layoutY="6.0" prefHeight="34.0" prefWidth="174.0" promptText="Nhập nội dung tìm kiếm" style="-fx-background-color: transparent;">
 									<font>
 										<Font size="13.0" />
 									</font>
 								</TextField>
-								<Button fx:id="searchSanPhamBtn" layoutX="181.0" layoutY="-3.0"
-									mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0"
-									style="-fx-background-color: transparent;"
-									textAlignment="CENTER">
+								<Button fx:id="searchSanPhamBtn" layoutX="181.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0" style="-fx-background-color: transparent;" textAlignment="CENTER">
 									<graphic>
-										<ImageView fitHeight="20.0" fitWidth="17.0"
-											pickOnBounds="true" preserveRatio="true">
+										<ImageView fitHeight="20.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
 											<image>
 												<Image url="@../images/search-icon.png" />
 											</image>
@@ -134,17 +93,12 @@
 								</Button>
 							</children>
 						</Pane>
-						<ComboBox fx:id="filter" layoutX="192.0" layoutY="24.0" prefHeight="40.0"
-							prefWidth="174.0" promptText="Tất cả sản phẩm"
-							style="-fx-background-color: #f0f0f0;">
+						<ComboBox fx:id="filter" layoutX="192.0" layoutY="24.0" prefHeight="40.0" prefWidth="174.0" promptText="Tất cả sản phẩm" style="-fx-background-color: #f0f0f0;">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
 						</ComboBox>
-						<Button fx:id="exportListBtn" layoutX="391.0" layoutY="24.0"
-							mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0"
-							style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));"
-							text="In danh sách" textFill="WHITE">
+						<Button fx:id="exportListBtn" layoutX="391.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="In danh sách" textFill="WHITE">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
@@ -152,14 +106,28 @@
 								<Font name="System Bold" size="12.0" />
 							</font>
 							<graphic>
-								<ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true"
-									preserveRatio="true">
+								<ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
 									<image>
 										<Image url="@../images/printer-icon.png" />
 									</image>
 								</ImageView>
 							</graphic>
 						</Button>
+                  <Button fx:id="refreshBtn" layoutX="567.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="126.0" style="-fx-background-color: #d1d1d1;" text="Làm mới">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/circle-arrows-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Button>
 					</children>
 					<effect>
 						<DropShadow height="10.0" radius="4.5" width="10.0">

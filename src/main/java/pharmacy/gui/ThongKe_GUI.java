@@ -1,25 +1,5 @@
 package pharmacy.gui;
 
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.Cursor;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.chart.*;
-import javafx.scene.chart.XYChart.Series;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.*;
-import javafx.scene.text.Text;
-import pharmacy.bus.*;
-import pharmacy.dao.NhanVien_DAO;
-import pharmacy.entity.*;
-import pharmacy.utils.NodeUtil;
-
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -31,7 +11,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.springframework.cglib.core.Local;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import pharmacy.bus.HoaDon_BUS;
+import pharmacy.bus.KhachHang_BUS;
+import pharmacy.bus.NhaCungCap_BUS;
+import pharmacy.bus.NhanVien_BUS;
+import pharmacy.bus.SanPham_BUS;
+import pharmacy.dao.NhanVien_DAO;
+import pharmacy.entity.KhachHang;
+import pharmacy.entity.NhanVien;
+import pharmacy.entity.SanPham;
+import pharmacy.utils.NodeUtil;
 
 public class ThongKe_GUI {
 	@FXML
