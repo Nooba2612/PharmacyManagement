@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -26,13 +27,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import pharmacy.bus.HistoryLog_BUS;
+import pharmacy.bus.NhanVien_BUS;
 import pharmacy.bus.SanPham_BUS;
+import pharmacy.bus.TaiKhoan_BUS;
+import pharmacy.entity.NhanVien;
+import pharmacy.entity.ProductHistoryLog;
 import pharmacy.entity.SanPham;
 import pharmacy.utils.NodeUtil;
 
 public class CapNhatSanPham_GUI {
     @FXML
-    private TableColumn<SanPham, Number> availableQuantityColumn;
+    private TableColumn<ProductHistoryLog, Number> availableQuantityColumn;
 
     @FXML
     private ComboBox<String> categoryField;
@@ -47,46 +53,46 @@ public class CapNhatSanPham_GUI {
     private TextField desciptionField;
 
     @FXML
-    private TableColumn<SanPham, String> descriptionColumn;
+    private TableColumn<ProductHistoryLog, String> descriptionColumn;
 
     @FXML
     private ComboBox<String> productTypeField;
 
     @FXML
-    private TableColumn<SanPham, LocalDate> expirationDateColumn;
+    private TableColumn<ProductHistoryLog, LocalDate> expirationDateColumn;
 
     @FXML
     private DatePicker expirationDateField;
 
     @FXML
-    private TableColumn<SanPham, String> idColumn;
+    private TableColumn<ProductHistoryLog, String> idColumn;
 
     @FXML
     private TextField idField;
 
     @FXML
-    private TableColumn<SanPham, LocalDate> manufactureDateColumn;
+    private TableColumn<ProductHistoryLog, LocalDate> manufactureDateColumn;
 
     @FXML
     private DatePicker manufactureDateField;
 
     @FXML
-    private TableColumn<SanPham, String> manufacturerColumn;
+    private TableColumn<ProductHistoryLog, String> manufacturerColumn;
 
     @FXML
     private TextField manufacturerField;
 
     @FXML
-    private TableView<SanPham> historyTable;
+    private TableView<ProductHistoryLog> historyTable;
 
     @FXML
-    private TableColumn<SanPham, String> nameColumn;
+    private TableColumn<ProductHistoryLog, String> nameColumn;
 
     @FXML
     private TextField nameField;
 
     @FXML
-    private TableColumn<SanPham, Number> priceColumn;
+    private TableColumn<ProductHistoryLog, Number> priceColumn;
 
     @FXML
     private TextField priceField;
@@ -101,16 +107,16 @@ public class CapNhatSanPham_GUI {
     private Button submitBtn;
 
     @FXML
-    private TableColumn<SanPham, Number> taxColumn;
+    private TableColumn<ProductHistoryLog, Number> taxColumn;
 
     @FXML
     private ComboBox<String> taxField;
 
     @FXML
-    private TableColumn<SanPham, String> unitColumn;
+    private TableColumn<ProductHistoryLog, String> unitColumn;
 
     @FXML
-    private TableColumn<SanPham, LocalDate> updatedAtColumn;
+    private TableColumn<ProductHistoryLog, LocalDate> updatedAtColumn;
 
     @FXML
     private ComboBox<String> unitField;
@@ -152,21 +158,24 @@ public class CapNhatSanPham_GUI {
     private Button rejectBtn;
 
     @FXML
-    private TableColumn<SanPham, String> productTypeColumn;
+    private TableColumn<ProductHistoryLog, String> productTypeColumn;
 
     @FXML
-    private TableColumn<SanPham, String> categoryColumn;
+    private TableColumn<ProductHistoryLog, String> categoryColumn;
 
     @FXML
-    private TableColumn<SanPham, String> employeeColumn;
+    private TableColumn<ProductHistoryLog, String> employeeColumn;
 
-    private ObservableList<SanPham> historyProductList = FXCollections.observableArrayList();
+    private ObservableList<ProductHistoryLog> historyProductList = FXCollections.observableArrayList();
 
     private SanPham currentProduct;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @FXML
     public void initialize() throws SQLException {
         handleReject();
+        renderHistory();
     }
 
     @FXML
@@ -190,7 +199,6 @@ public class CapNhatSanPham_GUI {
     @FXML
     public void setUpForm(SanPham product) throws SQLException {
         currentProduct = product;
-        submitBtn.setDisable(true);
 
         unitField.getItems().addAll("Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói");
         taxField.getItems().addAll("0%", "5%", "10%", "15%", "20%");
@@ -280,18 +288,80 @@ public class CapNhatSanPham_GUI {
                             "Khác");
                     unitField.getItems().addAll("Cái", "Chiếc", "Hộp", "Bộ");
                 }
-
-                if (newValue.equals(currentProduct.getLoaiSanPham())
-                        && categoryField.getValue().equals(currentProduct.getDanhMuc())
-                        && unitField.getValue().equals(currentProduct.getDonViTinh())) {
-                    submitBtn.setDisable(true);
-                } else {
-                    submitBtn.setDisable(false);
-                }
             }
         });
 
         handleUpdateProduct();
+    }
+
+    @FXML
+    public void renderHistory() throws SQLException {
+        historyProductList = FXCollections.observableArrayList(new HistoryLog_BUS().getAllProductHistory());
+
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("maSanPham"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
+        manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngaySX"));
+        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("moTa"));
+        priceColumn.setCellValueFactory(new PropertyValueFactory<>("donGiaBan"));
+        taxColumn.setCellValueFactory(new PropertyValueFactory<>("thue"));
+        availableQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("soLuongTon"));
+        manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("nhaSX"));
+        expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("hanSuDung"));
+        unitColumn.setCellValueFactory(new PropertyValueFactory<>("donViTinh"));
+        productTypeColumn.setCellValueFactory(new PropertyValueFactory<>("loaiSanPham"));
+        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("danhMuc"));
+        updatedAtColumn.setCellValueFactory(new PropertyValueFactory<>("ngayCapNhat"));
+        employeeColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
+
+        manufactureDateColumn.setCellFactory(col -> new TableCell<ProductHistoryLog, LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("");
+                } else {
+                    setText(formatter.format(item));
+                }
+            }
+        });
+
+        expirationDateColumn.setCellFactory(col -> new TableCell<ProductHistoryLog, LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("");
+                } else {
+                    setText(formatter.format(item));
+                }
+            }
+        });
+
+        expirationDateColumn.setCellFactory(col -> new TableCell<ProductHistoryLog, LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("");
+                } else {
+                    setText(formatter.format(item));
+                }
+            }
+        });
+        
+        updatedAtColumn.setCellFactory(col -> new TableCell<ProductHistoryLog, LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("");
+                } else {
+                    setText(formatter.format(item));
+                }
+            }
+        });
+
+        historyTable.setItems(historyProductList);
     }
 
     @FXML
@@ -350,11 +420,14 @@ public class CapNhatSanPham_GUI {
             try {
                 if (validateForm()) {
                     new SanPham_BUS().updateSanPham(sanPham);
+                    NhanVien nhanVien = new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap();
+                    ProductHistoryLog history = new ProductHistoryLog(sanPham, nhanVien);
+                    new HistoryLog_BUS().addProductHistory(history);
                     showAddProductSuccessModal("Cập nhật sản phẩm thành công");
                     submitBtn.getScene().getWindow().hide();
                     refreshForm();
-                    historyProductList.add(sanPham);
-                    handleRenderHistoryTable();
+                    historyProductList.add(history);
+                    renderHistory();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -544,7 +617,7 @@ public class CapNhatSanPham_GUI {
         modalStage.setResizable(false);
         modalStage.initModality(Modality.APPLICATION_MODAL);
         modalStage.getIcons().addAll(new Image(
-            getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));
+                getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));
 
         ImageView icon = new ImageView(new Image(
                 getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));
@@ -603,21 +676,4 @@ public class CapNhatSanPham_GUI {
         expirationDateField.setValue(currentProduct.getHanSuDung());
     }
 
-    @FXML
-    public void handleRenderHistoryTable() {
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("maSanPham"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
-        manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("nhaSX"));
-        availableQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("soLuongTon"));
-        priceColumn.setCellValueFactory(new PropertyValueFactory<>("donGiaBan"));
-        taxColumn.setCellValueFactory(new PropertyValueFactory<>("thue"));
-        manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngaySX"));
-        expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("hanSuDung"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("moTa"));
-        unitColumn.setCellValueFactory(new PropertyValueFactory<>("donViTinh"));
-        productTypeColumn.setCellValueFactory(new PropertyValueFactory<>("loaiSanPham"));
-        categoryColumn.setCellValueFactory(new PropertyValueFactory<>("danhMuc"));
-
-        historyTable.setItems(historyProductList);
-    }
 }
