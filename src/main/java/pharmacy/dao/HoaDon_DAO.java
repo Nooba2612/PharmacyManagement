@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,8 @@ public class HoaDon_DAO implements HoaDon_Interface {
             statement.setString(1, hoaDon.getMaHoaDon());
             statement.setString(2, hoaDon.getKhachHang().getMaKhachHang());
             statement.setString(3, hoaDon.getNhanVien().getMaNhanVien());
-            statement.setDate(4, Date.valueOf(hoaDon.getNgayTao()));
+            LocalDateTime now = hoaDon.getNgayTao();
+            statement.setTimestamp(4, Timestamp.valueOf(now));
             statement.setDouble(5, hoaDon.getTienKhachDua());
             statement.setDouble(6, hoaDon.getDiemSuDung());
             statement.setString(7, hoaDon.getLoaiThanhToan());
@@ -65,8 +68,8 @@ public class HoaDon_DAO implements HoaDon_Interface {
             if (rs.next()) {
                 KhachHang khachHang = new KhachHang_DAO().getKhachHangById(rs.getString("maKhachHang"));
                 NhanVien nhanVien = new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
-                SanPham sanPham = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("sanPham"));
-                LocalDate ngayTao = rs.getDate("ngayTao").toLocalDate();
+
+                LocalDateTime ngayTao = rs.getTimestamp("ngayTao").toLocalDateTime();
                 double tienKhachDua = rs.getDouble("tienKhachDua");
                 double diemSuDung = rs.getDouble("diemSuDung");
                 String loaiThanhToan = rs.getString("loaiThanhToan");
@@ -93,13 +96,13 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
             while (rs.next()) {
                 String maHoaDon = rs.getString("maHoaDon");
-                KhachHang khachHang = new KhachHang_BUS().getKhachHangById(rs.getString("maKhachHang"));
-                NhanVien nhanVien = new NhanVien_BUS().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
-                LocalDate ngayTao = rs.getDate("ngayTao").toLocalDate();
+                KhachHang khachHang = new KhachHang_DAO().getKhachHangById(rs.getString("maKhachHang"));
+                NhanVien nhanVien = new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
+                LocalDateTime ngayTao = rs.getTimestamp("ngayTao").toLocalDateTime();
                 double tienKhachDua = rs.getDouble("tienKhachDua");
                 double diemSuDung = rs.getDouble("diemSuDung");
                 String loaiThanhToan = rs.getString("loaiThanhToan");
-                List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_BUS().getChiTietHoaDonByMaHoaDon(maHoaDon);
+                List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_DAO().getChiTietHoaDonByMaHoaDon(maHoaDon);
 
                 HoaDon hoaDon = new HoaDon(maHoaDon, khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung,
                         loaiThanhToan, chiTietHoaDonList);
@@ -121,7 +124,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
             statement = connection.prepareStatement(query);
             statement.setString(1, hoaDon.getKhachHang().getMaKhachHang());
             statement.setString(2, hoaDon.getNhanVien().getMaNhanVien());
-            statement.setDate(3, Date.valueOf(hoaDon.getNgayTao()));
+            statement.setTimestamp(3, Timestamp.valueOf(hoaDon.getNgayTao()));
             statement.setDouble(4, hoaDon.getTienKhachDua());
             statement.setDouble(5, hoaDon.getDiemSuDung());
             statement.setString(6, hoaDon.getLoaiThanhToan());
@@ -330,7 +333,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
     public List<HoaDon> getInvoiceByDate(LocalDate fromDate, LocalDate toDate) {
         List<HoaDon> invoiceList = new ArrayList<>();
-         query = "SELECT * FROM HoaDon WHERE ngayTao BETWEEN ? AND ?";
+        query = "SELECT * FROM HoaDon WHERE ngayTao BETWEEN ? AND ?";
 
         try {
             statement = connection.prepareStatement(query);
@@ -342,13 +345,13 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
             while (rs.next()) {
                 String maHoaDon = rs.getString("maHoaDon");
-                KhachHang khachHang = new KhachHang_BUS().getKhachHangById(rs.getString("maKhachHang"));
-                NhanVien nhanVien = new NhanVien_BUS().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
-                LocalDate ngayTao = rs.getDate("ngayTao").toLocalDate();
+                KhachHang khachHang = new KhachHang_DAO().getKhachHangById(rs.getString("maKhachHang"));
+                NhanVien nhanVien = new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
+                LocalDateTime ngayTao = rs.getTimestamp("ngayTao").toLocalDateTime();
                 double tienKhachDua = rs.getDouble("tienKhachDua");
                 double diemSuDung = rs.getDouble("diemSuDung");
                 String loaiThanhToan = rs.getString("loaiThanhToan");
-                List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_BUS().getChiTietHoaDonByMaHoaDon(maHoaDon);
+                List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_DAO().getChiTietHoaDonByMaHoaDon(maHoaDon);
 
                 HoaDon hoaDon = new HoaDon(maHoaDon, khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung,
                         loaiThanhToan, chiTietHoaDonList);

@@ -1,7 +1,7 @@
 package pharmacy.entity;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +11,7 @@ public class HoaDon {
 	private String maHoaDon;
 	private KhachHang khachHang;
 	private NhanVien nhanVien;
-	private LocalDate ngayTao;
+	private LocalDateTime ngayTao;
 	private double tienKhachDua;
 	private double diemSuDung;
 	private String loaiThanhToan;
@@ -23,7 +23,7 @@ public class HoaDon {
 		chiTietHoaDonList = new ArrayList<>();
 	}
 
-	public HoaDon(String maHoaDon, KhachHang khachHang, NhanVien nhanVien, LocalDate ngayTao, double tienKhachDua,
+	public HoaDon(String maHoaDon, KhachHang khachHang, NhanVien nhanVien, LocalDateTime ngayTao, double tienKhachDua,
 			double diemSuDung, String loaiThanhToan, List<ChiTietHoaDon> chiTietHoaDonList) throws SQLException {
 		this.maHoaDon = maHoaDon;
 		this.khachHang = khachHang;
@@ -81,11 +81,11 @@ public class HoaDon {
 		this.nhanVien = nhanVien;
 	}
 
-	public LocalDate getNgayTao() {
+	public LocalDateTime getNgayTao() {
 		return ngayTao;
 	}
 
-	public void setNgayTao(LocalDate ngayTao) {
+	public void setNgayTao(LocalDateTime ngayTao) {
 		this.ngayTao = ngayTao;
 	}
 

@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.logging.Level;
@@ -67,6 +68,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import pharmacy.bus.HoaDon_BUS;
 import pharmacy.bus.SanPham_BUS;
+import pharmacy.bus.TaiKhoan_BUS;
 
 public class HoaDon_GUI {
 
@@ -83,7 +85,7 @@ public class HoaDon_GUI {
 	private TableColumn<HoaDon, String> employeeNameColumn;
 
 	@FXML
-	private TableColumn<HoaDon, LocalDate> createDateColumn;
+	private TableColumn<HoaDon, LocalDateTime> createDateColumn;
 
 	@FXML
 	private TableColumn<HoaDon, Double> totalColumn;
@@ -210,9 +212,9 @@ public class HoaDon_GUI {
 			}
 		});
 
-		createDateColumn.setCellFactory(col -> new TableCell<HoaDon, LocalDate>() {
+		createDateColumn.setCellFactory(col -> new TableCell<HoaDon, LocalDateTime>() {
 			@Override
-			protected void updateItem(LocalDate item, boolean empty) {
+			protected void updateItem(LocalDateTime item, boolean empty) {
 				super.updateItem(item, empty);
 				if (empty || item == null) {
 					setText("");
@@ -480,7 +482,7 @@ public class HoaDon_GUI {
 	@FXML
 	public void handleShowDetails(HoaDon invoice) {
 		try {
-			exportInvoiceToPdf("src/main/resources/pdf/ChiTietHoaDon.pdf");
+			exportInvoiceToPdf("src/main/resources/pdf/ChiTietHoaDon.pdf", invoice);
 			PDFUtil.showPdfPreview(
 					new File(getClass().getClassLoader().getResource("pdf/ChiTietHoaDon.pdf").toURI()));
 		} catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException | SQLException e) {
@@ -488,102 +490,141 @@ public class HoaDon_GUI {
 		}
 	}
 
-	private void exportInvoiceToPdf(String outputPdfPath) throws SQLException {
-        try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
-                PdfDocument pdfDoc = new PdfDocument(writer)) {
+	private void exportInvoiceToPdf(String outputPdfPath, HoaDon invoice) throws SQLException {
+		try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
+				PdfDocument pdfDoc = new PdfDocument(writer);
+				Document document = new Document(pdfDoc)) {
 
-            // Aplly font
-            URL fontUrl = getClass().getClassLoader().getResource("fonts/Roboto/Roboto-Regular.ttf");
-            Path fontPath;
-            try {
-                fontPath = Path.of(fontUrl.toURI());
-            } catch (URISyntaxException e) {
-                throw new IOException("Invalid URI syntax for font URL", e);
-            }
-            PdfFont font = PdfFontFactory.createFont(Files.readAllBytes(fontPath), PdfEncodings.IDENTITY_H,
-                    EmbeddingStrategy.PREFER_EMBEDDED);
+			// Apply font
+			URL fontUrl = getClass().getClassLoader().getResource("fonts/Roboto/Roboto-Regular.ttf");
+			Path fontPath = Path.of(fontUrl.toURI());
+			PdfFont font = PdfFontFactory.createFont(Files.readAllBytes(fontPath), PdfEncodings.IDENTITY_H,
+					EmbeddingStrategy.PREFER_EMBEDDED);
 
-            // Define primary color
-            String primaryColorHex = "#339933";
-            DeviceRgb primaryColor = new DeviceRgb(
-                    Integer.parseInt(primaryColorHex.substring(1, 3)),
-                    Integer.parseInt(primaryColorHex.substring(3, 5)),
-                    Integer.parseInt(primaryColorHex.substring(5, 7)));
+			// Define primary color
+			DeviceRgb primaryColor = new DeviceRgb(51, 153, 51);
 
-            // Transparent color
-            Color transparentColor = new DeviceRgb(0, 0, 0);
+			// Pharmacy Information
+			document.add(new Paragraph("NHÀ THUỐC Medkit")
+					.setFont(font)
+					.setFontSize(16)
+					.setBold()
+					.setTextAlignment(TextAlignment.CENTER));
+			document.add(new Paragraph("12 Nguyễn Văn Bảo, Phường 4, Gò Vấp, Hồ Chí Minh")
+					.setFont(font)
+					.setFontSize(10)
+					.setTextAlignment(TextAlignment.CENTER));
+			document.add(new Paragraph("Điện thoại: (088) 6868-8686")
+					.setFont(font)
+					.setFontSize(10)
+					.setTextAlignment(TextAlignment.CENTER));
 
-            try (Document document = new Document(pdfDoc)) {
-                // Header
-                Table headerTable = new Table(2);
-                headerTable.setWidth(UnitValue.createPercentValue(40))
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER);
+			// Invoice Header
+			document.add(new Paragraph("Hóa Đơn Bán Hàng")
+					.setFont(font)
+					.setFontSize(14)
+					.setBold()
+					.setTextAlignment(TextAlignment.CENTER)
+					.setMarginTop(20));
 
-                com.itextpdf.layout.element.Image logo = new com.itextpdf.layout.element.Image(
-                        ImageDataFactory.create(getClass().getClassLoader().getResource("images/pharmacy-icon.png")));
-                logo.scaleToFit(80, 80);
-                Cell logoCell = new Cell().add(logo).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER);
-                headerTable.addCell(logoCell);
+			// Customer and Date Information
+			document.add(
+					new Paragraph("Thu ngân: " + new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getHoTen())
+							.setFont(font)
+							.setFontSize(10)
+							.setMarginTop(10));
 
-                Paragraph name = new Paragraph("MEDKIT")
-                        .setFont(font)
-                        .setFontSize(30)
-                        .setBold()
-                        .setFontColor(primaryColor)
-                        .setTextAlignment(TextAlignment.CENTER);
-                Cell nameCell = new Cell().add(name).setVerticalAlignment(VerticalAlignment.MIDDLE)
-                        .setBorder(Border.NO_BORDER);
-                headerTable.addCell(nameCell);
-                document.add(headerTable.setMarginBottom(10));
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+			String formattedDateTime = now.format(dateTimeFormatter);
 
-                // Title
-                document.add(new Paragraph("DANH SÁCH THUỐC")
-                        .setFont(font)
-                        .setFontSize(20)
-                        .setBold()
-                        .setTextAlignment(TextAlignment.CENTER)
-                        .setMarginTop(20)
-                        .setMarginBottom(20));
+			document.add(new Paragraph("Ngày: " + formattedDateTime)
+					.setFont(font)
+					.setFontSize(10));
 
-                // Table
-                Table table = new Table(new float[] { 1, 2, 2, 2, 2, 2, 2, 2 });
-                table.setWidth(UnitValue.createPercentValue(100));
+			// Table Header
+			Table table = new Table(new float[] { 1, 3, 1, 1, 2, 2 });
+			table.setWidth(UnitValue.createPercentValue(100));
 
-                table.addHeaderCell(new Cell().add(new Paragraph("Mã thuốc").setFont(font).setFontSize(8))
-                        .setBackgroundColor(ColorConstants.LIGHT_GRAY));
-                table.addHeaderCell(new Cell().add(new Paragraph("Tên thuốc").setFont(font).setFontSize(8))
-                        .setBackgroundColor(ColorConstants.LIGHT_GRAY));
-                table.addHeaderCell(new Cell().add(new Paragraph("Đơn vị tính").setFont(font).setFontSize(8))
-                        .setBackgroundColor(ColorConstants.LIGHT_GRAY));
-                table.addHeaderCell(new Cell().add(new Paragraph("Nhà sản xuất").setFont(font).setFontSize(8))
-                        .setBackgroundColor(ColorConstants.LIGHT_GRAY));
-                table.addHeaderCell(new Cell().add(new Paragraph("Ngày sản xuất").setFont(font).setFontSize(8))
-                        .setBackgroundColor(ColorConstants.LIGHT_GRAY));
-                table.addHeaderCell(new Cell().add(new Paragraph("Ngày hết hạn").setFont(font).setFontSize(8))
-                        .setBackgroundColor(ColorConstants.LIGHT_GRAY));
-                table.addHeaderCell(new Cell().add(new Paragraph("Trạng thái").setFont(font).setFontSize(8))
-                        .setBackgroundColor(ColorConstants.LIGHT_GRAY));
-                table.addHeaderCell(new Cell().add(new Paragraph("Số lượng tồn").setFont(font).setFontSize(8))
-                        .setBackgroundColor(ColorConstants.LIGHT_GRAY));
+			table.addHeaderCell(new Cell().add(new Paragraph("STT").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+			table.addHeaderCell(new Cell().add(new Paragraph("Tên thuốc").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+			table.addHeaderCell(new Cell().add(new Paragraph("SL").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+			table.addHeaderCell(new Cell().add(new Paragraph("Đơn giá").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+			table.addHeaderCell(new Cell().add(new Paragraph("Hạn sử dụng").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+			table.addHeaderCell(new Cell().add(new Paragraph("Thành Tiền").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
-                for (HoaDon invoice : invoiceList) {
-                    table.addCell(new Paragraph(invoice.getMaSanPham()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getTenSanPham()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getDonViTinh()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getNhaSX()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getNgaySX().toString()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getHanSuDung().toString()).setFont(font).setFontSize(8));
-                    table.addCell(new Paragraph(invoice.getTrangThai()).setFont(font).setFontSize(8));
-                    table.addCell(
-                            new Paragraph(String.valueOf(invoice.getSoLuongTon())).setFont(font).setFontSize(8));
-                }
+			double totalInvoiceAmount = 0;
 
-                document.add(table);
-            }
-            System.out.println("\n\nPDF generated.\n\n");
-        } catch (IOException e) {
-            Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, e);
-        }
-    }
+			for (int i = 0; i < invoice.getChiTietHoaDonList().size(); i++) {
+				ChiTietHoaDon detail = invoice.getChiTietHoaDonList().get(i);
+				SanPham product = new SanPham_BUS().getSanPhamByMaSanPham(detail.getMaSanPham());
+				double itemTotal = product.getDonGiaBan() * detail.getSoLuong();
+				totalInvoiceAmount += itemTotal;
+
+				table.addCell(new Paragraph(String.valueOf(i + 1)).setFont(font).setFontSize(8));
+				table.addCell(new Paragraph(product.getTenSanPham()).setFont(font).setFontSize(8));
+				table.addCell(new Paragraph(String.valueOf(detail.getSoLuong())).setFont(font).setFontSize(8));
+				table.addCell(new Paragraph(String.valueOf(String.format("%,.0f", product.getDonGiaBan())))
+						.setFont(font).setFontSize(8));
+				table.addCell(new Paragraph(String.valueOf(formatter.format(product.getHanSuDung()))).setFont(font)
+						.setFontSize(8));
+				table.addCell(
+						new Paragraph(String.valueOf(String.format("%,.0f", itemTotal))).setFont(font).setFontSize(8));
+			}
+
+			document.add(table.setMarginTop(20));
+
+			int productQuantity = 0;
+			for (ChiTietHoaDon cthd : invoice.getChiTietHoaDonList()) {
+				productQuantity += cthd.getSoLuong();
+			}
+
+			// Total Amount
+			document.add(new Paragraph("Tổng " + productQuantity + " sản phẩm")
+					.setFont(font)
+					.setFontSize(9)
+					.setBold()
+					.setTextAlignment(TextAlignment.RIGHT)
+					.setMarginTop(10));
+
+			document.add(new Paragraph("Tổng tiền: " + String.format("%,.0f", totalInvoiceAmount) + " VND")
+					.setFont(font)
+					.setFontSize(9)
+					.setBold()
+					.setTextAlignment(TextAlignment.RIGHT));
+
+			document.add(new Paragraph("Phương thức thanh toán: " + invoice.getLoaiThanhToan())
+					.setFont(font)
+					.setFontSize(9)
+					.setTextAlignment(TextAlignment.RIGHT));
+
+			document.add(new Paragraph("Tiền khách trả: " + String.format("%,.0f", invoice.getTienKhachDua()) + " VND")
+					.setFont(font)
+					.setFontSize(9)
+					.setTextAlignment(TextAlignment.RIGHT));
+
+			document.add(new Paragraph("Tiền thừa: " + String.format("%,.0f", invoice.getTienThua()) + " VND")
+					.setFont(font)
+					.setFontSize(9)
+					.setTextAlignment(TextAlignment.RIGHT));
+
+			KhachHang customer = invoice.getKhachHang();
+			document.add(new Paragraph("Tổng điểm thành viên hiện tại: " + customer.getDiemTichLuy())
+					.setFont(font)
+					.setFontSize(9)
+					.setTextAlignment(TextAlignment.RIGHT)
+					.setMarginBottom(20));
+		} catch (IOException | URISyntaxException e) {
+			Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, e);
+		}
+
+		System.out.println("\n\nPDF generated at: " + outputPdfPath + "\n\n");
+	}
 
 }

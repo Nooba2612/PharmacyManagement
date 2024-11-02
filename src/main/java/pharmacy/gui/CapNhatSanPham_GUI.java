@@ -348,7 +348,7 @@ public class CapNhatSanPham_GUI {
                 }
             }
         });
-        
+
         updatedAtColumn.setCellFactory(col -> new TableCell<ProductHistoryLog, LocalDate>() {
             @Override
             protected void updateItem(LocalDate item, boolean empty) {

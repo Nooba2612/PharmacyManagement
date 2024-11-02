@@ -4,7 +4,7 @@ CREATE DATABASE medkit_pharmacy_management;
 USE medkit_pharmacy_management;
 select * from HoaDon
 select * from ChiTietHoaDon
-select * from SanPham
+select * from NhatKyThayDoiSanPham
 -- Nhân Viên
 CREATE TABLE NhanVien (
     maNhanVien NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maNhanVien LIKE 'MK____'),
@@ -98,8 +98,10 @@ CREATE TABLE NhatKyThayDoiSanPham (
     ),
     moTa NVARCHAR(255),
     trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn',
-	updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	maNhanVien NVARCHAR(50) NOT NULL,
+	CONSTRAINT FK_NhatKyThayDoiSanPham_NhanVien FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
 );
+
 -- Cập nhật trạng thái sản phẩm
 /*
  -- Hết hạn
