@@ -171,7 +171,7 @@ public class SanPham_DAO implements SanPham_Interface {
 				SanPham sanPham = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
 						rs.getString("danhMuc"), rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"),
 						rs.getDate("ngayTao").toLocalDate(),
-						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getTimestamp("ngayCapNhat").toLocalDateTime(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
 						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
 						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
 						sanPhams.add(sanPham);
@@ -510,7 +510,7 @@ public class SanPham_DAO implements SanPham_Interface {
 				SanPham sanPham = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
 						rs.getString("danhMuc"),
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
-						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getTimestamp("ngayCapNhat").toLocalDateTime(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
 						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
 						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
 				thuocs.add(sanPham);
