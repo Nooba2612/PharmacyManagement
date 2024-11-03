@@ -315,7 +315,7 @@ public class ThemSanPham_GUI {
 			}
 
 			SanPham sanPham = new SanPham(maSanPham, tenSanPham, danhMuc, ngaySX, nhaSX, ngayTao,
-					LocalDate.now(), soLuongTon, donGiaBan, thue,
+					LocalDateTime.now(), soLuongTon, donGiaBan, thue,
 					hanSuDung, moTa, donViTinh, trangThai, loaiSanPham);
 			try {
 				if (validateForm()) {
@@ -515,19 +515,19 @@ public class ThemSanPham_GUI {
 		}
 
 		// Validate Category field
-        String[] VALID_CATEGORIES = { "giảm đau", "hạ sốt", "kháng sinh", "chống viêm",
-                "vitamin", "an thần", "siro", "dụng cụ y tế", "sản phẩm bảo vệ cá nhân", "dung dịch vệ sinh", "khác" };
-        if (categoryField.getValue() == null || categoryField.getEditor().getText().trim().isEmpty()) {
-            categoryAlert.setText("Danh mục chưa được chọn.");
-            categoryAlert.setVisible(true);
-            isValid = false;
-        } else if (!Arrays.asList(VALID_CATEGORIES).contains(categoryField.getValue().toLowerCase())) {
-            unitAlert.setText("Đơn vị tính không hợp lệ.");
-            unitAlert.setVisible(true);
-            isValid = false;
-        } else {
-            categoryAlert.setVisible(false);
-        }
+		String[] VALID_CATEGORIES = { "giảm đau", "hạ sốt", "kháng sinh", "chống viêm",
+				"vitamin", "an thần", "siro", "dụng cụ y tế", "sản phẩm bảo vệ cá nhân", "dung dịch vệ sinh", "khác" };
+		if (categoryField.getValue() == null || categoryField.getEditor().getText().trim().isEmpty()) {
+			categoryAlert.setText("Danh mục chưa được chọn.");
+			categoryAlert.setVisible(true);
+			isValid = false;
+		} else if (!Arrays.asList(VALID_CATEGORIES).contains(categoryField.getValue().toLowerCase())) {
+			unitAlert.setText("Đơn vị tính không hợp lệ.");
+			unitAlert.setVisible(true);
+			isValid = false;
+		} else {
+			categoryAlert.setVisible(false);
+		}
 
 		// Validate Expiration Date
 		if (expirationDateField.getValue() == null) {

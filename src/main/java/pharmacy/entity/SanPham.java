@@ -1,6 +1,7 @@
 package pharmacy.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class SanPham {
 	private String maSanPham;
@@ -9,7 +10,7 @@ public class SanPham {
 	private LocalDate ngaySX;
 	private String nhaSX;
 	private LocalDate ngayTao;
-	private LocalDate ngayCapNhat;
+	private LocalDateTime ngayCapNhat;
 	private int soLuongTon;
 	private double donGiaBan;
 	private float thue;
@@ -23,7 +24,7 @@ public class SanPham {
 	}
 
 	public SanPham(String maSanPham, String tenSanPham, String danhMuc, LocalDate ngaySX, String nhaSX,
-			LocalDate ngayTao, LocalDate ngayCapNhat, int soLuongTon, double donGiaBan,
+			LocalDate ngayTao, LocalDateTime ngayCapNhat, int soLuongTon, double donGiaBan,
 			float thue, LocalDate hanSuDung, String moTa, String donViTinh, String trangThai,
 			String loaiSanPham) {
 		this.maSanPham = maSanPham;
@@ -126,11 +127,11 @@ public class SanPham {
 		this.ngayTao = ngayTao;
 	}
 
-	public LocalDate getNgayCapNhat() {
+	public LocalDateTime getNgayCapNhat() {
 		return ngayCapNhat;
 	}
 
-	public void setNgayCapNhat(LocalDate ngayCapNhat) {
+	public void setNgayCapNhat(LocalDateTime ngayCapNhat) {
 		this.ngayCapNhat = ngayCapNhat;
 	}
 

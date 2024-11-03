@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -24,24 +25,24 @@ public class SanPham_DAO implements SanPham_Interface {
 	}
 
 	@Override
-	public boolean createSanPham(SanPham thuoc) {
+	public boolean createSanPham(SanPham product) {
 		String query = "INSERT INTO SanPham (maSanPham, tenSanPham, danhMuc, loaiSanPham, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			statement = connection.prepareStatement(query);
-			statement.setString(1, thuoc.getMaSanPham());
-			statement.setString(2, thuoc.getTenSanPham());
-			statement.setString(3, thuoc.getDanhMuc());
-			statement.setString(4, thuoc.getDanhMuc());
-			statement.setDate(5, Date.valueOf(thuoc.getNgaySX()));
-			statement.setString(6, thuoc.getNhaSX());
-			statement.setInt(7, thuoc.getSoLuongTon());
-			statement.setDouble(8, thuoc.getDonGiaBan());
-			statement.setFloat(9, thuoc.getThue());
-			statement.setDate(10, Date.valueOf(thuoc.getHanSuDung()));
-			statement.setString(11, thuoc.getDonViTinh());
-			statement.setString(12, thuoc.getMoTa());
+			statement.setString(1, product.getMaSanPham());
+			statement.setString(2, product.getTenSanPham());
+			statement.setString(3, product.getDanhMuc());
+			statement.setString(4, product.getDanhMuc());
+			statement.setDate(5, Date.valueOf(product.getNgaySX()));
+			statement.setString(6, product.getNhaSX());
+			statement.setInt(7, product.getSoLuongTon());
+			statement.setDouble(8, product.getDonGiaBan());
+			statement.setFloat(9, product.getThue());
+			statement.setDate(10, Date.valueOf(product.getHanSuDung()));
+			statement.setString(11, product.getDonViTinh());
+			statement.setString(12, product.getMoTa());
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -63,7 +64,7 @@ public class SanPham_DAO implements SanPham_Interface {
 	@Override
 	public SanPham getSanPhamByMaSanPham(String maSanPham) {
 		query = "SELECT * FROM SanPham WHERE maSanPham = ?";
-		
+
 		try {
 			statement = connection.prepareStatement(query);
 			statement.setString(1, maSanPham);
@@ -73,7 +74,8 @@ public class SanPham_DAO implements SanPham_Interface {
 
 				return new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"), rs.getString("danhMuc"),
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
-						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getTimestamp("ngayCapNhat").toLocalDateTime(), rs.getInt("soLuongTon"),
+						rs.getDouble("donGiaBan"),
 						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
 						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
 
@@ -86,26 +88,26 @@ public class SanPham_DAO implements SanPham_Interface {
 	}
 
 	@Override
-	public boolean updateSanPham(SanPham thuoc) {
+	public boolean updateSanPham(SanPham product) {
 		query = "UPDATE SanPham SET tenSanPham = ?, ngaySX = ?, nhaSX = ?, ngayCapNhat = ?, soLuongTon = ?, "
 				+ "donGiaBan = ?, thue = ?, hanSuDung = ?, moTa = ?, donViTinh = ?, trangThai = ?, loaiSanPham = ?, danhMuc = ? WHERE maSanPham = ?";
 
 		try {
 			statement = connection.prepareStatement(query);
-			statement.setString(1, thuoc.getTenSanPham());
-			statement.setDate(2, Date.valueOf(thuoc.getNgaySX()));
-			statement.setString(3, thuoc.getNhaSX());
-			statement.setDate(4, Date.valueOf(thuoc.getNgayCapNhat()));
-			statement.setInt(5, thuoc.getSoLuongTon());
-			statement.setDouble(6, thuoc.getDonGiaBan());
-			statement.setFloat(7, thuoc.getThue());
-			statement.setDate(8, Date.valueOf(thuoc.getHanSuDung()));
-			statement.setString(9, thuoc.getMoTa());
-			statement.setString(10, thuoc.getDonViTinh());
-			statement.setString(11, thuoc.getTrangThai());
-			statement.setString(12, thuoc.getLoaiSanPham());
-			statement.setString(13, thuoc.getDanhMuc());
-			statement.setString(14, thuoc.getMaSanPham());
+			statement.setString(1, product.getTenSanPham());
+			statement.setDate(2, Date.valueOf(product.getNgaySX()));
+			statement.setString(3, product.getNhaSX());
+			statement.setTimestamp(4, Timestamp.valueOf(product.getNgayCapNhat()));
+			statement.setInt(5, product.getSoLuongTon());
+			statement.setDouble(6, product.getDonGiaBan());
+			statement.setFloat(7, product.getThue());
+			statement.setDate(8, Date.valueOf(product.getHanSuDung()));
+			statement.setString(9, product.getMoTa());
+			statement.setString(10, product.getDonViTinh());
+			statement.setString(11, product.getTrangThai());
+			statement.setString(12, product.getLoaiSanPham());
+			statement.setString(13, product.getDanhMuc());
+			statement.setString(14, product.getMaSanPham());
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -133,7 +135,7 @@ public class SanPham_DAO implements SanPham_Interface {
 
 	@Override
 	public List<SanPham> getAllSanPham() {
-		List<SanPham> thuocs = new ArrayList<>();
+		List<SanPham> products = new ArrayList<>();
 		query = "SELECT * FROM SanPham";
 
 		try {
@@ -141,19 +143,20 @@ public class SanPham_DAO implements SanPham_Interface {
 			ResultSet rs = statement.executeQuery();
 
 			while (rs.next()) {
-				SanPham thuoc = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
+				SanPham product = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
 						rs.getString("danhMuc"), rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"),
 						rs.getDate("ngayTao").toLocalDate(),
-						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getTimestamp("ngayCapNhat").toLocalDateTime(), rs.getInt("soLuongTon"),
+						rs.getDouble("donGiaBan"),
 						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
 						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
-				thuocs.add(thuoc);
+				products.add(product);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return thuocs;
+		return products;
 	}
 
 	public int countSanPham() {
@@ -207,30 +210,31 @@ public class SanPham_DAO implements SanPham_Interface {
 	}
 
 	public List<SanPham> getSanPhamSapHetTonKho() {
-		List<SanPham> thuocsSapHetTonKho = new ArrayList<>();
+		List<SanPham> productsSapHetTonKho = new ArrayList<>();
 		query = "SELECT * FROM SanPham WHERE soLuongTon <= 10";
 
 		try {
 			statement = connection.prepareStatement(query);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				SanPham thuoc = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
+				SanPham product = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
 						rs.getString("danhMuc"),
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
-						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getTimestamp("ngayCapNhat").toLocalDateTime(), rs.getInt("soLuongTon"),
+						rs.getDouble("donGiaBan"),
 						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
 						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
-				thuocsSapHetTonKho.add(thuoc);
+				productsSapHetTonKho.add(product);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return thuocsSapHetTonKho;
+		return productsSapHetTonKho;
 	}
 
 	public List<SanPham> getSanPhamSapHetHanSuDung() {
-		List<SanPham> thuocsSapHetHanSuDung = new ArrayList<>();
+		List<SanPham> productsSapHetHanSuDung = new ArrayList<>();
 		query = "SELECT * FROM SanPham WHERE CONVERT(DATE, hanSuDung) BETWEEN ? AND ?";
 
 		try {
@@ -240,19 +244,20 @@ public class SanPham_DAO implements SanPham_Interface {
 
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				SanPham thuoc = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
+				SanPham product = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
 						rs.getString("danhMuc"),
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
-						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getTimestamp("ngayCapNhat").toLocalDateTime(), rs.getInt("soLuongTon"),
+						rs.getDouble("donGiaBan"),
 						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
 						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
-				thuocsSapHetHanSuDung.add(thuoc);
+				productsSapHetHanSuDung.add(product);
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return thuocsSapHetHanSuDung;
+		return productsSapHetHanSuDung;
 	}
 
 	public int countSanPhamSapHetTonKho() {
@@ -291,7 +296,7 @@ public class SanPham_DAO implements SanPham_Interface {
 	}
 
 	public List<SanPham> getSanPhamDaHetHan() {
-		List<SanPham> thuocs = new ArrayList<>();
+		List<SanPham> products = new ArrayList<>();
 		query = "SELECT * FROM SanPham WHERE hanSuDung < ?";
 
 		try {
@@ -300,18 +305,19 @@ public class SanPham_DAO implements SanPham_Interface {
 
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				SanPham thuoc = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
+				SanPham product = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
 						rs.getString("danhMuc"),
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
-						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getTimestamp("ngayCapNhat").toLocalDateTime(), rs.getInt("soLuongTon"),
+						rs.getDouble("donGiaBan"),
 						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
 						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
-				thuocs.add(thuoc);
+				products.add(product);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return thuocs;
+		return products;
 	}
 
 	public int countSanPhamDaHetHan() {
@@ -334,7 +340,7 @@ public class SanPham_DAO implements SanPham_Interface {
 
 	public List<SanPham> getTopSaleSanPhamByDate(String date) {
 		String[] dateParts = date.split("[/-]");
-		List<SanPham> thuocList = new ArrayList<>();
+		List<SanPham> productList = new ArrayList<>();
 		ResultSet rs;
 
 		switch (dateParts.length) {
@@ -389,20 +395,21 @@ public class SanPham_DAO implements SanPham_Interface {
 
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				SanPham thuoc = new SanPham(
+				SanPham product = new SanPham(
 						rs.getString("maSanPham"), rs.getString("tenSanPham"), rs.getString("danhMuc"),
 						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
-						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getTimestamp("ngayCapNhat").toLocalDateTime(), rs.getInt("soLuongTon"),
+						rs.getDouble("donGiaBan"),
 						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
 						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
-				thuocList.add(thuoc);
+				productList.add(product);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return thuocList;
+		return productList;
 	}
 
 	public int getSoldQuantityById(String maSanPham, String date) {
