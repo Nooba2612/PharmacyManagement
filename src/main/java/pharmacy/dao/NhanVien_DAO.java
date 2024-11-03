@@ -17,7 +17,7 @@ public class NhanVien_DAO implements NhanVien_Interface {
 
     @Override
     public boolean createEmployee(NhanVien nhanVien) {
-        String query = "INSERT INTO NhanVien (maNhanVien, hoTen, chucVu, soDienThoai, email, ngayVaoLam, namSinh, trangThai, trinhDo, gioiTinh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO NhanVien (maNhanVien, hoTen, chucVu, soDienThoai, email, ngayVaoLam, namSinh, trangThai, trinhDo, gioiTinh, cccd, tienLuong) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DatabaseConnection.getConnection();
                 PreparedStatement statement = connection.prepareStatement(query)) {
@@ -32,6 +32,8 @@ public class NhanVien_DAO implements NhanVien_Interface {
             statement.setString(8, nhanVien.getTrangThai());
             statement.setString(9, nhanVien.getTrinhDo());
             statement.setString(10, nhanVien.getGioiTinh());
+            statement.setString(11, nhanVien.getCccd());
+            statement.setDouble(12, nhanVien.getTienLuong());
 
             return statement.executeUpdate() > 0;
 
@@ -287,13 +289,13 @@ public class NhanVien_DAO implements NhanVien_Interface {
                 return getAllEmployees();
             }
             case "Nhân viên đã nghỉ" -> {
-                sql += " WHERE trangThai = N'Nghỉ việc hẳn'";
+                sql += " WHERE trangThai = N'Đã nghỉ việc'";
             }
             case "Nhân viên còn làm" -> {
-                sql += " WHERE trangThai = N'Đang làm'";
+                sql += " WHERE trangThai = N'Còn làm việc'";
             }
             case "Nhân viên nghỉ tạm thời" -> {
-                sql += " WHERE trangThai = N'Nghỉ việc tạm thời'";
+                sql += " WHERE trangThai = N'Nghỉ phép'";
             }
             default -> {
                 return new ArrayList<>();

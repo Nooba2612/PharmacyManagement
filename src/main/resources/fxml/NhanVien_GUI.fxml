@@ -39,10 +39,11 @@
 										<TableColumn fx:id="birthdayColumn" prefWidth="105.60003662109375" text="Ngày sinh" />
 										<TableColumn fx:id="emailColumn" prefWidth="99.199951171875" text="Email" />
 										<TableColumn fx:id="phoneColumn" prefWidth="120.79998779296875" text="Số điện thoại" />
-										<TableColumn fx:id="levelColumn" prefWidth="116.79998779296875" resizable="false" sortable="false" text="Trình độ" />
-										<TableColumn fx:id="statusColumn" prefWidth="121.5999755859375" text="Trạng thái" />
-                              <TableColumn fx:id="positionColumn" prefWidth="104.7999267578125" text="Chức vụ" />
-										<TableColumn fx:id="joinDateColumn" prefWidth="119.99993896484375" text="Ngày vào làm" />
+										<TableColumn fx:id="levelColumn" prefWidth="98.39996337890625" resizable="false" sortable="false" text="Trình độ" />
+										<TableColumn fx:id="statusColumn" prefWidth="100.79998779296875" text="Trạng thái" />
+                              <TableColumn fx:id="positionColumn" prefWidth="84.800048828125" text="Chức vụ" />
+										<TableColumn fx:id="joinDateColumn" prefWidth="99.199951171875" text="Ngày vào làm" />
+                              <TableColumn fx:id="actionColumn" prefWidth="92.00006103515625" text="Hành động" />
 									</columns>
 									<cursor>
 										<Cursor fx:constant="TEXT" />
@@ -108,6 +109,21 @@
                            </image>
                         </ImageView>
                      </graphic>
+                  </Button>
+                  <Button fx:id="refreshBtn" layoutX="662.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="126.0" style="-fx-background-color: #d1d1d1;" text="Làm mới">
+                     <graphic>
+                        <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/circle-arrows-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
                   </Button>
 					</children>
 					<effect>

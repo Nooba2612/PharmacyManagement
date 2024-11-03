@@ -37,6 +37,7 @@ import pharmacy.entity.SanPham;
 import pharmacy.utils.NodeUtil;
 
 public class CapNhatSanPham_GUI {
+
     @FXML
     private TableColumn<ProductHistoryLog, Number> availableQuantityColumn;
 
@@ -116,7 +117,7 @@ public class CapNhatSanPham_GUI {
     private TableColumn<ProductHistoryLog, String> unitColumn;
 
     @FXML
-    private TableColumn<ProductHistoryLog, LocalDate> updatedAtColumn;
+    private TableColumn<ProductHistoryLog, LocalDateTime> updatedAtColumn;
 
     @FXML
     private ComboBox<String> unitField;
@@ -199,6 +200,7 @@ public class CapNhatSanPham_GUI {
     @FXML
     public void setUpForm(SanPham product) throws SQLException {
         currentProduct = product;
+        historyProductList.addAll(new HistoryLog_BUS().getProductHistoryById(product.getMaSanPham()));
 
         unitField.getItems().addAll("Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói");
         taxField.getItems().addAll("0%", "5%", "10%", "15%", "20%");
@@ -296,8 +298,6 @@ public class CapNhatSanPham_GUI {
 
     @FXML
     public void renderHistory() throws SQLException {
-        historyProductList = FXCollections.observableArrayList(new HistoryLog_BUS().getAllProductHistory());
-
         idColumn.setCellValueFactory(new PropertyValueFactory<>("maSanPham"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
         manufactureDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngaySX"));
@@ -348,10 +348,11 @@ public class CapNhatSanPham_GUI {
                 }
             }
         });
-        
-        updatedAtColumn.setCellFactory(col -> new TableCell<ProductHistoryLog, LocalDate>() {
+
+        updatedAtColumn.setCellFactory(col -> new TableCell<ProductHistoryLog, LocalDateTime>() {
             @Override
-            protected void updateItem(LocalDate item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss");
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText("");
@@ -415,7 +416,7 @@ public class CapNhatSanPham_GUI {
             }
 
             SanPham sanPham = new SanPham(maSanPham, tenSanPham, danhMuc, ngaySX, nhaSX, ngayTao,
-                    LocalDate.now(), soLuongTon, donGiaBan, thue,
+                    LocalDateTime.now(), soLuongTon, donGiaBan, thue,
                     hanSuDung, moTa, donViTinh, trangThai, loaiSanPham);
             try {
                 if (validateForm()) {
@@ -423,7 +424,7 @@ public class CapNhatSanPham_GUI {
                     NhanVien nhanVien = new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap();
                     ProductHistoryLog history = new ProductHistoryLog(sanPham, nhanVien);
                     new HistoryLog_BUS().addProductHistory(history);
-                    showAddProductSuccessModal("Cập nhật sản phẩm thành công");
+                    showUpdateProductSuccessModal("Cập nhật sản phẩm thành công");
                     submitBtn.getScene().getWindow().hide();
                     refreshForm();
                     historyProductList.add(history);
@@ -468,7 +469,7 @@ public class CapNhatSanPham_GUI {
         }
 
         // Validate Product type field
-        String[] VALID_TYPES = { "Thuốc", "Thiết bị y tế" };
+        String[] VALID_TYPES = {"Thuốc", "Thiết bị y tế"};
         String productTypeValue = (productTypeField.getValue() != null) ? productTypeField.getValue().trim()
                 : productTypeField.getEditor().getText().trim();
 
@@ -542,7 +543,7 @@ public class CapNhatSanPham_GUI {
         }
 
         // Validate Tax field
-        String[] VALID_TAXES = { "0%", "5%", "10%", "15%", "20%" };
+        String[] VALID_TAXES = {"0%", "5%", "10%", "15%", "20%"};
         String taxValue = (taxField.getValue() != null) ? taxField.getValue().trim()
                 : taxField.getEditor().getText().trim();
 
@@ -559,7 +560,7 @@ public class CapNhatSanPham_GUI {
         }
 
         // Validate Unit field
-        String[] VALID_UNITS = { "Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói", "Cái", "Chiếc", "Bộ" };
+        String[] VALID_UNITS = {"Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói", "Cái", "Chiếc", "Bộ"};
         String unitValue = (unitField.getValue() != null) ? unitField.getValue().trim()
                 : unitField.getEditor().getText().trim();
 
@@ -576,8 +577,8 @@ public class CapNhatSanPham_GUI {
         }
 
         // Validate Category field
-        String[] VALID_CATEGORIES = { "giảm đau", "hạ sốt", "kháng sinh", "chống viêm",
-                "vitamin", "an thần", "siro", "dụng cụ y tế", "sản phẩm bảo vệ cá nhân", "dung dịch vệ sinh", "khác" };
+        String[] VALID_CATEGORIES = {"giảm đau", "hạ sốt", "kháng sinh", "chống viêm",
+            "vitamin", "an thần", "siro", "dụng cụ y tế", "sản phẩm bảo vệ cá nhân", "dung dịch vệ sinh", "khác"};
         if (categoryField.getValue() == null || categoryField.getEditor().getText().trim().isEmpty()) {
             categoryAlert.setText("Danh mục chưa được chọn.");
             categoryAlert.setVisible(true);
@@ -612,7 +613,7 @@ public class CapNhatSanPham_GUI {
     }
 
     @FXML
-    private void showAddProductSuccessModal(String message) {
+    private void showUpdateProductSuccessModal(String message) {
         Stage modalStage = new Stage();
         modalStage.setResizable(false);
         modalStage.initModality(Modality.APPLICATION_MODAL);
@@ -630,7 +631,7 @@ public class CapNhatSanPham_GUI {
         Button closeButton = new Button("Đóng");
         closeButton.setStyle(
                 "-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; "
-                        + "-fx-border-radius: 10px; -fx-cursor: hand; -fx-padding: 8px 20px;");
+                + "-fx-border-radius: 10px; -fx-cursor: hand; -fx-padding: 8px 20px;");
         closeButton.setOnAction(e -> modalStage.close());
 
         closeButton.setOnMouseEntered(event -> {
@@ -648,7 +649,7 @@ public class CapNhatSanPham_GUI {
         VBox layout = new VBox(15, contentLayout, closeButton);
         layout.setStyle(
                 "-fx-alignment: center; -fx-background-color: #ffffff; "
-                        + "-fx-border-color: black; -fx-border-width: 1px; -fx-padding: 20px;");
+                + "-fx-border-color: black; -fx-border-width: 1px; -fx-padding: 20px;");
 
         Scene scene = new Scene(layout, 400, 150);
         modalStage.setScene(scene);
@@ -666,7 +667,7 @@ public class CapNhatSanPham_GUI {
         manufacturerField.setText(currentProduct.getNhaSX());
         quantityField.setText(String.valueOf(currentProduct.getSoLuongTon()));
         priceField.setText(String.valueOf(currentProduct.getDonGiaBan()).replace(".0", ""));
-        taxField.setValue(currentProduct.getThue() * 100 + "%");
+        taxField.setValue((currentProduct.getThue() * 100 + "%").replace(".0", ""));
         unitField.setValue(currentProduct.getDonViTinh());
         productTypeField.setValue(currentProduct.getLoaiSanPham());
         categoryField.setValue(currentProduct.getDanhMuc());

@@ -1,21 +1,20 @@
 package pharmacy.gui;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -28,24 +27,32 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import pharmacy.bus.HistoryLog_BUS;
 import pharmacy.bus.NhanVien_BUS;
+import pharmacy.bus.TaiKhoan_BUS;
+import pharmacy.entity.EmployeeHistoryLog;
 import pharmacy.entity.NhanVien;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.StringUtil;
 
-public class ThemNhanVien_GUI {
-
-    @FXML
-    private Button backBtn;
+public class CapNhatNhanVien_GUI {
 
     @FXML
     private Label birthdayAlert;
 
     @FXML
-    private TableColumn<NhanVien, LocalDate> birthdayColumn;
+    private TableColumn<EmployeeHistoryLog, LocalDate> birthdayColumn;
 
     @FXML
     private DatePicker birthdayField;
+
+    @FXML
+    private Label cccdAlert;
+
+    @FXML
+    private TextField cccdField;
 
     @FXML
     private Button clearDataBtn;
@@ -54,25 +61,28 @@ public class ThemNhanVien_GUI {
     private Label emailAlert;
 
     @FXML
-    private TableColumn<NhanVien, String> emailColumn;
+    private TableColumn<EmployeeHistoryLog, String> emailColumn;
 
     @FXML
     private TextField emailField;
 
     @FXML
-    private TableView<NhanVien> employeeTable;
+    private TableColumn<EmployeeHistoryLog, String> employeeColumn;
+
+    @FXML
+    private TableView<EmployeeHistoryLog> employeeTable;
 
     @FXML
     private Label genderAlert;
 
     @FXML
-    private TableColumn<NhanVien, String> genderColumn;
+    private TableColumn<EmployeeHistoryLog, String> genderColumn;
 
     @FXML
     private ComboBox<String> genderField;
 
     @FXML
-    private TableColumn<NhanVien, String> idColumn;
+    private TableColumn<EmployeeHistoryLog, String> idColumn;
 
     @FXML
     private TextField idField;
@@ -81,7 +91,7 @@ public class ThemNhanVien_GUI {
     private Label joinDateAlert;
 
     @FXML
-    private TableColumn<NhanVien, LocalDate> joinDateColumn;
+    private TableColumn<EmployeeHistoryLog, LocalDate> joinDateColumn;
 
     @FXML
     private DatePicker joinDateField;
@@ -90,7 +100,7 @@ public class ThemNhanVien_GUI {
     private Label levelAlert;
 
     @FXML
-    private TableColumn<NhanVien, String> levelColumn;
+    private TableColumn<EmployeeHistoryLog, String> levelColumn;
 
     @FXML
     private ComboBox<String> levelField;
@@ -99,46 +109,49 @@ public class ThemNhanVien_GUI {
     private Label nameAlert;
 
     @FXML
-    private TableColumn<NhanVien, String> nameColumn;
+    private TableColumn<EmployeeHistoryLog, String> nameColumn;
 
     @FXML
     private TextField nameField;
 
     @FXML
-    private ListView<String> nameSuggestionBox;
+    private ListView<EmployeeHistoryLog> nameSuggestionBox;
 
     @FXML
     private Label phoneAlert;
 
     @FXML
-    private TableColumn<NhanVien, String> phoneColumn;
-
-    @FXML
-    private TableColumn<NhanVien, String> cccdColumn;
-
-    @FXML
-    private TableColumn<NhanVien, Double> salaryColumn;
+    private TableColumn<EmployeeHistoryLog, String> phoneColumn;
 
     @FXML
     private TextField phoneField;
 
     @FXML
-    private TextField cccdField;
-
-    @FXML
-    private ComboBox<String> salaryField;
-
-    @FXML
     private Label positionAlert;
 
     @FXML
-    private TableColumn<NhanVien, String> positionColumn;
+    private TableColumn<EmployeeHistoryLog, String> positionColumn;
+
+    @FXML
+    private TableColumn<EmployeeHistoryLog, String> cccdColumn;
+
+    @FXML
+    private TableColumn<EmployeeHistoryLog, Double> salaryColumn;
 
     @FXML
     private ComboBox<String> positionField;
 
     @FXML
+    private Button rejectBtn;
+
+    @FXML
     private HBox root;
+
+    @FXML
+    private Label salaryAlert;
+
+    @FXML
+    private ComboBox<String> salaryField;
 
     @FXML
     private Button submitBtn;
@@ -147,23 +160,44 @@ public class ThemNhanVien_GUI {
     private Label taxAlert;
 
     @FXML
-    private Label cccdAlert;
+    private TableColumn<EmployeeHistoryLog, LocalDateTime> updatedAtColumn;
 
-    @FXML
-    private Label salaryAlert;
+    private NhanVien currentEmployee;
 
-    private ObservableList<NhanVien> addedEmployeeList = FXCollections.observableArrayList();
+    private ObservableList<EmployeeHistoryLog> historyList = FXCollections.observableArrayList();
 
-    // methods
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     @FXML
     public void initialize() throws SQLException {
-        handleBackBtnClick();
-        setUpForm();
-        clearForm();
+        handleReject();
+        renderHistory();
     }
 
     @FXML
-    public void setUpForm() throws SQLException {
+    public void handleReject() {
+        rejectBtn.setOnMouseEntered(event -> {
+            NodeUtil.applyFadeTransition(rejectBtn, 1, 0.7, 300, () -> {
+            });
+        });
+
+        rejectBtn.setOnMouseExited(event -> {
+            NodeUtil.applyFadeTransition(rejectBtn, 0.7, 1, 300, () -> {
+            });
+        });
+
+        rejectBtn.setOnAction(event -> {
+            Stage stage = (Stage) rejectBtn.getScene().getWindow();
+            stage.close();
+        });
+    }
+
+    @FXML
+    public void setUpForm(NhanVien employee) throws SQLException {
+        currentEmployee = employee;
+        historyList.addAll(new HistoryLog_BUS().getEmployeeHistoryById(employee.getMaNhanVien()
+        ));
+
         genderField.getItems().addAll("Nam", "Nữ", "Khác");
         levelField.getItems().addAll("Đại học", "Cao đẳng", "Cao học");
         positionField.getItems().addAll("Người quản lý", "Nhân viên");
@@ -196,7 +230,7 @@ public class ThemNhanVien_GUI {
 
         phoneField.setTextFormatter(phoneFormatter);
         cccdField.setTextFormatter(cccdFormatter);
-		salaryField.getEditor().setTextFormatter(salaryFormatter);
+        salaryField.getEditor().setTextFormatter(salaryFormatter);
 
         clearDataBtn.setOnMouseEntered(event -> {
             NodeUtil.applyFadeTransition(clearDataBtn, 1, 0.6, 200, () -> {
@@ -207,51 +241,26 @@ public class ThemNhanVien_GUI {
             });
         });
         clearDataBtn.setOnMouseClicked(event -> {
-            clearForm();
+            refreshForm();
         });
 
         // handle if table empty
-        if (addedEmployeeList.isEmpty()) {
+        if (historyList.isEmpty()) {
             Label noEmployeeLabel = new Label("Không có nhân viên nào trong bảng.");
             noEmployeeLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #339933;");
             employeeTable.setPlaceholder(noEmployeeLabel);
         }
 
-        handleAddEmployee();
-    }
-
-    private String generateId() {
-        int employeeNumber = new NhanVien_BUS().countEmployees();
-        String id = String.format("MK%04d", employeeNumber + 1);
-
-        return id;
-    }
-
-    @FXML
-    public void handleBackBtnClick() {
-        backBtn.setOnMouseEntered(event -> {
-            NodeUtil.applyFadeTransition(backBtn, 1, 0.5, 200, () -> {
-            });
-        });
-
-        backBtn.setOnMouseExited(event -> {
-            NodeUtil.applyFadeTransition(backBtn, 0.5, 1, 200, () -> {
-            });
-        });
-
-        backBtn.setOnMouseClicked(event -> {
-            try {
-                Parent customerFrame = FXMLLoader.load(getClass().getResource("/fxml/NhanVien_GUI.fxml"));
-                root.getChildren().clear();
-                root.getChildren().add(customerFrame);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        refreshForm();
+        try {
+            handleUpdateEmployee();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
-    public void handleAddEmployee() throws SQLException {
+    public void handleUpdateEmployee() throws SQLException {
         submitBtn.setOnMouseEntered(event -> {
             NodeUtil.applyFadeTransition(submitBtn, 1, 0.6, 200, () -> {
             });
@@ -294,25 +303,95 @@ public class ThemNhanVien_GUI {
                 }
 
                 NhanVien employee = new NhanVien(id, name, position, phoneNumber, email, joinDate, status, level,
-                        gender,
-                        birthday, salary, cccd);
+                        gender, birthday, salary, cccd);
+                NhanVien nguoiSua = new NhanVien();
+                try {
+                    nguoiSua = new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap();
+                } catch (SQLException ex) {
+                }
 
-                new NhanVien_BUS().createEmployee(employee);
-                showAddEmployeeSuccessModal("Thêm nhân viên thành công");
-                clearForm();
-                addedEmployeeList.add(employee);
-                handleRenderAddedEmployeesTable();
+                EmployeeHistoryLog history = new EmployeeHistoryLog(employee, LocalDateTime.now(), nguoiSua);
+
+                showUpdateEmployeeSuccessModal("Cập nhật nhân viên thành công");
+                refreshForm();
+                try {
+                    new HistoryLog_BUS().addEmployeeHistory(history);
+                    new NhanVien_BUS().updateEmployee(employee);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                submitBtn.getScene().getWindow().hide();
             }
         });
 
     }
 
     @FXML
-    private void showAddEmployeeSuccessModal(String message) {
+    public void renderHistory() throws SQLException {
+
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("maNhanVien"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
+        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        positionColumn.setCellValueFactory(new PropertyValueFactory<>("chucVu"));
+        genderColumn.setCellValueFactory(new PropertyValueFactory<>("gioiTinh"));
+        joinDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngayVaoLam"));
+        birthdayColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
+        levelColumn.setCellValueFactory(new PropertyValueFactory<>("trinhDo"));
+        salaryColumn.setCellValueFactory(new PropertyValueFactory<>("tienLuong"));
+        cccdColumn.setCellValueFactory(new PropertyValueFactory<>("cccd"));
+        employeeColumn.setCellValueFactory(new PropertyValueFactory<>("tenNguoiSua"));
+        updatedAtColumn.setCellValueFactory(new PropertyValueFactory<>("ngayCapNhat"));
+
+        joinDateColumn.setCellFactory(col -> new TableCell<EmployeeHistoryLog, LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("");
+                } else {
+                    setText(formatter.format(item));
+                }
+            }
+        });
+
+        birthdayColumn.setCellFactory(col -> new TableCell<EmployeeHistoryLog, LocalDate>() {
+            @Override
+            protected void updateItem(LocalDate item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("");
+                } else {
+                    setText(formatter.format(item));
+                }
+            }
+        });
+
+        updatedAtColumn.setCellFactory(col -> new TableCell<EmployeeHistoryLog, LocalDateTime>() {
+            @Override
+            protected void updateItem(LocalDateTime item, boolean empty) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss");
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText("");
+                } else {
+                    setText(formatter.format(item));
+                }
+            }
+        });
+
+        employeeTable.setItems(historyList);
+
+    }
+
+    @FXML
+    private void showUpdateEmployeeSuccessModal(String message) {
         Stage modalStage = new Stage();
         modalStage.setResizable(false);
         modalStage.initModality(Modality.APPLICATION_MODAL);
-        modalStage.initStyle(StageStyle.UNDECORATED);
+        modalStage.getIcons().addAll(new Image(
+                getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));
 
         ImageView icon = new ImageView(new Image(
                 getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));
@@ -349,6 +428,21 @@ public class ThemNhanVien_GUI {
         modalStage.setScene(scene);
 
         modalStage.showAndWait();
+    }
+
+    @FXML
+    public void refreshForm() {
+        idField.setText(currentEmployee.getMaNhanVien());
+        nameField.setText(currentEmployee.getHoTen());
+        phoneField.setText(currentEmployee.getSoDienThoai());
+        emailField.setText(currentEmployee.getEmail());
+        positionField.setValue(currentEmployee.getChucVu());
+        genderField.setValue(currentEmployee.getGioiTinh());
+        joinDateField.setValue(currentEmployee.getNgayVaoLam());
+        birthdayField.setValue(currentEmployee.getNamSinh());
+        levelField.setValue(currentEmployee.getTrinhDo());
+        salaryField.setValue(String.valueOf(currentEmployee.getTienLuong()).replace(".0", ""));
+        cccdField.setText(currentEmployee.getCccd());
     }
 
     @FXML
@@ -499,38 +593,6 @@ public class ThemNhanVien_GUI {
         }
 
         return isValid;
-    }
-
-    @FXML
-    public void clearForm() {
-        idField.setText(generateId());
-        nameField.setText("");
-        phoneField.setText("");
-        emailField.setText("");
-        positionField.setValue(null);
-        genderField.setValue(null);
-        joinDateField.setValue(null);
-        birthdayField.setValue(null);
-        levelField.setValue("");
-        salaryField.setValue("");
-        cccdField.setText("");
-    }
-
-    @FXML
-    public void handleRenderAddedEmployeesTable() {
-        employeeTable.setItems(addedEmployeeList);
-
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("maNhanVien"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
-        emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        positionColumn.setCellValueFactory(new PropertyValueFactory<>("chucVu"));
-        genderColumn.setCellValueFactory(new PropertyValueFactory<>("gioiTinh"));
-        joinDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngayVaoLam"));
-        birthdayColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
-        levelColumn.setCellValueFactory(new PropertyValueFactory<>("trinhDo"));
-        salaryColumn.setCellValueFactory(new PropertyValueFactory<>("tienLuong"));
-        cccdColumn.setCellValueFactory(new PropertyValueFactory<>("cccd"));
     }
 
 }

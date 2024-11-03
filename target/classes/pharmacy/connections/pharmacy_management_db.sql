@@ -4,7 +4,7 @@ CREATE DATABASE medkit_pharmacy_management;
 USE medkit_pharmacy_management;
 select * from HoaDon
 select * from ChiTietHoaDon
-select * from SanPham
+select * from NhatKyThayDoiSanPham
 -- Nhân Viên
 CREATE TABLE NhanVien (
     maNhanVien NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maNhanVien LIKE 'MK____'),
@@ -66,6 +66,27 @@ CREATE TABLE SanPham (
     moTa NVARCHAR(255),
     trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn'
 );
+
+CREATE TABLE NhatKyThayDoiNhanVien (
+	maNhanVien NVARCHAR(50) NOT NULL,
+    hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),
+    chucVu NVARCHAR(255) NOT NULL,
+    soDienThoai NVARCHAR(10) NOT NULL UNIQUE,
+    email NVARCHAR(225) NOT NULL CHECK (email LIKE '%_@gmail.com'),
+    ngayVaoLam DATETIME NOT NULL,
+    namSinh DATE NOT NULL CHECK (YEAR(GETDATE()) - YEAR(namSinh) >= 22),
+    trangThai NVARCHAR(50) CHECK (
+        trangThai IN (N'Còn làm việc', N'Nghỉ phép', N'Đã nghỉ việc')
+    ),
+    trinhDo NVARCHAR(50) CHECK (trinhDo IN (N'Cao đẳng', N'Đại học', N'Cao học')),
+    gioiTinh NVARCHAR(50) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác')),
+    cccd NCHAR(12) NOT NULL,
+    tienLuong FLOAT NOT NULL,
+	ngayCapNhat DATETIME NOT NULL,
+	maNhanVienDaSua NVARCHAR(50) NOT NULL,
+	CONSTRAINT FK_NhatKyThayDoiNhanVien_NhanVien FOREIGN KEY (maNhanVienDaSua) REFERENCES NhanVien(maNhanVien)
+)
+
 CREATE TABLE NhatKyThayDoiSanPham (
     maSanPham NVARCHAR(50) NOT NULL,
     tenSanPham NVARCHAR(255) NOT NULL,
@@ -98,8 +119,10 @@ CREATE TABLE NhatKyThayDoiSanPham (
     ),
     moTa NVARCHAR(255),
     trangThai NVARCHAR(50) NOT NULL DEFAULT N'Có sẵn',
-	updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+	maNhanVien NVARCHAR(50) NOT NULL,
+	CONSTRAINT FK_NhatKyThayDoiSanPham_NhanVien FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
 );
+
 -- Cập nhật trạng thái sản phẩm
 /*
  -- Hết hạn
