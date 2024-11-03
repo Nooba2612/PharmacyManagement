@@ -17,128 +17,80 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER"
-	maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-	xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="pharmacy.gui.LichLam_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.LichLam_GUI">
 	<children>
-		<Pane maxHeight="1.7976931348623157E308"
-			maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-			minWidth="-Infinity" prefHeight="667.0" prefWidth="1182.0">
+		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1182.0">
 			<children>
-				<Text id="mainTitle" fill="#9e9e9e" layoutY="66.0"
-					strokeType="OUTSIDE" strokeWidth="0.0"
-					text="Lịch làm việc của nhân viên theo tuần" textAlignment="CENTER">
+				<Text id="mainTitle" fill="#9e9e9e" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lịch làm việc của nhân viên theo tuần" textAlignment="CENTER">
 					<font>
 						<Font name="Arial Bold" size="25.0" />
 					</font>
 				</Text>
-				<Pane layoutX="1.0" layoutY="103.0" maxHeight="-Infinity"
-					maxWidth="-Infinity" prefHeight="564.0" prefWidth="1182.0"
-					style="-fx-background-color: #fff;">
+				<Pane layoutX="1.0" layoutY="103.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="564.0" prefWidth="1182.0" style="-fx-background-color: #fff;">
 					<children>
-						<Line endX="1073.4000244140625" endY="-1.52587890625E-5"
-							layoutX="58.0" layoutY="87.0" startX="-4.199962615966797"
-							startY="-1.52587890625E-5" stroke="#cccccc" strokeWidth="2.0" />
-						<ScrollPane id="expiredMedicinesTablePane"
-							fitToHeight="true" fitToWidth="true" layoutX="48.0"
-							layoutY="119.0" prefHeight="400.0" prefWidth="1098.0"
-							style="-fx-background-color: #fff;">
+						<Line endX="1073.4000244140625" endY="-1.52587890625E-5" layoutX="58.0" layoutY="87.0" startX="-4.199962615966797" startY="-1.52587890625E-5" stroke="#cccccc" strokeWidth="2.0" />
+						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="48.0" layoutY="119.0" prefHeight="400.0" prefWidth="1098.0" style="-fx-background-color: #fff;">
 							<content>
-								<TableView fx:id="workScheduleTable" editable="true"
-									fixedCellSize="150.0" minHeight="-Infinity"
-									minWidth="-Infinity" prefHeight="378.0" prefWidth="1091.0"
-									style="-fx-background-color: #FFF;"
-									stylesheets="@../css/TableStyles.css">
+								<TableView fx:id="workScheduleTable" editable="true" fixedCellSize="150.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="378.0" prefWidth="1091.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css">
 									<columns>
-										<TableColumn fx:id="shiftColumn"
-											prefWidth="80.80001145601273" styleClass="shift-column"
-											text="Ca làm" />
-										<TableColumn fx:id="mondayColumn"
-											prefWidth="141.59999084472656">
+										<TableColumn fx:id="shiftColumn" prefWidth="80.80001145601273" styleClass="shift-column" text="Ca làm" />
+										<TableColumn fx:id="mondayColumn" prefWidth="133.0">
 											<graphic>
-												<Label alignment="TOP_CENTER" contentDisplay="TOP"
-													prefHeight="63.0" prefWidth="101.0"
-													text="Thứ hai 30/09/2024" textAlignment="CENTER"
-													wrapText="true">
+												<Label fx:id="mondayLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="63.0" prefWidth="101.0" text="Thứ hai 30/09/2024" textAlignment="CENTER" wrapText="true">
 													<font>
 														<Font name="System Bold" size="14.0" />
 													</font>
 												</Label>
 											</graphic>
 										</TableColumn>
-										<TableColumn fx:id="tuesdayColumn"
-											prefWidth="176.80006408691406">
+										<TableColumn fx:id="tuesdayColumn" prefWidth="133.0">
 											<graphic>
-												<Label alignment="TOP_CENTER" contentDisplay="TOP"
-													prefHeight="63.0" prefWidth="101.0"
-													text="Thứ ba 30/09/2024" textAlignment="CENTER"
-													wrapText="true">
+												<Label fx:id="tuesdayLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="63.0" prefWidth="101.0" text="Thứ ba 30/09/2024" textAlignment="CENTER" wrapText="true">
 													<font>
 														<Font name="System Bold" size="14.0" />
 													</font>
 												</Label>
 											</graphic>
 										</TableColumn>
-										<TableColumn fx:id="wednesdayColumn"
-											prefWidth="145.60000610351562">
+										<TableColumn fx:id="wednesdayColumn" prefWidth="133.0">
 											<graphic>
-												<Label alignment="TOP_CENTER" contentDisplay="TOP"
-													prefHeight="63.0" prefWidth="101.0"
-													text="Thứ tư 30/09/2024" textAlignment="CENTER"
-													wrapText="true">
+												<Label fx:id="wednesdayLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="63.0" prefWidth="101.0" text="Thứ tư 30/09/2024" textAlignment="CENTER" wrapText="true">
 													<font>
 														<Font name="System Bold" size="14.0" />
 													</font>
 												</Label>
 											</graphic>
 										</TableColumn>
-										<TableColumn fx:id="thursdayColumn"
-											prefWidth="136.00002366304398">
+										<TableColumn fx:id="thursdayColumn" prefWidth="133.0">
 											<graphic>
-												<Label alignment="TOP_CENTER" contentDisplay="TOP"
-													prefHeight="63.0" prefWidth="101.0"
-													text="Thứ năm 30/09/2024" textAlignment="CENTER"
-													wrapText="true">
+												<Label fx:id="thursdayLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="63.0" prefWidth="101.0" text="Thứ năm 30/09/2024" textAlignment="CENTER" wrapText="true">
 													<font>
 														<Font name="System Bold" size="14.0" />
 													</font>
 												</Label>
 											</graphic>
 										</TableColumn>
-										<TableColumn fx:id="fridayColumn"
-											prefWidth="136.00002366304398">
+										<TableColumn fx:id="fridayColumn" prefWidth="133.0">
 											<graphic>
-												<Label alignment="TOP_CENTER" contentDisplay="TOP"
-													prefHeight="63.0" prefWidth="101.0"
-													text="Thứ sáu 30/09/2024" textAlignment="CENTER"
-													wrapText="true">
+												<Label fx:id="fridayLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="63.0" prefWidth="101.0" text="Thứ sáu 30/09/2024" textAlignment="CENTER" wrapText="true">
 													<font>
 														<Font name="System Bold" size="14.0" />
 													</font>
 												</Label>
 											</graphic>
 										</TableColumn>
-										<TableColumn fx:id="saturdayColumn"
-											prefWidth="136.00002366304398">
+										<TableColumn fx:id="saturdayColumn" prefWidth="133.0">
 											<graphic>
-												<Label alignment="TOP_CENTER" contentDisplay="TOP"
-													prefHeight="63.0" prefWidth="101.0"
-													text="Thứ bảy 30/09/2024" textAlignment="CENTER"
-													wrapText="true">
+												<Label fx:id="saturdayLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="63.0" prefWidth="101.0" text="Thứ bảy 30/09/2024" textAlignment="CENTER" wrapText="true">
 													<font>
 														<Font name="System Bold" size="14.0" />
 													</font>
 												</Label>
 											</graphic>
 										</TableColumn>
-										<TableColumn fx:id="sundayColumn"
-											prefWidth="136.00002366304398">
+										<TableColumn fx:id="sundayColumn" prefWidth="133.0">
 											<graphic>
-												<Label alignment="TOP_CENTER" contentDisplay="TOP"
-													prefHeight="63.0" prefWidth="101.0"
-													text="Chủ nhật 30/09/2024" textAlignment="CENTER"
-													wrapText="true">
+												<Label fx:id="sundayLabel" alignment="TOP_CENTER" contentDisplay="TOP" prefHeight="63.0" prefWidth="101.0" text="Chủ nhật 30/09/2024" textAlignment="CENTER" wrapText="true">
 													<font>
 														<Font name="System Bold" size="14.0" />
 													</font>
@@ -155,57 +107,49 @@
 								</TableView>
 							</content>
 						</ScrollPane>
-						<DatePicker fx:id="dateSelect" layoutX="622.0"
-							layoutY="33.0" prefHeight="30.0" prefWidth="180.0"
-							promptText="Chọn ngày" showWeekNumbers="true"
-							style="-fx-background-color: #f0f0f0;" />
-						<Button fx:id="currentTimeBtn" layoutX="828.0"
-							layoutY="33.0" mnemonicParsing="false" prefHeight="30.0"
-							prefWidth="87.0"
-							style="-fx-background-color: linear-gradient(to right, rgb(63, 188, 63), rgb(0, 230, 0));"
-							text="Hiện tại" textFill="WHITE">
+						<DatePicker fx:id="dateSelect" layoutX="622.0" layoutY="33.0" prefHeight="30.0" prefWidth="180.0" promptText="Chọn ngày" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;" />
+						<Button fx:id="currentTimeBtn" layoutX="828.0" layoutY="33.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="87.0" style="-fx-background-color: linear-gradient(to right, rgb(63, 188, 63), rgb(0, 230, 0));" text="Hiện tại" textFill="WHITE">
 							<font>
 								<Font name="System Bold" size="12.0" />
 							</font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
 						</Button>
-						<Text layoutX="570.0" layoutY="53.0" strokeType="OUTSIDE"
-							strokeWidth="0.0" text="Ngày : ">
+						<Text layoutX="570.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ngày : ">
 							<font>
 								<Font name="System Bold" size="14.0" />
 							</font>
 						</Text>
-						<Button fx:id="prevBtn" layoutX="927.0" layoutY="33.0"
-							mnemonicParsing="false" prefHeight="30.0" prefWidth="96.0"
-							style="-fx-background-color: linear-gradient(to right, rgb(63, 188, 63), rgb(0, 230, 0));"
-							text="Trở về" textFill="WHITE">
+						<Button fx:id="prevBtn" layoutX="927.0" layoutY="33.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: linear-gradient(to right, rgb(63, 188, 63), rgb(0, 230, 0));" text="Trở về" textFill="WHITE">
 							<font>
 								<Font name="System Bold" size="12.0" />
 							</font>
 							<graphic>
-								<ImageView fitHeight="14.0" fitWidth="8.0"
-									pickOnBounds="true" preserveRatio="true">
+								<ImageView fitHeight="14.0" fitWidth="8.0" pickOnBounds="true" preserveRatio="true">
 									<image>
 										<Image url="@../images/chevron-left-icon.png" />
 									</image>
 								</ImageView>
 							</graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
 						</Button>
-						<Button fx:id="nextBtn" contentDisplay="RIGHT"
-							layoutX="1036.0" layoutY="33.0" mnemonicParsing="false"
-							prefHeight="30.0" prefWidth="96.0"
-							style="-fx-background-color: linear-gradient(to right, rgb(63, 188, 63), rgb(0, 230, 0));"
-							text="Tiếp theo" textAlignment="RIGHT" textFill="WHITE">
+						<Button fx:id="nextBtn" contentDisplay="RIGHT" layoutX="1036.0" layoutY="33.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="96.0" style="-fx-background-color: linear-gradient(to right, rgb(63, 188, 63), rgb(0, 230, 0));" text="Tiếp theo" textAlignment="RIGHT" textFill="WHITE">
 							<font>
 								<Font name="System Bold" size="12.0" />
 							</font>
 							<graphic>
-								<ImageView fitHeight="19.0" fitWidth="9.0"
-									pickOnBounds="true" preserveRatio="true">
+								<ImageView fitHeight="19.0" fitWidth="9.0" pickOnBounds="true" preserveRatio="true">
 									<image>
 										<Image url="@../images/chevron-right-icon.png" />
 									</image>
 								</ImageView>
 							</graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
 						</Button>
 					</children>
 					<effect>
