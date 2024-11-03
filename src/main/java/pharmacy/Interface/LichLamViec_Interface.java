@@ -1,5 +1,6 @@
 package pharmacy.Interface;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import pharmacy.entity.LichLamViec;
@@ -7,7 +8,7 @@ import pharmacy.entity.LichLamViec;
 public interface LichLamViec_Interface {
 	boolean createLichLamViec(LichLamViec lichLamViec);
 
-	LichLamViec getLichLamViecById(String maLichLamViec);
+	LichLamViec getLichLamViecByDateAndShift(LocalDate date, String shift);
 
 	List<LichLamViec> getAllLichLamViec();
 

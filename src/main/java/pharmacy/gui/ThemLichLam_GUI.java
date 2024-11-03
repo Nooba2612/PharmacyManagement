@@ -43,8 +43,14 @@ public class ThemLichLam_GUI {
 
     private NhanVien selectedEmployee;
 
+    private String caLamViec;
+
+    private LocalDate ngayLamViec;
+
     @FXML
     public void initialize(String caLam, LocalDate ngayLam) {
+        caLamViec = caLam;
+        ngayLamViec = ngayLam;
         handleSuggestEmployees();
         handleAddScheduleBtnAction();
     }
@@ -64,8 +70,13 @@ public class ThemLichLam_GUI {
 
         addScheduleBtn.setOnAction(event -> {
             NhanVien nhanVien = new NhanVien_BUS().getEmployeeByMaNhanVien(selectedEmployee.getMaNhanVien());
-            // LichLamViec lichLamViec = new LichLamViec(generateId(), nhanVien);
-            // new LichLamViec_BUS().createLichLamViec(lichLamViec);
+            LichLamViec lichLamViec = new LichLamViec();
+            try {
+                lichLamViec = new LichLamViec(generateId(), caLamViec, nhanVien, ngayLamViec);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            new LichLamViec_BUS().createLichLamViec(lichLamViec);
 
             Stage stage = (Stage) addScheduleBtn.getScene().getWindow();
             stage.close();
@@ -80,9 +91,15 @@ public class ThemLichLam_GUI {
     }
 
     private String generateId() throws SQLException {
-        int scheduleNumber = new LichLamViec_BUS().getAllLichLamViec().size();
-        String id = String.format("LLV%04d", scheduleNumber + 1);
-
+        int maxIdNumber = 0;
+        for (LichLamViec llv : new LichLamViec_BUS().getAllLichLamViec()) {
+            String currentId = llv.getMaLichLamViec();
+            int currentNumber = Integer.parseInt(currentId.replace("LLV", ""));
+            if (currentNumber > maxIdNumber) {
+                maxIdNumber = currentNumber;
+            }
+        }
+        String id = String.format("LLV%04d", maxIdNumber + 1);
         return id;
     }
 
@@ -189,7 +206,7 @@ public class ThemLichLam_GUI {
     }
 
     @FXML
-    public NhanVien getEmployee() {
-        return selectedEmployee;
+    public LichLamViec getSchedule() {
+        return new LichLamViec_BUS().getLichLamViecByDateAndShift(ngayLamViec, caLamViec);
     }
 }
