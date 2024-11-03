@@ -1,5 +1,6 @@
 package pharmacy.bus;
 
+import java.sql.Connection;
 import java.util.List;
 
 import pharmacy.dao.ChiTietPhieuNhap_DAO;
@@ -12,8 +13,8 @@ public class ChiTietPhieuNhap_BUS {
         chiTietPhieuNhapDAO = new ChiTietPhieuNhap_DAO();
     }
 
-    public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {
-        return chiTietPhieuNhapDAO.createChiTietPhieuNhap(chiTietPhieuNhap);
+    public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap, Connection connection) {
+        return chiTietPhieuNhapDAO.createChiTietPhieuNhap(chiTietPhieuNhap, connection);
     }
 
     public boolean updateChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {

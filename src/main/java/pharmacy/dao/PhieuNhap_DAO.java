@@ -1,28 +1,26 @@
 package pharmacy.dao;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import pharmacy.Interface.PhieuNhap_Interface;
 import pharmacy.connections.DatabaseConnection;
 import pharmacy.entity.ChiTietPhieuNhap;
-import pharmacy.entity.NhanVien;
 import pharmacy.entity.PhieuNhap;
 
 public class PhieuNhap_DAO implements PhieuNhap_Interface {
 
-	public boolean createPhieuNhap(PhieuNhap phieuNhap) {
+	public boolean createPhieuNhap(PhieuNhap phieuNhap, Connection connection) {
 		String query = "INSERT INTO PhieuNhap (maPhieuNhap, maNhanVien, maNhaCungCap, thoiGianNhap) VALUES (?, ?, ?, ?)";
 
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, phieuNhap.getMaPhieuNhap());
 			statement.setString(2, phieuNhap.getNhanVien().getMaNhanVien());
 			statement.setString(3, phieuNhap.getNhaCungCap().getMaNCC());
-			statement.setDate(4, Date.valueOf(phieuNhap.getThoiGianNhap()));
-
+			statement.setTimestamp(4, Timestamp.valueOf(phieuNhap.getThoiGianNhap())); // This will correctly set the date and time
+			
 			int result = statement.executeUpdate();
 			return result > 0;
 
@@ -43,11 +41,14 @@ public class PhieuNhap_DAO implements PhieuNhap_Interface {
 					.getChiTietPhieuNhapByMa(maPhieuNhap);
 			statement.setString(1, maPhieuNhap);
 
+			Timestamp thoiGianNhapTimestamp = rs.getTimestamp("thoiGianNhap");
+			LocalDateTime thoiGianNhap = (thoiGianNhapTimestamp != null) ? thoiGianNhapTimestamp.toLocalDateTime() : null;
+
 			if (rs.next()) {
 				return new PhieuNhap(rs.getString("maPhieuNhap"),
 						new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien")),
 						new NhaCungCap_DAO().getNhaCungCapByMaNCC(rs.getString("maNhaCungCap")),
-						rs.getDate("thoiGianNhap").toLocalDate(), null);
+						thoiGianNhap, chiTietPhieuNhapList);
 			}
 
 		} catch (SQLException e) {
@@ -67,11 +68,12 @@ public class PhieuNhap_DAO implements PhieuNhap_Interface {
 			while (rs.next()) {
 				List<ChiTietPhieuNhap> ChiTietPhieuNhapList = new ChiTietPhieuNhap_DAO()
 						.getChiTietPhieuNhapByMa(rs.getString("maPhieuNhap"));
-
+				Timestamp thoiGianNhapTimestamp = rs.getTimestamp("thoiGianNhap");
+				LocalDateTime thoiGianNhap = (thoiGianNhapTimestamp != null) ? thoiGianNhapTimestamp.toLocalDateTime() : null;
 				phieuNhapList.add(new PhieuNhap(rs.getString("maPhieuNhap"),
 						new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien")),
 						new NhaCungCap_DAO().getNhaCungCapByMaNCC(rs.getString("maNhaCungCap")),
-						rs.getDate("thoiGianNhap").toLocalDate(), null));
+						thoiGianNhap, ChiTietPhieuNhapList));
 			}
 
 		} catch (SQLException e) {
@@ -88,7 +90,10 @@ public class PhieuNhap_DAO implements PhieuNhap_Interface {
 
 			statement.setString(1, phieuNhap.getNhanVien().getMaNhanVien());
 			statement.setString(2, phieuNhap.getNhaCungCap().getMaNCC());
-			statement.setDate(3, Date.valueOf(phieuNhap.getThoiGianNhap()));
+
+			
+
+			statement.setTimestamp(3, Timestamp.valueOf(phieuNhap.getThoiGianNhap())); // This line is updated
 			statement.setString(4, phieuNhap.getMaPhieuNhap());
 
 			int result = statement.executeUpdate();
@@ -131,5 +136,11 @@ public class PhieuNhap_DAO implements PhieuNhap_Interface {
 			e.printStackTrace();
 		}
 		return count;
+	}
+
+	@Override
+	public boolean createPhieuNhap(PhieuNhap phieuNhap) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'createPhieuNhap'");
 	}
 }

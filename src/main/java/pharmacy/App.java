@@ -37,7 +37,7 @@ public class App extends Application {
             root.prefHeight(newVal.doubleValue());
         });
 
-        primaryStage.setWidth(1200);
+        primaryStage.setWidth(screenWidth);
         primaryStage.setHeight(screenHeight);
 
         Scene scene = new Scene(root);

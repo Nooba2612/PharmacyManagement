@@ -156,6 +156,30 @@ public class SanPham_DAO implements SanPham_Interface {
 		return thuocs;
 	}
 
+	public List<SanPham> getTop20SanPhamTheoSLTon() {
+		List<SanPham> sanPhams = new ArrayList<>();
+		query = "SELECT TOP 20 * FROM SanPham ORDER BY soLuongTon ASC, ngayTao ASC";
+
+		try {
+			statement = connection.prepareStatement(query);
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				SanPham sanPham = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
+						rs.getString("danhMuc"), rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"),
+						rs.getDate("ngayTao").toLocalDate(),
+						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
+						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
+						sanPhams.add(sanPham);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return sanPhams;
+	}
+
 	public int countSanPham() {
 		query = "SELECT COUNT(*) FROM SanPham";
 		int count = 0;
@@ -465,4 +489,50 @@ public class SanPham_DAO implements SanPham_Interface {
 		}
 	}
 
+	public List<SanPham> getSanPhamByMaOrTenSP(String keySearch) {
+		List<SanPham> thuocs = new ArrayList<>();
+		query = "SELECT * FROM SanPham WHERE maSanPham LIKE ? OR tenSanPham LIKE ?";
+
+		try {
+			statement = connection.prepareStatement(query);
+			statement.setString(1, "%" + keySearch + "%");
+			statement.setString(2, "%" + keySearch + "%");
+
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				SanPham sanPham = new SanPham(rs.getString("maSanPham"), rs.getString("tenSanPham"),
+						rs.getString("danhMuc"),
+						rs.getDate("ngaySX").toLocalDate(), rs.getString("nhaSX"), rs.getDate("ngayTao").toLocalDate(),
+						rs.getDate("ngayCapNhat").toLocalDate(), rs.getInt("soLuongTon"), rs.getDouble("donGiaBan"),
+						rs.getFloat("thue"), rs.getDate("hanSuDung").toLocalDate(), rs.getString("moTa"),
+						rs.getString("donViTinh"), rs.getString("trangThai"), rs.getString("loaiSanPham"));
+				thuocs.add(sanPham);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return thuocs;
+	}
+
+	public boolean updateProductStock(String maSanPham, int newQuantity, Connection connection) {
+		query = "UPDATE SanPham SET soLuongTon = soLuongTon + ? WHERE maSanPham = ?";
+
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setInt(1, newQuantity);
+            statement.setString(2, maSanPham);
+
+			int result = statement.executeUpdate();
+			return result > 0;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean updateProductStock(String maSanPham, int newQuantity) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'updateProductStock'");
+	}
 }

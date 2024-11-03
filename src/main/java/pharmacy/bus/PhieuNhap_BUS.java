@@ -1,5 +1,6 @@
 package pharmacy.bus;
 
+import java.sql.Connection;
 import java.util.List;
 
 import pharmacy.dao.PhieuNhap_DAO;
@@ -12,8 +13,8 @@ public class PhieuNhap_BUS {
 		this.phieuNhapDAO = new PhieuNhap_DAO();
 	}
 
-	public boolean createPhieuNhap(PhieuNhap phieuNhap) {
-		return phieuNhapDAO.createPhieuNhap(phieuNhap);
+	public boolean createPhieuNhap(PhieuNhap phieuNhap, Connection connection) {
+		return phieuNhapDAO.createPhieuNhap(phieuNhap, connection);
 	}
 
 	public PhieuNhap getPhieuNhapByMaPhieuNhap(String maPhieuNhap) {
