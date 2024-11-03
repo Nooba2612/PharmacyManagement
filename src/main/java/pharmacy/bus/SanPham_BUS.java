@@ -52,7 +52,7 @@ public class SanPham_BUS {
 
         if ((sanPham.getNgayCapNhat() == null && sanPham.getNgayTao() == null) ||
                 (sanPham.getNgayCapNhat() != null && sanPham.getNgayTao() != null &&
-                        sanPham.getNgayCapNhat().isBefore(sanPham.getNgayTao()))) {
+                        sanPham.getNgayCapNhat().isBefore(sanPham.getNgayTao().atStartOfDay()))) {
             return false;
         }
 
@@ -151,7 +151,7 @@ public class SanPham_BUS {
         }
 
         if ((sanPham.getNgayCapNhat() == null && sanPham.getNgayTao() == null) || (sanPham.getNgayCapNhat() != null
-                && sanPham.getNgayTao() != null && sanPham.getNgayCapNhat().isBefore(sanPham.getNgayTao()))) {
+                && sanPham.getNgayTao() != null && sanPham.getNgayCapNhat().isBefore(sanPham.getNgayTao().atStartOfDay()))) {
             System.out.println("Validation failed: Ngay cap nhat is before Ngay tao or both are null.");
             return false;
         }

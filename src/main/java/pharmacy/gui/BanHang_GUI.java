@@ -152,50 +152,20 @@ public class BanHang_GUI {
     }
 
     public void setUpAddedProductTable() {
-        // addedProductDosageColumn.setCellValueFactory(new PropertyValueFactory<>("loaiSanPham"));
-        // addedProductExpirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("ngayHetHan"));
-        // addedProductNameColumn.setCellValueFactory(new PropertyValueFactory<>("tenSanPham"));
-        // addedProductPriceColumn.setCellValueFactory(new PropertyValueFactory<>("donGiaBan"));
-        // addedProductQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("soLuongTon"));
-        // addedProductUnitColumn.setCellValueFactory(new PropertyValueFactory<>("donViTinh"));
+        // addedProductDosageColumn.setCellValueFactory(new
+        // PropertyValueFactory<>("loaiSanPham"));
+        // addedProductExpirationDateColumn.setCellValueFactory(new
+        // PropertyValueFactory<>("ngayHetHan"));
+        // addedProductNameColumn.setCellValueFactory(new
+        // PropertyValueFactory<>("tenSanPham"));
+        // addedProductPriceColumn.setCellValueFactory(new
+        // PropertyValueFactory<>("donGiaBan"));
+        // addedProductQuantityColumn.setCellValueFactory(new
+        // PropertyValueFactory<>("soLuongTon"));
+        // addedProductUnitColumn.setCellValueFactory(new
+        // PropertyValueFactory<>("donViTinh"));
         // totalColumn.setCellValueFactory(new PropertyValueFactory<>("loaiSanPham"));
 
-        SanPham thuocAspirin = new SanPham(
-                "SP001",
-                "Aspirin",
-                "Thuốc giảm đau",
-                LocalDate.of(2023, 6, 15),
-                "Công ty Dược A",
-                LocalDate.of(2023, 7, 1),
-                LocalDate.of(2024, 1, 1),
-                100,
-                50000.0,
-                0.05f,
-                LocalDate.of(2025, 6, 15),
-                "Thuốc giảm đau, hạ sốt",
-                "Viên",
-                "Còn hàng",
-                "Thuốc");
-
-        // Tạo đối tượng thiết bị y tế
-        SanPham mayDoHuyetAp = new SanPham(
-                "SP002",
-                "Máy đo huyết áp",
-                "Thiết bị y tế",
-                LocalDate.of(2022, 9, 1),
-                "Công ty Thiết bị Y Tế B",
-                LocalDate.of(2022, 9, 5),
-                LocalDate.of(2023, 9, 25),
-                50,
-                1200000.0,
-                0.1f,
-                LocalDate.of(2028, 9, 1),
-                "Máy đo huyết áp điện tử",
-                "Cái",
-                "Còn hàng",
-                "Thiết bị");
-
-        addedProductList.addAll(mayDoHuyetAp, thuocAspirin);
         productTable.getItems().addAll(suggestProductList);
     }
 
@@ -214,24 +184,7 @@ public class BanHang_GUI {
         unitColumn.setCellValueFactory(new PropertyValueFactory<>("donViTinh"));
 
         // Tạo đối tượng khác (ví dụ: vitamin)
-        SanPham vitaminC = new SanPham(
-                "SP003",
-                "Vitamin C",
-                "Thực phẩm chức năng",
-                LocalDate.of(2023, 3, 10),
-                "Công ty Dược C",
-                LocalDate.of(2023, 3, 12),
-                LocalDate.of(2023, 10, 20),
-                200,
-                30000.0,
-                0.05f,
-                LocalDate.of(2024, 12, 10),
-                "Hỗ trợ tăng cường sức đề kháng",
-                "Hộp",
-                "Còn hàng",
-                "Thực phẩm");
 
-        suggestProductList.addAll(vitaminC);
         addedProductTable.getItems().addAll(addedProductList);
     }
 }

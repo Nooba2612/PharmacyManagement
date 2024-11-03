@@ -35,6 +35,7 @@
 										<TableColumn fx:id="idColumn" prefWidth="117.60001069307327" sortable="false" text="Mã khách hàng" />
 										<TableColumn fx:id="nameColumn" prefWidth="194.40000915527344" text="Tên khách hàng" />
 										<TableColumn fx:id="phoneColumn" prefWidth="206.39996337890625" sortable="false" text="Số điện thoại" />
+                              <TableColumn fx:id="genderColumn" prefWidth="91.99993896484375" sortable="false" text="Giới tính" />
 										<TableColumn fx:id="yearColumn" prefWidth="91.99993896484375" sortable="false" text="Năm sinh" />
 										<TableColumn fx:id="pointsColumn" prefWidth="111.2000732421875" text="Điểm tích lũy" />
 										<TableColumn fx:id="noteColumn" prefWidth="135.199951171875" text="Ghi chú" />
@@ -70,7 +71,7 @@
 										<Font size="13.0" />
 									</font>
 								</TextField>
-								<Button fx:id="searchBtn" layoutX="181.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0" style="-fx-background-color: transparent;" textAlignment="CENTER">
+								<Button fx:id="searchKhachHangBtn" layoutX="181.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0" style="-fx-background-color: transparent;" textAlignment="CENTER">
 									<graphic>
 										<ImageView fitHeight="20.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
 											<image>

@@ -1,6 +1,7 @@
 package pharmacy.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ProductHistoryLog {
     private SanPham sanPham;
@@ -78,7 +79,7 @@ public class ProductHistoryLog {
         return sanPham != null ? sanPham.getDanhMuc() : null;
     }
 
-    public LocalDate getNgayCapNhat() {
+    public LocalDateTime getNgayCapNhat() {
         return sanPham != null ? sanPham.getNgayCapNhat() : null;
     }
 
