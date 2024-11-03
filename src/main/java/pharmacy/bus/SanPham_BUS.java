@@ -1,5 +1,6 @@
 package pharmacy.bus;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.time.LocalDate;
@@ -235,5 +236,19 @@ public class SanPham_BUS {
     public void refreshSanPham() {
         sanPhamDao.refreshSanPham();
     }
+
+    public List<SanPham> getSanPhamByMaOrTenSP(String keySearch) {
+        return sanPhamDao.getSanPhamByMaOrTenSP(keySearch);
+    }
+
+    public List<SanPham> getTop20SanPhamTheoSLTon() {
+        return sanPhamDao.getTop20SanPhamTheoSLTon();
+    }
+
+    public boolean updateProductStock(String maSanPham, int newQuantity, Connection connection) {
+        return sanPhamDao.updateProductStock(maSanPham, newQuantity, connection);
+    }
+
+   
 
 }

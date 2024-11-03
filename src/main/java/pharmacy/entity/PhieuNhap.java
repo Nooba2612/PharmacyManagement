@@ -1,6 +1,7 @@
 package pharmacy.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +10,14 @@ public class PhieuNhap {
 	private String maPhieuNhap;
 	private NhanVien nhanVien;
 	private NhaCungCap nhaCungCap;
-	private LocalDate thoiGianNhap;
+	private LocalDateTime thoiGianNhap;
 	private List<ChiTietPhieuNhap> chiTietPhieuNhapList;
 
 	public PhieuNhap() {
 		this.chiTietPhieuNhapList = new ArrayList<>();
 	}
 
-	public PhieuNhap(String maPhieuNhap, NhanVien nhanVien, NhaCungCap nhaCungCap, LocalDate thoiGianNhap, List<ChiTietPhieuNhap> chiTietPhieuNhapList) {
+	public PhieuNhap(String maPhieuNhap, NhanVien nhanVien, NhaCungCap nhaCungCap, LocalDateTime thoiGianNhap, List<ChiTietPhieuNhap> chiTietPhieuNhapList) {
 		setMaPhieuNhap(maPhieuNhap);
 		setNhanVien(nhanVien);
 		setNhaCungCap(nhaCungCap);
@@ -73,11 +74,11 @@ public class PhieuNhap {
 		return chiTietPhieuNhapList;
 	}
 
-	public LocalDate getThoiGianNhap() {
+	public LocalDateTime getThoiGianNhap() {
 		return thoiGianNhap;
 	}
 
-	public void setThoiGianNhap(LocalDate thoiGianNhap) {
+	public void setThoiGianNhap(LocalDateTime thoiGianNhap) {
 		if (thoiGianNhap == null) {
 			throw new IllegalArgumentException("Thời gian nhập không hợp lệ");
 		}

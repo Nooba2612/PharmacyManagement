@@ -38,4 +38,11 @@ public interface SanPham_Interface {
 	int countThietBiYTe();
 
 	void refreshSanPham();
+
+	List<SanPham> getSanPhamByMaOrTenSP(String keySearch);
+
+	List<SanPham> getTop20SanPhamTheoSLTon();
+
+	boolean updateProductStock(String maSanPham, int newQuantity);
+
 }
