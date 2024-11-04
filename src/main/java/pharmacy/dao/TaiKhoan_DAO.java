@@ -1,6 +1,9 @@
 package pharmacy.dao;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import pharmacy.Interface.TaiKhoan_Interface;
 import pharmacy.connections.DatabaseConnection;
@@ -9,159 +12,162 @@ import pharmacy.entity.TaiKhoan;
 import pharmacy.utils.PasswordUtil;
 
 public class TaiKhoan_DAO implements TaiKhoan_Interface {
-	private Connection connection;
-	private PreparedStatement statement;
-	private ResultSet rs;
-	private String query;
 
-	public TaiKhoan_DAO() throws SQLException {
-		connection = DatabaseConnection.getConnection();
-	}
+    private Connection connection;
+    private PreparedStatement statement;
+    private ResultSet rs;
+    private String query;
 
-	public boolean authenticate(String loginName, String rawPassword) {
-		query = "SELECT matKhau FROM TaiKhoan WHERE tenDangNhap = ?";
-		try {
-			statement = connection.prepareStatement(query);
-			statement.setString(1, loginName);
-			rs = statement.executeQuery();
+    public TaiKhoan_DAO() throws SQLException {
+        connection = DatabaseConnection.getConnection();
+    }
 
-			if (rs.next()) {
-				String storedPasswordHash = rs.getString("matKhau");
-				if (PasswordUtil.checkPassword(rawPassword, storedPasswordHash)) {
-					query = "UPDATE TaiKhoan SET isLoggedIn = 0 WHERE tenDangNhap != ?";
-					statement = connection.prepareStatement(query);
-					statement.setString(1, loginName);
-					statement.executeUpdate();
+    public boolean authenticate(String loginName, String rawPassword) {
+        query = "SELECT matKhau FROM TaiKhoan WHERE tenDangNhap = ?";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, loginName);
+            rs = statement.executeQuery();
 
-					query = "UPDATE TaiKhoan SET isLoggedIn = ? WHERE tenDangNhap = ?";
-					statement = connection.prepareStatement(query);
-					statement.setInt(1, 1);
-					statement.setString(2, loginName);
-					statement.executeUpdate();
+            if (rs.next()) {
+                String storedPasswordHash = rs.getString("matKhau");
 
-					return true;
-				}
-			}
+                if (PasswordUtil.checkPassword(rawPassword, storedPasswordHash)) {
+                    
+                    query = "UPDATE TaiKhoan SET isLoggedIn = 0 WHERE tenDangNhap != ?";
+                    statement = connection.prepareStatement(query);
+                    statement.setString(1, loginName);
+                    statement.executeUpdate();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
+                    query = "UPDATE TaiKhoan SET isLoggedIn = ? WHERE tenDangNhap = ?";
+                    statement = connection.prepareStatement(query);
+                    statement.setInt(1, 1);
+                    statement.setString(2, loginName);
+                    statement.executeUpdate();
 
-	public boolean createAccount(TaiKhoan taiKhoan) {
-		query = "INSERT INTO TaiKhoan (tenDangNhap, matKhau) VALUES (?, ?)";
-		try {
-			statement = connection.prepareStatement(query);
-			statement.setString(1, taiKhoan.getTenDangNhap().getMaNhanVien());
-			statement.setString(2, taiKhoan.getMatKhau());
+                    return true;
+                }
+            }
 
-			int result = statement.executeUpdate();
-			return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+    public boolean createAccount(TaiKhoan taiKhoan) {
+        query = "INSERT INTO TaiKhoan (tenDangNhap, matKhau) VALUES (?, ?)";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, taiKhoan.getTenDangNhap().getMaNhanVien());
+            statement.setString(2, taiKhoan.getMatKhau());
 
-	public TaiKhoan getAccountByTenDangNhap(String tenDangNhap) {
-		query = "SELECT * FROM TaiKhoan WHERE tenDangNhap = ?";
-		try {
-			statement = connection.prepareStatement(query);
-			statement.setString(1, tenDangNhap);
-			rs = statement.executeQuery();
+            int result = statement.executeUpdate();
+            return result > 0;
 
-			if (rs.next()) {
-				NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
-				NhanVien nhanVien = nhanVienDAO.getEmployeeByMaNhanVien(rs.getString("tenDangNhap"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-				return new TaiKhoan(nhanVien, rs.getString("matKhau"));
-			}
+    public TaiKhoan getAccountByTenDangNhap(String tenDangNhap) {
+        query = "SELECT * FROM TaiKhoan WHERE tenDangNhap = ?";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, tenDangNhap);
+            rs = statement.executeQuery();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+            if (rs.next()) {
+                NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
+                NhanVien nhanVien = nhanVienDAO.getEmployeeByMaNhanVien(rs.getString("tenDangNhap"));
 
-	public boolean updateAccount(TaiKhoan taiKhoan) {
-		query = "UPDATE TaiKhoan SET matKhau = ? WHERE tenDangNhap = ?";
-		try {
-			statement = connection.prepareStatement(query);
-			statement.setString(1, taiKhoan.getMatKhau());
-			statement.setString(2, taiKhoan.getTenDangNhap().getMaNhanVien());
+                return new TaiKhoan(nhanVien, rs.getString("matKhau"));
+            }
 
-			int result = statement.executeUpdate();
-			return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+    public boolean updateAccount(TaiKhoan taiKhoan) {
+        query = "UPDATE TaiKhoan SET matKhau = ? WHERE tenDangNhap = ?";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, taiKhoan.getMatKhau());
+            statement.setString(2, taiKhoan.getTenDangNhap().getMaNhanVien());
 
-	public boolean deleteAccount(String tenDangNhap) {
-		query = "DELETE FROM TaiKhoan WHERE tenDangNhap = ?";
-		try {
-			statement = connection.prepareStatement(query);
-			statement.setString(1, tenDangNhap);
-			int result = statement.executeUpdate();
-			return result > 0;
+            int result = statement.executeUpdate();
+            return result > 0;
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	public int countAccounts() {
-		query = "SELECT COUNT(*) FROM TaiKhoan";
-		int count = 0;
+    public boolean deleteAccount(String tenDangNhap) {
+        query = "DELETE FROM TaiKhoan WHERE tenDangNhap = ?";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, tenDangNhap);
+            int result = statement.executeUpdate();
+            return result > 0;
 
-		try {
-			statement = connection.prepareStatement(query);
-			rs = statement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-			if (rs.next()) {
-				count = rs.getInt(1);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return count;
-	}
+    public int countAccounts() {
+        query = "SELECT COUNT(*) FROM TaiKhoan";
+        int count = 0;
 
-	public TaiKhoan getCurrentAccount() {
-		query = "SELECT * FROM TaiKhoan WHERE isLoggedIn = 1";
-		try {
-			statement = connection.prepareStatement(query);
-			rs = statement.executeQuery();
+        try {
+            statement = connection.prepareStatement(query);
+            rs = statement.executeQuery();
 
-			if (rs.next()) {
-				NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
-				NhanVien nhanVien = nhanVienDAO.getEmployeeByMaNhanVien(rs.getString("tenDangNhap"));
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
 
-				return new TaiKhoan(nhanVien, rs.getString("matKhau"));
-			}
+    public TaiKhoan getCurrentAccount() {
+        query = "SELECT * FROM TaiKhoan WHERE isLoggedIn = 1";
+        try {
+            statement = connection.prepareStatement(query);
+            rs = statement.executeQuery();
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+            if (rs.next()) {
+                NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
+                NhanVien nhanVien = nhanVienDAO.getEmployeeByMaNhanVien(rs.getString("tenDangNhap"));
 
-	public void logoutAccount(String tenDangNhap) {
-		query = "UPDATE TaiKhoan SET isLoggedIn = 0 WHERE tenDangNhap = ?";
+                return new TaiKhoan(nhanVien, rs.getString("matKhau"));
+            }
 
-		try {
-			statement = connection.prepareStatement(query);
-			statement.setString(1, tenDangNhap);
-			statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    public void logoutAccount(String tenDangNhap) {
+        query = "UPDATE TaiKhoan SET isLoggedIn = 0 WHERE tenDangNhap = ?";
+
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, tenDangNhap);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

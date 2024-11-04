@@ -1,5 +1,7 @@
 package pharmacy.bus;
 
+import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.List;
 
 import pharmacy.dao.PhieuNhap_DAO;
@@ -12,8 +14,8 @@ public class PhieuNhap_BUS {
 		this.phieuNhapDAO = new PhieuNhap_DAO();
 	}
 
-	public boolean createPhieuNhap(PhieuNhap phieuNhap) {
-		return phieuNhapDAO.createPhieuNhap(phieuNhap);
+	public boolean createPhieuNhap(PhieuNhap phieuNhap, Connection connection) {
+		return phieuNhapDAO.createPhieuNhap(phieuNhap, connection);
 	}
 
 	public PhieuNhap getPhieuNhapByMaPhieuNhap(String maPhieuNhap) {
@@ -34,5 +36,9 @@ public class PhieuNhap_BUS {
 
 	public int countPhieuNhap() {
 		return phieuNhapDAO.countPhieuNhap();
+	}
+
+	public List<PhieuNhap> getPhieuNhapByDate(LocalDate fromDate, LocalDate toDate) {
+		return phieuNhapDAO.getPhieuNhapByDate(fromDate, toDate);
 	}
 }

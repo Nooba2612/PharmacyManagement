@@ -101,7 +101,7 @@
                                     <Image url="@../images/Vy.png" />
                                  </image>
                               </ImageView>
-                              <Text layoutX="177.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vũ Ngọc Thúy Vy">
+                              <Text layoutX="177.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Võ Ngọc Thúy Vy">
                                  <font>
                                     <Font size="19.0" />
                                  </font>

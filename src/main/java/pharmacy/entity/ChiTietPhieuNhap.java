@@ -1,17 +1,20 @@
 package pharmacy.entity;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+
 public class ChiTietPhieuNhap {
 	private SanPham sanpham;
 	private PhieuNhap phieuNhap;
 	private int soLuong;
 	private double donGia;
-	private double thue;
+	private float thue;
 
 	public ChiTietPhieuNhap() {
 	}
 
 	public ChiTietPhieuNhap(SanPham sanpham, PhieuNhap phieuNhap, int soLuong, double donGia,
-			double thue) {
+			float thue) {
 		setSanPham(sanpham);
 		setPhieuNhap(phieuNhap);
 		setSoLuong(soLuong);
@@ -40,9 +43,9 @@ public class ChiTietPhieuNhap {
 	}
 
 	public void setPhieuNhap(PhieuNhap phieuNhap) {
-		if (phieuNhap == null) {
-			throw new IllegalArgumentException("Phiếu nhập không hợp lệ");
-		}
+		// if (phieuNhap == null) {
+		// 	throw new IllegalArgumentException("Phiếu nhập không hợp lệ");
+		// }
 		this.phieuNhap = phieuNhap;
 	}
 
@@ -55,6 +58,7 @@ public class ChiTietPhieuNhap {
 			throw new IllegalArgumentException("Số lượng không hợp lệ");
 		}
 		this.soLuong = soLuong;
+		updateThanhTien();
 	}
 
 	public double getDonGia() {
@@ -66,17 +70,47 @@ public class ChiTietPhieuNhap {
 			throw new IllegalArgumentException("Đơn giá không hợp lệ");
 		}
 		this.donGia = donGia;
+		updateThanhTien();
 	}
 
-	public double getThue() {
+	public float getThue() {
 		return thue;
 	}
 
-	public void setThue(double thue) {
+	public void setThue(float thue) {
 		if (thue < 0) {
 			throw new IllegalArgumentException("Thuế không hợp lệ");
 		}
 		this.thue = thue;
+		updateThanhTien();
+	}
+
+	public String getMaSanPham() {
+        return sanpham.getMaSanPham();
+    }
+
+    // Getter cho tên sản phẩm
+    public String getTenSanPham() {
+        return sanpham.getTenSanPham();
+    }
+	// Thêm property cho thành tiền
+	private final DoubleProperty thanhTien = new SimpleDoubleProperty();
+
+	public double calculateThanhTien() {
+		return (soLuong * donGia) + (soLuong * donGia * thue);
+	}
+
+	public void updateThanhTien() {
+		thanhTien.set(calculateThanhTien());
+	}
+
+	// Getter cho thành tiền
+	public DoubleProperty thanhTienProperty() {
+		return thanhTien;
+	}
+
+	public double getThanhTien() {
+		return thanhTien.get();
 	}
 
 	@Override

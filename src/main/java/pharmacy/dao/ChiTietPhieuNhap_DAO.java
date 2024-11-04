@@ -12,17 +12,14 @@ import pharmacy.entity.SanPham;
 
 public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 
-	@Override
-	public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {
+	public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap, Connection connection) {
 		String query = "INSERT INTO ChiTietPhieuNhap ( maSanPham, maPhieuNhap, soLuong, donGia, thue) VALUES (?, ?, ?, ?, ?)";
-		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
-			statement.setString(2, chiTietPhieuNhap.getSanPham().getMaSanPham());
-			statement.setString(3, chiTietPhieuNhap.getPhieuNhap().getMaPhieuNhap());
-			statement.setInt(4, chiTietPhieuNhap.getSoLuong());
-			statement.setDouble(5, chiTietPhieuNhap.getDonGia());
-			statement.setDouble(6, chiTietPhieuNhap.getThue());
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setString(1, chiTietPhieuNhap.getSanPham().getMaSanPham());
+			statement.setString(2, chiTietPhieuNhap.getPhieuNhap().getMaPhieuNhap());
+			statement.setInt(3, chiTietPhieuNhap.getSoLuong());
+			statement.setDouble(4, chiTietPhieuNhap.getDonGia());
+			statement.setDouble(5, chiTietPhieuNhap.getThue());
 
 			return statement.executeUpdate() > 0;
 
@@ -69,32 +66,30 @@ public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 		}
 	}
 
-	@Override
 	public List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(String maPhieuNhap) {
 		List<ChiTietPhieuNhap> chiTietList = new ArrayList<>();
 		String query = "SELECT * FROM ChiTietPhieuNhap WHERE maPhieuNhap = ?";
-
+	
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+			 PreparedStatement statement = connection.prepareStatement(query)) {
+	
 			statement.setString(1, maPhieuNhap);
 			ResultSet rs = statement.executeQuery();
-
+	
 			while (rs.next()) {
-				SanPham thuoc = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
-				PhieuNhap phieuNhap = new PhieuNhap_DAO().getPhieuNhapByMaPhieuNhap(rs.getString("maPhieuNhap"));
-
-				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(thuoc, phieuNhap, rs.getInt("soLuong"),
-						rs.getDouble("donGia"), rs.getDouble("thue"));
+				SanPham sanPham = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
+				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(sanPham, null, rs.getInt("soLuong"),
+						rs.getDouble("donGia"), rs.getFloat("thue"));
 				chiTietList.add(chiTiet);
 			}
-
+	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return chiTietList;
 	}
-
+	
+	
 	@Override
 	public List<ChiTietPhieuNhap> getAllChiTietPhieuNhap() {
 		List<ChiTietPhieuNhap> list = new ArrayList<>();
@@ -108,7 +103,7 @@ public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 				PhieuNhap phieuNhap = new PhieuNhap_DAO().getPhieuNhapByMaPhieuNhap(rs.getString("maPhieuNhap"));
 
 				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(thuoc, phieuNhap, rs.getInt("soLuong"),
-						rs.getDouble("donGia"), rs.getDouble("thue"));
+						rs.getDouble("donGia"), rs.getFloat("thue"));
 				list.add(chiTiet);
 			}
 
@@ -116,5 +111,17 @@ public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	@Override
+	public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'createChiTietPhieuNhap'");
+	}
+
+	@Override
+	public List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(PhieuNhap phieuNhap) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getChiTietPhieuNhapByMa'");
 	}
 }

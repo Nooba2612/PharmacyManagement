@@ -1,6 +1,6 @@
 package pharmacy.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,14 +9,14 @@ public class PhieuNhap {
 	private String maPhieuNhap;
 	private NhanVien nhanVien;
 	private NhaCungCap nhaCungCap;
-	private LocalDate thoiGianNhap;
+	private LocalDateTime thoiGianNhap;
 	private List<ChiTietPhieuNhap> chiTietPhieuNhapList;
 
 	public PhieuNhap() {
 		this.chiTietPhieuNhapList = new ArrayList<>();
 	}
 
-	public PhieuNhap(String maPhieuNhap, NhanVien nhanVien, NhaCungCap nhaCungCap, LocalDate thoiGianNhap, List<ChiTietPhieuNhap> chiTietPhieuNhapList) {
+	public PhieuNhap(String maPhieuNhap, NhanVien nhanVien, NhaCungCap nhaCungCap, LocalDateTime thoiGianNhap, List<ChiTietPhieuNhap> chiTietPhieuNhapList) {
 		setMaPhieuNhap(maPhieuNhap);
 		setNhanVien(nhanVien);
 		setNhaCungCap(nhaCungCap);
@@ -73,16 +73,44 @@ public class PhieuNhap {
 		return chiTietPhieuNhapList;
 	}
 
-	public LocalDate getThoiGianNhap() {
+	public LocalDateTime getThoiGianNhap() {
 		return thoiGianNhap;
 	}
 
-	public void setThoiGianNhap(LocalDate thoiGianNhap) {
+	public void setThoiGianNhap(LocalDateTime thoiGianNhap) {
 		if (thoiGianNhap == null) {
 			throw new IllegalArgumentException("Thời gian nhập không hợp lệ");
 		}
 		this.thoiGianNhap = thoiGianNhap;
 	}
+
+	public String getTenNhaCungCap() {
+        return nhaCungCap.getTenNCC();
+    }
+
+	public String getTenNhanVien() {
+        return nhanVien.getHoTen();
+    }
+
+	public int getTongSoLuong() {
+        int tongSoLuong = 0;
+        if (chiTietPhieuNhapList != null) {
+            for (ChiTietPhieuNhap chiTiet : chiTietPhieuNhapList) {
+                tongSoLuong += chiTiet.getSoLuong(); // Cộng dồn số lượng
+            }
+        }
+        return tongSoLuong;
+    }
+
+	public double getTongTien() {
+        double tongTien = 0.0;
+        if (chiTietPhieuNhapList != null) {
+            for (ChiTietPhieuNhap chiTiet : chiTietPhieuNhapList) {
+                tongTien += chiTiet.calculateThanhTien(); // Sử dụng calculateThanhTien()
+            }
+        }
+        return tongTien;
+    }
 
 	@Override
 	public String toString() {

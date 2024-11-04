@@ -394,6 +394,7 @@ VALUES -- Nhân viên
     );
 -- Tài khoản
 -- Mật khẩu: 123456
+update TaiKhoan set isLoggedIn = 1
 INSERT INTO TaiKhoan (tenDangNhap, matKhau)
 VALUES (
         'MK0001',

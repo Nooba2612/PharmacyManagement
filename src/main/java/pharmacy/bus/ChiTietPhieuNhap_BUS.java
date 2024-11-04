@@ -1,9 +1,11 @@
 package pharmacy.bus;
 
+import java.sql.Connection;
 import java.util.List;
 
 import pharmacy.dao.ChiTietPhieuNhap_DAO;
 import pharmacy.entity.ChiTietPhieuNhap;
+import pharmacy.entity.PhieuNhap;
 
 public class ChiTietPhieuNhap_BUS {
     private final ChiTietPhieuNhap_DAO chiTietPhieuNhapDAO;
@@ -12,8 +14,8 @@ public class ChiTietPhieuNhap_BUS {
         chiTietPhieuNhapDAO = new ChiTietPhieuNhap_DAO();
     }
 
-    public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {
-        return chiTietPhieuNhapDAO.createChiTietPhieuNhap(chiTietPhieuNhap);
+    public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap, Connection connection) {
+        return chiTietPhieuNhapDAO.createChiTietPhieuNhap(chiTietPhieuNhap, connection);
     }
 
     public boolean updateChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {
@@ -24,8 +26,8 @@ public class ChiTietPhieuNhap_BUS {
         return chiTietPhieuNhapDAO.deleteChiTietPhieuNhap(maPhieuNhap, maThuoc);
     }
 
-    public List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(String maPhieuNhap) {
-        return chiTietPhieuNhapDAO.getChiTietPhieuNhapByMa(maPhieuNhap);
+    public List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(PhieuNhap phieuNhap) {
+        return chiTietPhieuNhapDAO.getChiTietPhieuNhapByMa(phieuNhap);
     }
 
     public List<ChiTietPhieuNhap> getAllChiTietPhieuNhap() {
