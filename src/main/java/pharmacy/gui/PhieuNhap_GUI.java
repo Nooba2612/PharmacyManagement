@@ -213,9 +213,9 @@ public class PhieuNhap_GUI {
 					detailButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white;");
 
 					detailButton.setOnAction(event -> {
-						PhieuNhap invoice = getTableView().getItems().get(getIndex());
-						System.out.println("Detail button clicked for ChiTietPhieuNhap: " + invoice.getMaPhieuNhap());
-						handleShowDetails(invoice);
+						PhieuNhap phieuNhap = getTableView().getItems().get(getIndex());
+						System.out.println("Detail button clicked for ChiTietPhieuNhap: " + phieuNhap.getMaPhieuNhap());
+						handleShowDetails(phieuNhap);
 					});
 
 					Image image = new Image(getClass().getResourceAsStream("/images/detail-icon.png"));
@@ -276,9 +276,9 @@ public class PhieuNhap_GUI {
 	}
 
     @FXML
-	public void handleShowDetails(PhieuNhap invoice) {
+	public void handleShowDetails(PhieuNhap phieuNhap) {
 		try {
-			exportInvoiceToPdf("src/main/resources/pdf/ChiTietPhieuNhap.pdf", invoice);
+			exportInvoiceToPdf("src/main/resources/pdf/ChiTietPhieuNhap.pdf", phieuNhap);
 			PDFUtil.showPdfPreview(
 					new File(getClass().getClassLoader().getResource("pdf/ChiTietPhieuNhap.pdf").toURI()));
 		} catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException | SQLException e) {
@@ -286,7 +286,7 @@ public class PhieuNhap_GUI {
 		}
 	}
 
-    private void exportInvoiceToPdf(String outputPdfPath, PhieuNhap invoice) throws SQLException {
+    private void exportInvoiceToPdf(String outputPdfPath, PhieuNhap phieuNhap) throws SQLException {
 		try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
 				PdfDocument pdfDoc = new PdfDocument(writer);
 				Document document = new Document(pdfDoc)) {
@@ -315,7 +315,7 @@ public class PhieuNhap_GUI {
 					.setFontSize(10)
 					.setTextAlignment(TextAlignment.CENTER));
 
-			// Invoice Header
+			// phieuNhap Header
 			document.add(new Paragraph("Hóa Đơn Bán Hàng")
 					.setFont(font)
 					.setFontSize(14)
@@ -356,9 +356,10 @@ public class PhieuNhap_GUI {
 					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
 
 			double totalInvoiceAmount = 0;
+			DateTimeFormatter formatterSanPham = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-			for (int i = 0; i < invoice.getChiTietPhieuNhapList().size(); i++) {
-				ChiTietPhieuNhap detail = invoice.getChiTietPhieuNhapList().get(i);
+			for (int i = 0; i < phieuNhap.getChiTietPhieuNhapList().size(); i++) {
+				ChiTietPhieuNhap detail = phieuNhap.getChiTietPhieuNhapList().get(i);
 				SanPham product = new SanPham_BUS().getSanPhamByMaSanPham(detail.getMaSanPham());
 				double itemTotal = product.getDonGiaBan() * detail.getSoLuong();
 				totalInvoiceAmount += itemTotal;
@@ -368,7 +369,7 @@ public class PhieuNhap_GUI {
 				table.addCell(new Paragraph(String.valueOf(detail.getSoLuong())).setFont(font).setFontSize(8));
 				table.addCell(new Paragraph(String.valueOf(String.format("%,.0f", product.getDonGiaBan())))
 						.setFont(font).setFontSize(8));
-				table.addCell(new Paragraph(String.valueOf(formatter.format(product.getHanSuDung()))).setFont(font)
+				table.addCell(new Paragraph(String.valueOf(formatterSanPham.format(product.getHanSuDung()))).setFont(font)
 						.setFontSize(8));
 				table.addCell(
 						new Paragraph(String.valueOf(String.format("%,.0f", itemTotal))).setFont(font).setFontSize(8));
@@ -377,7 +378,7 @@ public class PhieuNhap_GUI {
 			document.add(table.setMarginTop(20));
 
 			int productQuantity = 0;
-			for (ChiTietPhieuNhap cthd : invoice.getChiTietPhieuNhapList()) {
+			for (ChiTietPhieuNhap cthd : phieuNhap.getChiTietPhieuNhapList()) {
 				productQuantity += cthd.getSoLuong();
 			}
 
@@ -406,31 +407,31 @@ public class PhieuNhap_GUI {
 		FilteredList<PhieuNhap> filteredList = new FilteredList<>(phieuNhapList, b -> true);
 
 		searchBtn.setOnAction(event -> {
-			filteredList.setPredicate(invoice -> {
+			filteredList.setPredicate(phieuNhap -> {
 				if (searchField.getText() == null || searchField.getText().isEmpty()) {
 					return true;
 				}
 
 				String lowerCaseFilter = searchField.getText().toLowerCase();
-				return invoice.getMaPhieuNhap().toLowerCase().contains(lowerCaseFilter) ||
-						invoice.getTenNhaCungCap().toLowerCase().contains(lowerCaseFilter) ||
-						invoice.getTenNhanVien().toLowerCase().contains(lowerCaseFilter);
-                        // invoice.getTongSoLuong().contains(lowerCaseFilter) ||
-                        // invoice.getTenNhanVien().toLowerCase().contains(lowerCaseFilter);
+				return phieuNhap.getMaPhieuNhap().toLowerCase().contains(lowerCaseFilter) ||
+						phieuNhap.getTenNhaCungCap().toLowerCase().contains(lowerCaseFilter) ||
+						phieuNhap.getTenNhanVien().toLowerCase().contains(lowerCaseFilter);
+                        // phieuNhap.getTongSoLuong().contains(lowerCaseFilter) ||
+                        // phieuNhap.getTenNhanVien().toLowerCase().contains(lowerCaseFilter);
 
 			});
 		});
 
 		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-			filteredList.setPredicate(invoice -> {
+			filteredList.setPredicate(phieuNhap -> {
 				if (newValue == null || newValue.isEmpty()) {
 					return true;
 				}
 
 				String lowerCaseFilter = newValue.toLowerCase();
-				return invoice.getMaPhieuNhap().toLowerCase().contains(lowerCaseFilter) ||
-						invoice.getTenNhaCungCap().toLowerCase().contains(lowerCaseFilter) ||
-						invoice.getTenNhanVien().toLowerCase().contains(lowerCaseFilter);
+				return phieuNhap.getMaPhieuNhap().toLowerCase().contains(lowerCaseFilter) ||
+						phieuNhap.getTenNhaCungCap().toLowerCase().contains(lowerCaseFilter) ||
+						phieuNhap.getTenNhanVien().toLowerCase().contains(lowerCaseFilter);
 
 			});
 		});
