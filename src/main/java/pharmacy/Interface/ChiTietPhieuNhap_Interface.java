@@ -3,6 +3,7 @@ package pharmacy.Interface;
 import java.util.List;
 
 import pharmacy.entity.ChiTietPhieuNhap;
+import pharmacy.entity.PhieuNhap;
 
 public interface ChiTietPhieuNhap_Interface {
 	boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap);
@@ -11,7 +12,7 @@ public interface ChiTietPhieuNhap_Interface {
 
 	boolean deleteChiTietPhieuNhap(String maPhieuNhap, String maThuoc);
 
-	List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(String maPhieuNhap);
+	List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(PhieuNhap phieuNhap);
 
 	List<ChiTietPhieuNhap> getAllChiTietPhieuNhap();
 }

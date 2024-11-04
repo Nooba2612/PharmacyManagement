@@ -1,6 +1,5 @@
 package pharmacy.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +83,34 @@ public class PhieuNhap {
 		}
 		this.thoiGianNhap = thoiGianNhap;
 	}
+
+	public String getTenNhaCungCap() {
+        return nhaCungCap.getTenNCC();
+    }
+
+	public String getTenNhanVien() {
+        return nhanVien.getHoTen();
+    }
+
+	public int getTongSoLuong() {
+        int tongSoLuong = 0;
+        if (chiTietPhieuNhapList != null) {
+            for (ChiTietPhieuNhap chiTiet : chiTietPhieuNhapList) {
+                tongSoLuong += chiTiet.getSoLuong(); // Cộng dồn số lượng
+            }
+        }
+        return tongSoLuong;
+    }
+
+	public double getTongTien() {
+        double tongTien = 0.0;
+        if (chiTietPhieuNhapList != null) {
+            for (ChiTietPhieuNhap chiTiet : chiTietPhieuNhapList) {
+                tongTien += chiTiet.calculateThanhTien(); // Sử dụng calculateThanhTien()
+            }
+        }
+        return tongTien;
+    }
 
 	@Override
 	public String toString() {

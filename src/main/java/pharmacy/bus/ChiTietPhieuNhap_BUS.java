@@ -5,6 +5,7 @@ import java.util.List;
 
 import pharmacy.dao.ChiTietPhieuNhap_DAO;
 import pharmacy.entity.ChiTietPhieuNhap;
+import pharmacy.entity.PhieuNhap;
 
 public class ChiTietPhieuNhap_BUS {
     private final ChiTietPhieuNhap_DAO chiTietPhieuNhapDAO;
@@ -25,8 +26,8 @@ public class ChiTietPhieuNhap_BUS {
         return chiTietPhieuNhapDAO.deleteChiTietPhieuNhap(maPhieuNhap, maThuoc);
     }
 
-    public List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(String maPhieuNhap) {
-        return chiTietPhieuNhapDAO.getChiTietPhieuNhapByMa(maPhieuNhap);
+    public List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(PhieuNhap phieuNhap) {
+        return chiTietPhieuNhapDAO.getChiTietPhieuNhapByMa(phieuNhap);
     }
 
     public List<ChiTietPhieuNhap> getAllChiTietPhieuNhap() {

@@ -66,32 +66,30 @@ public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 		}
 	}
 
-	@Override
 	public List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(String maPhieuNhap) {
 		List<ChiTietPhieuNhap> chiTietList = new ArrayList<>();
 		String query = "SELECT * FROM ChiTietPhieuNhap WHERE maPhieuNhap = ?";
-
+	
 		try (Connection connection = DatabaseConnection.getConnection();
-				PreparedStatement statement = connection.prepareStatement(query)) {
-
+			 PreparedStatement statement = connection.prepareStatement(query)) {
+	
 			statement.setString(1, maPhieuNhap);
 			ResultSet rs = statement.executeQuery();
-
+	
 			while (rs.next()) {
-				SanPham thuoc = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
-				PhieuNhap phieuNhap = new PhieuNhap_DAO().getPhieuNhapByMaPhieuNhap(rs.getString("maPhieuNhap"));
-
-				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(thuoc, phieuNhap, rs.getInt("soLuong"),
+				SanPham sanPham = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
+				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(sanPham, null, rs.getInt("soLuong"),
 						rs.getDouble("donGia"), rs.getFloat("thue"));
 				chiTietList.add(chiTiet);
 			}
-
+	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return chiTietList;
 	}
-
+	
+	
 	@Override
 	public List<ChiTietPhieuNhap> getAllChiTietPhieuNhap() {
 		List<ChiTietPhieuNhap> list = new ArrayList<>();
@@ -119,5 +117,11 @@ public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 	public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'createChiTietPhieuNhap'");
+	}
+
+	@Override
+	public List<ChiTietPhieuNhap> getChiTietPhieuNhapByMa(PhieuNhap phieuNhap) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'getChiTietPhieuNhapByMa'");
 	}
 }

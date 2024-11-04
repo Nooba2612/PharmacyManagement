@@ -43,9 +43,9 @@ public class ChiTietPhieuNhap {
 	}
 
 	public void setPhieuNhap(PhieuNhap phieuNhap) {
-		if (phieuNhap == null) {
-			throw new IllegalArgumentException("Phiếu nhập không hợp lệ");
-		}
+		// if (phieuNhap == null) {
+		// 	throw new IllegalArgumentException("Phiếu nhập không hợp lệ");
+		// }
 		this.phieuNhap = phieuNhap;
 	}
 
