@@ -36,14 +36,19 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 
+import javafx.animation.Animation;
+import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -62,12 +67,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import pharmacy.bus.KhachHang_BUS;
+import pharmacy.bus.SanPham_BUS;
 import pharmacy.entity.*;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.PDFUtil;
@@ -116,27 +124,33 @@ public class KhachHang_GUI {
     @FXML
     private Button exportListBtn;
 
+    @FXML
+    private Button refreshBtn;
+
     private ObservableList<KhachHang> customerList = FXCollections.observableArrayList();
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // methods
     @FXML
-    public void initialize() {
+    public void initialize() throws SQLException {
         handleExportKhachHangList();
         handleCustomerTableAction();
     }
 
     @FXML
-    public void handleCustomerTableAction() {
+    public void handleCustomerTableAction() throws SQLException {
+
+        handleRefreshBtn();
         handleEditableCustomerTable();
         renderKhachHangs();
         setupTablePlaceholder();
         handleAddCustomerAction();
+        addIconToActionColumn();
     }
 
     @FXML
-    public void renderKhachHangs() {
+    public void renderKhachHangs() throws SQLException {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
         idColumn.setCellValueFactory(new PropertyValueFactory<>("maKhachHang"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
@@ -144,7 +158,7 @@ public class KhachHang_GUI {
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
         noteColumn.setCellValueFactory(new PropertyValueFactory<>("ghiChu"));
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gioiTinh"));
-        // handleAddButtonToActionColumn();
+
         yearColumn.setCellFactory(col -> new TableCell<KhachHang, LocalDate>() {
             @Override
             protected void updateItem(LocalDate item, boolean empty) {
@@ -164,75 +178,186 @@ public class KhachHang_GUI {
 
     }
 
-    @FXML
-    public void handleAddButtonToActionColumn() {
-        actionColumn.setCellFactory(column -> {
-            return new TableCell<KhachHang, Void>() {
-                private final Button deleteButton = new Button();
+    // xóa khách hàng
+//	@FXML
+//	public void handleAddButtonToActionColumn() {
+//		actionColumn.setCellFactory(column -> {
+//			return new TableCell<KhachHang, Void>() {
+//				private final Button deleteButton = new Button();
+//
+//				{
+//					// Style the delete button
+//					deleteButton.setStyle("-fx-background-color: #D23617; -fx-text-fill: #FFF;");
+//
+//					// Action for the delete button
+//					deleteButton.setOnAction(event -> {
+//						KhachHang customer = getTableView().getItems().get(getIndex());
+//						getTableView().getItems().remove(customer);
+//					});
+//
+//					Image image = new Image(getClass().getResourceAsStream("/images/x-icon.png"));
+//					ImageView imageView = new ImageView(image);
+//
+//					imageView.setFitWidth(20);
+//					imageView.setFitHeight(20);
+//					imageView.setPreserveRatio(true);
+//					deleteButton.setGraphic(imageView);
+//					deleteButton.setStyle("-fx-background-color: transparent;");
+//					deleteButton.setVisible(false);
+//
+//					deleteButton.setOnMouseEntered(event -> {
+//						NodeUtil.applyFadeTransition(deleteButton, 1, 0.7, 300, () -> {
+//						});
+//						NodeUtil.applyScaleTransition(deleteButton, 1, 1.1, 1, 1.1, 300, () -> {
+//						});
+//					});
+//					deleteButton.setOnMouseExited(event -> {
+//						NodeUtil.applyFadeTransition(deleteButton, 0.7, 1, 300, () -> {
+//						});
+//						NodeUtil.applyScaleTransition(deleteButton, 1.1, 1, 1.1, 1, 300, () -> {
+//						});
+//					});
+//				}
+//
+//				@Override
+//				protected void updateItem(Void item, boolean empty) {
+//					super.updateItem(item, empty);
+//					if (empty) {
+//						setGraphic(null);
+//					} else {
+//						setGraphic(deleteButton);
+//						// Center the delete button in the cell
+//						setStyle("-fx-alignment: CENTER;");
+//					}
+//				}
+//
+//				@Override
+//				public void updateIndex(int i) {
+//					super.updateIndex(i);
+//					if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
+//						TableRow<KhachHang> currentRow = getTableRow();
+//						currentRow.setOnMouseEntered(event -> {
+//							deleteButton.setVisible(true);
+//							NodeUtil.applyFadeTransition(deleteButton, 0, 1, 300, () -> {
+//							});
+//						});
+//						currentRow
+//								.setOnMouseExited(event -> NodeUtil.applyFadeTransition(deleteButton, 1, 0, 300, () -> {
+//									deleteButton.setVisible(false);
+//								}));
+//					}
+//				}
+//			};
+//		});
+//	}
+    private void addIconToActionColumn() {
+        actionColumn.setCellFactory(column -> new TableCell<KhachHang, Void>() {
+            private final Button actionButton = new Button();
 
-                {
-                    // Style the delete button
-                    deleteButton.setStyle("-fx-background-color: #D23617; -fx-text-fill: #FFF;");
+            {
+                ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/edit-icon.png")));
+                icon.setFitHeight(20);
+                icon.setFitWidth(20);
+                actionButton.setGraphic(icon);
+                actionButton.setVisible(false);
+                actionButton.setStyle("-fx-background-color: transparent;");
 
-                    // Action for the delete button
-                    deleteButton.setOnAction(event -> {
-                        KhachHang customer = getTableView().getItems().get(getIndex());
-                        getTableView().getItems().remove(customer);
+                actionButton.setOnMouseEntered(event -> {
+                    NodeUtil.applyFadeTransition(actionButton, 1, 0.7, 300, () -> {
                     });
-
-                    Image image = new Image(getClass().getResourceAsStream("/images/x-icon.png"));
-                    ImageView imageView = new ImageView(image);
-
-                    imageView.setFitWidth(20);
-                    imageView.setFitHeight(20);
-                    imageView.setPreserveRatio(true);
-                    deleteButton.setGraphic(imageView);
-                    deleteButton.setStyle("-fx-background-color: transparent;");
-                    deleteButton.setVisible(false);
-
-                    deleteButton.setOnMouseEntered(event -> {
-                        NodeUtil.applyFadeTransition(deleteButton, 1, 0.7, 300, () -> {
-                        });
-                        NodeUtil.applyScaleTransition(deleteButton, 1, 1.1, 1, 1.1, 300, () -> {
-                        });
+                    NodeUtil.applyScaleTransition(actionButton, 1, 1.1, 1, 1.1, 300, () -> {
                     });
-                    deleteButton.setOnMouseExited(event -> {
-                        NodeUtil.applyFadeTransition(deleteButton, 0.7, 1, 300, () -> {
-                        });
-                        NodeUtil.applyScaleTransition(deleteButton, 1.1, 1, 1.1, 1, 300, () -> {
-                        });
+                });
+                actionButton.setOnMouseExited(event -> {
+                    NodeUtil.applyFadeTransition(actionButton, 0.7, 1, 300, () -> {
                     });
-                }
+                    NodeUtil.applyScaleTransition(actionButton, 1.1, 1, 1.1, 1, 300, () -> {
+                    });
+                });
 
-                @Override
-                protected void updateItem(Void item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setGraphic(null);
-                    } else {
-                        setGraphic(deleteButton);
-                        // Center the delete button in the cell
-                        setStyle("-fx-alignment: CENTER;");
+                actionButton.setOnAction(event -> {
+                    KhachHang customer = getTableView().getItems().get(getIndex());
+
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CapNhatKhachHang_GUI.fxml"));
+                        Parent root = loader.load();
+                        CapNhatKhachHang_GUI controller = loader.getController();
+
+                        try {
+                            controller.setUpForm(customer);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        Stage popupStage = new Stage();
+                        popupStage.initOwner(actionButton.getScene().getWindow());
+                        popupStage.getIcons()
+                                .add(new Image(getClass().getResource("/images/update-icon.png").toString()));
+                        popupStage.initModality(Modality.APPLICATION_MODAL);
+                        popupStage.setTitle("Cập nhật khách hàng - " + customer.getHoTen());
+                        popupStage.setResizable(false);
+                        Scene scene = new Scene(root);
+                        popupStage.setScene(scene);
+                        popupStage.show();
+
+                        popupStage.setOnHidden(ev -> {
+                            showLoadingAnimation();
+
+                            new Thread(() -> {
+                                try {
+                                    Thread.sleep(800);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                try {
+                                    // new KhachHang_BUS().refreshKhachHang();
+                                    renderKhachHangs();
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+
+                                Platform.runLater(() -> {
+                                    setupTablePlaceholder();
+                                });
+                            }).start();
+                        });
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                }
+                });
 
-                @Override
-                public void updateIndex(int i) {
-                    super.updateIndex(i);
-                    if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
-                        TableRow<KhachHang> currentRow = getTableRow();
-                        currentRow.setOnMouseEntered(event -> {
-                            deleteButton.setVisible(true);
-                            NodeUtil.applyFadeTransition(deleteButton, 0, 1, 300, () -> {
-                            });
-                        });
-                        currentRow
-                                .setOnMouseExited(event -> NodeUtil.applyFadeTransition(deleteButton, 1, 0, 300, () -> {
-                            deleteButton.setVisible(false);
-                        }));
-                    }
+                actionButton.getStyleClass().add("action-button");
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                HBox hBox = new HBox(actionButton);
+                hBox.setAlignment(Pos.CENTER);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(hBox);
                 }
-            };
+            }
+
+            @Override
+            public void updateIndex(int i) {
+                super.updateIndex(i);
+                if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
+                    TableRow<KhachHang> currentRow = getTableRow();
+                    currentRow.setOnMouseEntered(event -> {
+                        actionButton.setVisible(true);
+                        NodeUtil.applyFadeTransition(actionButton, 0, 1, 300, () -> {
+                        });
+                    });
+                    currentRow.setOnMouseExited(event -> NodeUtil.applyFadeTransition(actionButton, 1, 0, 300, () -> {
+                        actionButton.setVisible(false);
+                    }));
+                }
+            }
         });
     }
 
@@ -241,6 +366,24 @@ public class KhachHang_GUI {
         Label noContentLabel = new Label("Không có khách hàng.");
         noContentLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #339933;");
         customerTable.setPlaceholder(noContentLabel);
+    }
+
+    @FXML
+    public void showLoadingAnimation() {
+        customerList.clear();
+        customerTable.getItems().clear();
+
+        ImageView loadingImageView = new ImageView(
+                new Image(getClass().getClassLoader().getResource("images/loading-icon.png").toString()));
+        loadingImageView.setFitHeight(50);
+        loadingImageView.setFitWidth(50);
+        customerTable.setPlaceholder(loadingImageView);
+
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.8), loadingImageView);
+        rotateTransition.setCycleCount(Animation.INDEFINITE);
+        rotateTransition.setFromAngle(0);
+        rotateTransition.setToAngle(360);
+        rotateTransition.play();
     }
 
     @FXML
@@ -676,6 +819,40 @@ public class KhachHang_GUI {
             } catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException | SQLException e) {
                 Logger.getLogger(KhachHang_GUI.class.getName()).log(Level.SEVERE, null, e);
             }
+        });
+    }
+
+    @FXML
+    public void handleRefreshBtn() {
+        refreshBtn.setOnMouseEntered(event -> {
+            NodeUtil.applyFadeTransition(refreshBtn, 1, 0.7, 300, () -> {
+            });
+        });
+
+        refreshBtn.setOnMouseExited(event -> {
+            NodeUtil.applyFadeTransition(refreshBtn, 0.7, 1, 300, () -> {
+            });
+        });
+
+        refreshBtn.setOnAction(event -> {
+            showLoadingAnimation();
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(800);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    new KhachHang_BUS().refreshKhachHang();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                Platform.runLater(() -> {
+                    setupTablePlaceholder();
+                });
+            }).start();
         });
     }
 
