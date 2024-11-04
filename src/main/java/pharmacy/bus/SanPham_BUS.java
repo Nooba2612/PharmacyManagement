@@ -2,8 +2,8 @@ package pharmacy.bus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import pharmacy.dao.SanPham_DAO;

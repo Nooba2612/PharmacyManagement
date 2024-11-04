@@ -22,6 +22,7 @@ CREATE TABLE NhanVien (
     cccd NCHAR(12) NOT NULL,
     tienLuong FLOAT NOT NULL
 );
+
 -- Tài khoản
 CREATE TABLE TaiKhoan (
     tenDangNhap NVARCHAR(50) NOT NULL UNIQUE,
@@ -393,6 +394,9 @@ VALUES -- Nhân viên
     );
 -- Tài khoản
 -- Mật khẩu: 123456
+select * from TaiKhoan
+update TaiKhoan set isLoggedIn = 1
+update TaiKhoan set matKhau = '$2a$10$T1TakvHHQX3JklzHDNLKK.gB/whHnMsPcZ76yrMNSK.hDbdmILrLm'
 INSERT INTO TaiKhoan (tenDangNhap, matKhau)
 VALUES (
         'MK0001',
@@ -1602,5 +1606,5 @@ VALUES ('SP0001', 'PN0001', 50, 50000, 0.08),
     ('SP0010', 'PN0010', 65, 100000, 0.08);
 -- Thêm dữ liệu vào bảng LichLamViec
 INSERT INTO LichLamViec (maLichLamViec, maNhanVien, caLam, ngayLam)
-VALUES ('LLV0001', 'MK0001', N'Ca 1', '2024-11-01'),
-    ('LLV0002', 'MK0002', N'Ca 2', '2024-11-02');
+VALUES ('LLV0001', 'MK0001', N'Ca 1', '2024-11-06'),
+    ('LLV0002', 'MK0002', N'Ca 2', '2024-11-07');
