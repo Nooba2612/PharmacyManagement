@@ -2,7 +2,7 @@
 DROP DATABASE medkit_pharmacy_management;
 CREATE DATABASE medkit_pharmacy_management;
 USE medkit_pharmacy_management;
-select * from HoaDon
+select * from LichLamViec
 select * from ChiTietHoaDon
 select * from NhatKyThayDoiSanPham
 -- Nhân Viên
@@ -71,7 +71,7 @@ CREATE TABLE NhatKyThayDoiNhanVien (
 	maNhanVien NVARCHAR(50) NOT NULL,
     hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),
     chucVu NVARCHAR(255) NOT NULL,
-    soDienThoai NVARCHAR(10) NOT NULL UNIQUE,
+    soDienThoai NVARCHAR(10) NOT NULL,
     email NVARCHAR(225) NOT NULL CHECK (email LIKE '%_@gmail.com'),
     ngayVaoLam DATETIME NOT NULL,
     namSinh DATE NOT NULL CHECK (YEAR(GETDATE()) - YEAR(namSinh) >= 22),
@@ -1602,5 +1602,5 @@ VALUES ('SP0001', 'PN0001', 50, 50000, 0.08),
     ('SP0010', 'PN0010', 65, 100000, 0.08);
 -- Thêm dữ liệu vào bảng LichLamViec
 INSERT INTO LichLamViec (maLichLamViec, maNhanVien, caLam, ngayLam)
-VALUES ('LLV0001', 'MK0001', N'Sáng', '2024-11-01'),
-    ('LLV0002', 'MK0002', N'Tối', '2024-11-02');
+VALUES ('LLV0001', 'MK0001', N'Ca 1', '2024-11-01'),
+    ('LLV0002', 'MK0002', N'Ca 2', '2024-11-02');

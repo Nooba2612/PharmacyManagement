@@ -2,7 +2,6 @@ package pharmacy.entity;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 public class LichLamViec {
 
@@ -15,10 +14,10 @@ public class LichLamViec {
 	}
 
 	public LichLamViec(String maLichLamViec, String caLam, NhanVien nhanVien, LocalDate ngayLam) {
-		setMaLichLamViec(maLichLamViec);
-		setNhanVien(nhanVien);
-		setCaLam(caLam);
-		setNgayLam(ngayLam);
+		this.maLichLamViec = maLichLamViec;
+		this.nhanVien = nhanVien;
+		this.caLam = caLam;
+		this.ngayLam = ngayLam;
 	}
 
 	public LichLamViec(LichLamViec other) {
