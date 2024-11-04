@@ -302,10 +302,11 @@ public class ThemPhieuNhap_GUI {
 
 		// add phieu nhap
 		submitBtn.setOnAction(event -> {
+			boolean check = true;
 			if (addedProductList.isEmpty()) {
 				productAlert.setText("Sản phẩm không được rỗng.");
 				productAlert.setVisible(true);
-				return;
+				check = false;
 			} else {
 				productAlert.setVisible(false);
 			}
@@ -314,9 +315,13 @@ public class ThemPhieuNhap_GUI {
 			if (supplier == null) {
 				supplierAlert.setText("Nhà cung cấp không được rỗng.");
 				supplierAlert.setVisible(true);
-				return;
+				check = false;
 			} else {
 				supplierAlert.setVisible(false);
+			}
+
+			if (!check){
+				return;
 			}
 
 			String maPhieuNhap = phieuNhapId.getText().trim();
