@@ -15,16 +15,21 @@ public class KhachHang_DAO implements KhachHang_Interface {
     private PreparedStatement statement;
     private String query;
 
+    public KhachHang_DAO() throws SQLException {
+        this.connection = DatabaseConnection.getConnection();
+    }
+
     @Override
     public boolean addKhachHang(KhachHang kh) {
-        String query = "INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, ghiChu) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gioiTinh, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, kh.getMaKhachHang());
             statement.setString(2, kh.getHoTen());
             statement.setString(3, kh.getSoDienThoai());
             statement.setInt(4, kh.getNamSinh().getYear());
             statement.setInt(5, kh.getDiemTichLuy());
-            statement.setString(6, kh.getGhiChu());
+            statement.setString(6, kh.getGioiTinh());
+            statement.setString(7, kh.getGhiChu());
 
             int rowsAffected = statement.executeUpdate();
             return rowsAffected > 0;
@@ -261,6 +266,25 @@ public class KhachHang_DAO implements KhachHang_Interface {
         }
 
         return topCustomers;
+    }
+
+    @Override
+    public void refreshKhachHang() {
+        String updateThanThiet = "UPDATE KhachHang SET ghiChu = N'Khách hàng thân thiết' WHERE diemTichLuy > ?";
+        String updateLe = "UPDATE KhachHang SET ghiChu = N'Khách hàng lẻ' WHERE diemTichLuy < ?";
+
+        try {
+
+            statement = connection.prepareStatement(updateThanThiet);
+
+            statement.executeUpdate();
+
+            statement = connection.prepareStatement(updateLe);
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
