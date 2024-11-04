@@ -22,4 +22,6 @@ public interface KhachHang_Interface {
 	List<KhachHang> getTopCustomer();
 
 	boolean createKhachHang(KhachHang customer);
+
+	void refreshKhachHang();
 }

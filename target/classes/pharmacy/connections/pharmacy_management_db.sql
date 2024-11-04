@@ -136,7 +136,17 @@ CREATE TABLE KhachHang (
     gioiTinh NVARCHAR(15) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác')),
     ghiChu NVARCHAR(255)
 );
-
+CREATE TABLE NhatKyThayDoiKhachHang (
+    maKhachHang NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maKhachHang LIKE 'KH____'),
+    hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),
+    soDienThoai CHAR(10) NOT NULL UNIQUE CHECK (LEN(soDienThoai) = 10),
+    namSinh DATETIME,
+    diemTichLuy INT DEFAULT 0 CHECK (diemTichLuy >= 0),
+    gioiTinh NVARCHAR(15) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác')),
+    ghiChu NVARCHAR(255),
+	ngayCapNhat DATETIME DEFAULT GETDATE()
+);
+-- hóa đơn
 CREATE TABLE HoaDon (
     maHoaDon NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (MaHoaDon LIKE 'HD____'),
     maKhachHang NVARCHAR(50) NOT NULL,

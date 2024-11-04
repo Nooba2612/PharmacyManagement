@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -79,6 +80,9 @@ public class ThemKhachHang_GUI {
 
 	@FXML
 	private Label nameAlert;
+	
+	@FXML
+	private Label idAlert;
 	
 	@FXML
 	private Label phoneAlert;
@@ -194,12 +198,21 @@ public class ThemKhachHang_GUI {
 		boolean isValid = true;
 
 
+		// Validate ID field
+        if (idField.getText().trim().isEmpty()) {
+            idAlert.setText("Mã khách hàng không được rỗng.");
+            idAlert.setVisible(true);
+            isValid = false;
+        } else {
+            idAlert.setVisible(false);
+        }
+		
 		// Validate Name field
 		if (nameField.getText().trim().isEmpty()) {
 		    nameAlert.setText("Họ và tên không được rỗng.");
 		    nameAlert.setVisible(true);
 		    isValid = false;
-		} else if (!nameField.getText().matches("^([A-Z][a-z]*\\s?)+$")) {
+		} else if (!nameField.getText().matches("^([A-Z][a-z]*\\s)+$")) {
 		    nameAlert.setText("Họ và tên không hợp lệ. Vui lòng nhập đúng định dạng.");
 		    nameAlert.setVisible(true);
 		    isValid = false;
@@ -213,7 +226,7 @@ public class ThemKhachHang_GUI {
 			phoneAlert.setText("Số điện thoại không được để trống.");
 			phoneAlert.setVisible(true);
 			isValid = false;
-		} else if (!phoneText.matches("^09\\\\d{8}$")) { 
+		} else if (!phoneText.matches("^09\\d{8}$")) { 
 			phoneAlert.setText("Số điện thoại không hợp lệ.");
 			phoneAlert.setVisible(true);
 			isValid = false;
@@ -221,6 +234,23 @@ public class ThemKhachHang_GUI {
 			phoneAlert.setVisible(false);
 		}
 
+		// Validate Customer type field
+        String[] VALID_TYPES = { "Nam", "Nữ", "Khác" };
+        String customerTypeValue = (genderSelect.getValue() != null) ? genderSelect.getValue().trim()
+                : genderSelect.getEditor().getText().trim();
+
+        if (customerTypeValue.isEmpty()) {
+        	genderAlert.setText("Giới tính chưa được chọn.");
+        	genderAlert.setVisible(true);
+            isValid = false;
+        } else if (!Arrays.asList(VALID_TYPES).contains(customerTypeValue)) {
+        	genderAlert.setText("Giới tính không hợp lệ.");
+        	genderAlert.setVisible(true);
+            isValid = false;
+        } else {
+        	genderAlert.setVisible(false);
+        }
+		
 		// Validate Birthday field
 		if (birthdayField.getValue() == null) {
 			birthDateAlert.setText("Ngày sinh không được rỗng.");
