@@ -7,6 +7,8 @@ import pharmacy.entity.HoaDon;
 
 public interface HoaDon_Interface {
 	boolean createHoaDon(HoaDon hoaDon);
+	
+	boolean createHoaDonTam(HoaDon hoaDon);
 
 	HoaDon getHoaDonById(String maHoaDon);
 
@@ -29,5 +31,6 @@ public interface HoaDon_Interface {
 	double calculateRevenueByEmployee(String maNhanVien, String date);
 
 	List<HoaDon> getInvoiceByDate(LocalDate fromDate, LocalDate toDate);
+
 
 }

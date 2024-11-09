@@ -1,56 +1,92 @@
 package pharmacy.entity;
 
+import java.sql.SQLException;
+import java.time.LocalDate;
+
+import pharmacy.bus.SanPham_BUS;
+
 public class ChiTietHoaDon {
-	private String maHoaDon;
-	private String maSanPham;
-	private int soLuong;
-	private Float thue;
 
-	public ChiTietHoaDon() {
-	}
+    private String maHoaDon;
+    private String maSanPham;
+    private int soLuong;
+    private Float thue;
+    private String lieuLuong;
 
-	public ChiTietHoaDon(String maHoaDon, String maSanPham, int soLuong, Float thue) {
-		this.maHoaDon = maHoaDon;
-		this.maSanPham = maSanPham;
-		this.soLuong = soLuong;
-		this.thue = thue;
-	}
+    public ChiTietHoaDon() {
+    }
 
-	public int getSoLuong() {
-		return soLuong;
-	}
+    public ChiTietHoaDon(String maHoaDon, String maSanPham, int soLuong, Float thue, String lieuLuong) {
+        this.maHoaDon = maHoaDon;
+        this.maSanPham = maSanPham;
+        this.soLuong = soLuong;
+        this.thue = thue;
+        this.lieuLuong = lieuLuong;
+    }
 
-	public void setSoLuong(int soLuong) {
-		this.soLuong = soLuong;
-	}
+    public int getSoLuong() {
+        return soLuong;
+    }
 
-	public Float getThue() {
-		return thue;
-	}
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
+    }
 
-	public void setThue(Float thue) {
-		this.thue = thue;
-	}
+    public String getLieuLuong() {
+        return lieuLuong;
+    }
 
-	public String getMaSanPham() {
-		return maSanPham;
-	}
+    public void setLieuLuong(String lieuLuong) {
+        this.lieuLuong = lieuLuong;
+    }
 
-	public void setMaSanPham(String maSanPham) {
-		this.maSanPham = maSanPham;
-	}
+    public Float getThue() {
+        return thue;
+    }
 
-	public String getMaHoaDon() {
-		return maHoaDon;
-	}
+    public void setThue(Float thue) {
+        this.thue = thue;
+    }
 
-	public void setMaHoaDon(String maHoaDon) {
-		this.maHoaDon = maHoaDon;
-	}
+    public String getMaSanPham() {
+        return maSanPham;
+    }
 
-	@Override
-	public String toString() {
-		return "ChiTietHoaDon{" + ", maSanPham=" + maSanPham + ", soLuong=" + soLuong + '}' + ", maHoaDon=" + maHoaDon
-				+ '}';
-	}
+    public void setMaSanPham(String maSanPham) {
+        this.maSanPham = maSanPham;
+    }
+
+    public String getMaHoaDon() {
+        return maHoaDon;
+    }
+
+    public void setMaHoaDon(String maHoaDon) {
+        this.maHoaDon = maHoaDon;
+    }
+
+    public SanPham getSanPham() throws SQLException {
+        return new SanPham_BUS().getSanPhamByMaSanPham(maSanPham);
+    }
+
+    public String getTenSanPham() throws SQLException {
+        return new SanPham_BUS().getSanPhamByMaSanPham(maSanPham).getTenSanPham();
+    }
+
+    public String getDonViTinh() throws SQLException {
+        return new SanPham_BUS().getSanPhamByMaSanPham(maSanPham).getDonViTinh();
+    }
+
+    public Double getDonGiaBan() throws SQLException {
+        return new SanPham_BUS().getSanPhamByMaSanPham(maSanPham).getDonGiaBan();
+    }
+
+    public LocalDate getHanSuDung() throws SQLException {
+        return new SanPham_BUS().getSanPhamByMaSanPham(maSanPham).getHanSuDung();
+    }
+
+    @Override
+    public String toString() {
+        return "ChiTietHoaDon{" + ", maSanPham=" + maSanPham + ", soLuong=" + soLuong + '}' + ", maHoaDon=" + maHoaDon
+                + '}';
+    }
 }

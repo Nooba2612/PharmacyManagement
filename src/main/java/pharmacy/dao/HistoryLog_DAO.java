@@ -13,10 +13,14 @@ import pharmacy.Interface.HistoryLog_Interface;
 import pharmacy.bus.NhanVien_BUS;
 import pharmacy.bus.SanPham_BUS;
 import pharmacy.connections.DatabaseConnection;
+import pharmacy.entity.CustomerHistoryLog;
 import pharmacy.entity.EmployeeHistoryLog;
+import pharmacy.entity.KhachHang;
+import pharmacy.entity.NhaCungCap;
 import pharmacy.entity.NhanVien;
 import pharmacy.entity.ProductHistoryLog;
 import pharmacy.entity.SanPham;
+import pharmacy.entity.SupplierHistoryLog;
 
 public class HistoryLog_DAO implements HistoryLog_Interface {
 
@@ -171,6 +175,141 @@ public class HistoryLog_DAO implements HistoryLog_Interface {
         }
 
         return productHistoryList;
+    }
+
+    @Override
+    public void addCustomerHistory(CustomerHistoryLog history) {
+        query = "INSERT INTO NhatKyThayDoiKhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gioiTinh, ghiChu, ngayCapNhat, maNhanVien) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+
+            statement = connection.prepareStatement(query);
+            statement.setString(1, history.getMaKhachHang());
+            statement.setString(2, history.getHoTen());
+            statement.setString(3, history.getSoDienThoai());
+            statement.setDate(4, java.sql.Date.valueOf(history.getNamSinh()));
+            statement.setInt(5, history.getDiemTichLuy());
+            statement.setString(6, history.getGioiTinh());
+            statement.setString(7, history.getGhiChu());
+            statement.setTimestamp(8, Timestamp.valueOf(history.getNgayCapNhat()));
+            statement.setString(9, history.getNhanVien().getMaNhanVien());
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @Override
+    public List<CustomerHistoryLog> getCustomerHistoryById(String customerId) {
+        List<CustomerHistoryLog> customerHistoryList = new ArrayList<>();
+        query = "SELECT * FROM NhatKyThayDoiKhachHang WHERE maKhachHang = ?";
+
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, customerId);
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                CustomerHistoryLog history = new CustomerHistoryLog();
+                NhanVien nhanVien = new NhanVien_BUS().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
+                KhachHang khachHang = new KhachHang(
+                        rs.getString("maKhachHang"),
+                        rs.getString("Hoten"),
+                        rs.getString("soDienThoai"),
+                        rs.getInt("diemTichLuy"),
+                        rs.getDate("namSinh") != null ? rs.getDate("namSinh").toLocalDate() : null,
+                        rs.getString("ghiChu"),
+                        rs.getString("gioiTinh"));
+
+                history.setKhachHang(khachHang);
+                history.setNhanVien(nhanVien);
+                history.setNgayCapNhat(rs.getTimestamp("ngayCapNhat").toLocalDateTime());
+                customerHistoryList.add(history);
+            }
+
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return customerHistoryList;
+    }
+
+    @Override
+    public void addSupplierHistory(SupplierHistoryLog history) {
+        query = "INSERT INTO NhatKyThayDoiNhaCungCap (maNCC, tenNCC, soDienThoai, diaChi, email, ngayCapNhat, maNhanVien) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, history.getNcc().getMaNCC());
+            statement.setString(2, history.getNcc().getTenNCC());
+            statement.setString(3, history.getNcc().getSoDienThoai());
+            statement.setString(4, history.getNcc().getDiaChi());
+            statement.setString(5, history.getNcc().getEmail());
+            statement.setTimestamp(6, Timestamp.valueOf(history.getNgayCapNhat()));
+            statement.setString(7, history.getNv().getMaNhanVien());
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (statement != null) {
+                    statement.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public List<SupplierHistoryLog> getSupplierHistoryById(String supplierId) {
+        List<SupplierHistoryLog> supplierHistoryList = new ArrayList<>();
+        query = "SELECT * FROM NhatKyThayDoiNhaCungCap WHERE maNCC = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, supplierId);
+            try (ResultSet rs = statement.executeQuery()) {
+                while (rs.next()) {
+                    SupplierHistoryLog history = new SupplierHistoryLog();
+                    NhanVien nhanVien = new NhanVien_BUS().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
+                    NhaCungCap nhaCungCap = new NhaCungCap(
+                            rs.getString("maNCC"),
+                            rs.getString("tenNCC"),
+                            rs.getString("soDienThoai"),
+                            rs.getString("diaChi"),
+                            rs.getString("email")
+                    );
+                    history.setNgayCapNhat(rs.getTimestamp("ngayCapNhat").toLocalDateTime());
+                    history.setNcc(nhaCungCap);
+                    history.setNv(nhanVien);
+                    supplierHistoryList.add(history);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return supplierHistoryList;
     }
 
 }

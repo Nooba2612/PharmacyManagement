@@ -4,13 +4,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -18,14 +14,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pharmacy.bus.KhachHang_BUS;
@@ -33,98 +28,98 @@ import pharmacy.entity.KhachHang;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.StringUtil;
 
-public class ThemKhachHang_GUI {
-
-    @FXML
-    private HBox root;
-
-    @FXML
-    private TextField idField;
-
-    @FXML
-    private TextField nameField;
-
-    @FXML
-    private TextField phoneField;
-
-    @FXML
-    private DatePicker birthdayField;
-
-    @FXML
-    private ComboBox<String> genderSelect;
-
-    @FXML
-    private TextField noteField;
-
-    @FXML
-    private Button submitBtn;
-
-    @FXML
-    private Button backBtn;
-
-    @FXML
-    private Button clearDataBtn;
-
-    @FXML
-    private TableView<KhachHang> customerTable;
-
-    @FXML
-    private Label nameAlert;
-
-    @FXML
-    private Label phoneAlert;
-
-    @FXML
-    private Label genderAlert;
+public class ThemKhachHangNhanh_GUI {
 
     @FXML
     private Label birthdayAlert;
 
     @FXML
-    private TableColumn<KhachHang, String> idColumn;
+    private DatePicker birthdayField;
 
     @FXML
-    private TableColumn<KhachHang, String> nameColumn;
+    private Button clearDataBtn;
 
     @FXML
-    private TableColumn<KhachHang, String> phoneColumn;
+    private Label genderAlert;
 
     @FXML
-    private TableColumn<KhachHang, String> genderColumn;
+    private Text genderFieldAlert;
 
     @FXML
-    private TableColumn<KhachHang, LocalDate> yearColumn;
+    private ComboBox<String> genderSelect;
 
     @FXML
-    private TableColumn<KhachHang, Integer> pointsColumn;
+    private Label idAlert;
 
     @FXML
-    private TableColumn<KhachHang, String> noteColumn;
+    private TextField idField;
 
-    private ObservableList<KhachHang> addedCustomerList = FXCollections.observableArrayList();
+    @FXML
+    private Label nameAlert;
 
-    // methods
+    @FXML
+    private TextField nameField;
+
+    @FXML
+    private Text nameFieldAlert;
+
+    @FXML
+    private TextField noteField;
+
+    @FXML
+    private Label phoneAlert;
+
+    @FXML
+    private TextField phoneField;
+
+    @FXML
+    private Text phoneFieldAlert;
+
+    @FXML
+    private HBox root;
+
+    @FXML
+    private Button rejectBtn;
+
+    @FXML
+    private Button submitBtn;
+
+    @FXML
+    private Pane rootPane;
+
+    private String customerPhoneNumber;
+
     @FXML
     public void initialize() throws SQLException {
-        handleBackBtnClick();
-        setUpForm();
-        clearForm();
+        rootPane.getChildren().forEach(child -> {
+            if (child instanceof Button) {
+                child.setOnMouseEntered(event -> {
+                    NodeUtil.applyFadeTransition(child, 1, 0.7, 300, () -> {
+                    });
+                });
 
+                child.setOnMouseExited(event -> {
+                    NodeUtil.applyFadeTransition(child, 0.7, 1, 300, () -> {
+                    });
+                });
+            }
+        });
+
+        rejectBtn.setOnAction(event -> {
+            rejectBtn.getScene().getWindow().hide();
+        });
+
+        clearForm();
+        handleAddCustomer();
     }
 
     @FXML
-    public void setUpForm() throws SQLException {
+    public void setUpForm(String phone) throws SQLException {
+        customerPhoneNumber = phone;
         idField.setText(generateID());
-
+        phoneField.setText(phone);
         genderSelect.getItems().addAll("Nam", "Nữ", "Khác");
-        clearDataBtn.setOnMouseEntered(event -> {
-            NodeUtil.applyFadeTransition(clearDataBtn, 1, 0.6, 200, () -> {
-            });
-        });
-        clearDataBtn.setOnMouseExited(event -> {
-            NodeUtil.applyFadeTransition(clearDataBtn, 0.6, 1, 200, () -> {
-            });
-        });
+
         clearDataBtn.setOnMouseClicked(event -> {
             try {
                 clearForm();
@@ -132,15 +127,17 @@ public class ThemKhachHang_GUI {
                 e.printStackTrace();
             }
         });
+    }
 
-        // handle if table empty
-        if (addedCustomerList.isEmpty()) {
-            Label noMedicineLabel = new Label("Không có khách hàng nào trong bảng.");
-            noMedicineLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #339933;");
-            customerTable.setPlaceholder(noMedicineLabel);
-        }
-
-        handleAddCustomer();
+    @FXML
+    public void clearForm() throws SQLException {
+        idField.setText(generateID());
+        nameField.setText("");
+        phoneField.setText(customerPhoneNumber);
+        nameField.setText("");
+        genderSelect.setValue(null);
+        birthdayField.setValue(null);
+        noteField.setText("");
     }
 
     @FXML
@@ -178,6 +175,7 @@ public class ThemKhachHang_GUI {
                 try {
                     if (new KhachHang_BUS().createKhachHang(khachHang)) {
                         showAddCustomerSuccessModal("Thêm khách hàng thành công");
+                        submitBtn.getScene().getWindow().hide();
                     } else {
                         showErrorDialog();
                     }
@@ -189,38 +187,16 @@ public class ThemKhachHang_GUI {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                addedCustomerList.add(khachHang);
-                handleRenderCustomerTable();
             }
         });
     }
 
     @FXML
-    private void showErrorDialog() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Lỗi");
-        alert.setHeaderText("Không thể tạo khách hàng.");
-        alert.setContentText("Vui lòng kiểm tra lại thông tin đã nhập.");
+    public String generateID() throws SQLException {
+        int customerNumber = new KhachHang_BUS().countCustomer();
+        String id = String.format("KH%04d", customerNumber);
 
-        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-
-        ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
-        icon.setFitHeight(48);
-        icon.setFitWidth(48);
-        alert.setGraphic(icon);
-
-        alert.getButtonTypes().clear();
-
-        ButtonType confirmButton = new ButtonType("Xác nhận");
-        alert.getButtonTypes().add(confirmButton);
-
-        Node confirmBtn = alert.getDialogPane().lookupButton(confirmButton);
-        confirmBtn.setStyle(
-                "-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
-
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
-
-        alert.showAndWait();
+        return id;
     }
 
     @FXML
@@ -282,6 +258,34 @@ public class ThemKhachHang_GUI {
     }
 
     @FXML
+    private void showErrorDialog() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Lỗi");
+        alert.setHeaderText("Không thể tạo khách hàng.");
+        alert.setContentText("Vui lòng kiểm tra lại thông tin đã nhập.");
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+
+        ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
+        alert.setGraphic(icon);
+
+        alert.getButtonTypes().clear();
+
+        ButtonType confirmButton = new ButtonType("Xác nhận");
+        alert.getButtonTypes().add(confirmButton);
+
+        Node confirmBtn = alert.getDialogPane().lookupButton(confirmButton);
+        confirmBtn.setStyle(
+                "-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
+
+        alert.showAndWait();
+    }
+
+    @FXML
     private void showAddCustomerSuccessModal(String message) {
         Stage modalStage = new Stage();
         modalStage.setResizable(false);
@@ -322,62 +326,6 @@ public class ThemKhachHang_GUI {
         modalStage.setScene(scene);
 
         modalStage.showAndWait();
-    }
-
-    @FXML
-    public void handleRenderCustomerTable() {
-        customerTable.setItems(addedCustomerList);
-
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("maKhachHang"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
-        genderColumn.setCellValueFactory(new PropertyValueFactory<>("gioiTinh"));
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
-        pointsColumn.setCellValueFactory(new PropertyValueFactory<>("diemTichLuy"));
-        noteColumn.setCellValueFactory(new PropertyValueFactory<>("ghiChu"));
-
-    }
-
-    @FXML
-    public String generateID() throws SQLException {
-        int customerNumber = new KhachHang_BUS().countCustomer();
-        String id = String.format("KH%04d", customerNumber);
-
-        return id;
-    }
-
-    @FXML
-    public void handleBackBtnClick() {
-        backBtn.setOnMouseEntered(event -> {
-            NodeUtil.applyFadeTransition(backBtn, 1, 0.5, 200, () -> {
-            });
-        });
-
-        backBtn.setOnMouseExited(event -> {
-            NodeUtil.applyFadeTransition(backBtn, 0.5, 1, 200, () -> {
-            });
-        });
-
-        backBtn.setOnMouseClicked(event -> {
-            try {
-                Parent customerFrame = FXMLLoader.load(getClass().getResource("/fxml/KhachHang_GUI.fxml"));
-                root.getChildren().clear();
-                root.getChildren().add(customerFrame);
-            } catch (java.io.IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @FXML
-    public void clearForm() throws SQLException {
-        idField.setText(generateID());
-        nameField.setText("");
-        phoneField.setText("");
-        nameField.setText("");
-        genderSelect.setValue(null);
-        birthdayField.setValue(null);
-        noteField.setText("");
     }
 
 }

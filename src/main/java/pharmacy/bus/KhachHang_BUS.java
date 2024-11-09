@@ -17,34 +17,38 @@ public class KhachHang_BUS {
 
     public boolean createKhachHang(KhachHang khachHang) {
         if (khachHang == null) {
+            System.out.println("Validation failed: khachHang is null.");
             return false;
         }
 
         if (khachHang.getHoTen() == null || khachHang.getHoTen().trim().isEmpty()) {
+            System.out.println("Validation failed: Ho ten is null or empty.");
             return false;
         }
 
-        String phone = khachHang.getSoDienThoai();
-        if (phone == null || !phone.matches("^09\\d{8}$")) {
+        if (khachHang.getSoDienThoai() == null || khachHang.getSoDienThoai().trim().isEmpty()) {
+            System.out.println("Validation failed: So dien thoai is null or empty.");
+            return false;
+        }
+
+        if (khachHang.getNamSinh() == null || khachHang.getNamSinh().isAfter(LocalDate.now())) {
+            return false;
+        }
+
+        if (khachHang.getGioiTinh() == null || (!khachHang.getGioiTinh().equals("Nam")
+                && !khachHang.getGioiTinh().equals("Nữ")
+                && !khachHang.getGioiTinh().equals("Khác"))) {
+            System.out.println("Validation failed: Gioi tinh is invalid.");
             return false;
         }
 
         if (khachHang.getDiemTichLuy() < 0) {
+            System.out.println("Validation failed: Diem tich luy is less than 0.");
             return false;
         }
 
-        LocalDate birthYear = khachHang.getNamSinh();
-        if (birthYear == null || birthYear.isAfter(LocalDate.now())) {
-            return false;
-        }
-
-        String notes = khachHang.getGhiChu();
-        if (notes != null && notes.trim().length() > 200) {
-            return false;
-        }
-
-        String gender = khachHang.getGioiTinh();
-        if (gender == null || (!gender.equals("Nam") && !gender.equals("Nu"))) {
+        if (khachHang.getGhiChu() != null && khachHang.getGhiChu().length() > 255) {
+            System.out.println("Validation failed: Ghi chu exceeds allowed length.");
             return false;
         }
 
@@ -72,9 +76,9 @@ public class KhachHang_BUS {
             return false;
         }
 
-        if (khachHang.getGioiTinh() == null || (!khachHang.getGioiTinh().equalsIgnoreCase("Nam")
-                && !khachHang.getGioiTinh().equalsIgnoreCase("Nữ")
-                && !khachHang.getGioiTinh().equalsIgnoreCase("Khác"))) {
+        if (khachHang.getGioiTinh() == null || (!khachHang.getGioiTinh().equals("Nam")
+                && !khachHang.getGioiTinh().equals("Nữ")
+                && !khachHang.getGioiTinh().equals("Khác"))) {
             System.out.println("Validation failed: Gioi tinh is invalid.");
             return false;
         }
@@ -113,9 +117,12 @@ public class KhachHang_BUS {
     public KhachHang getKhachHangById(String maKhachHang) {
         return khachHangDAO.getKhachHangById(maKhachHang);
     }
+    public KhachHang getKhachHangByPhone(String phone) {
+        return khachHangDAO.getKhachHangByPhone(phone);
+    }
 
-    public int countKhachHang() {
-        return khachHangDAO.countKhachHang();
+    public int countCustomer() {
+        return khachHangDAO.countCustomer();
     }
 
     public List<KhachHang> getNewCustomerByDate(String date) {
@@ -126,7 +133,4 @@ public class KhachHang_BUS {
         return khachHangDAO.getTopCustomer();
     }
 
-    public void refreshKhachHang() {
-        khachHangDAO.refreshKhachHang();
-    }
 }

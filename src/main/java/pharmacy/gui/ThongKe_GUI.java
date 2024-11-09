@@ -454,7 +454,7 @@ public class ThongKe_GUI {
 
     @FXML
     public void handleRenderTotalQuantity() throws SQLException {
-        totalCustomerQuantity.setText(Integer.toString(new KhachHang_BUS().countKhachHang()));
+        totalCustomerQuantity.setText(Integer.toString(new KhachHang_BUS().countCustomer()));
 
         totalEmployeeQuantity.setText(Integer.toString(new NhanVien_BUS().countEmployees()));
 

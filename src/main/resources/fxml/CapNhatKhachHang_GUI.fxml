@@ -21,46 +21,46 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="650.0" prefWidth="1060.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.CapNhatKhachHang_GUI">
-	<children>
-		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="1059.0" style="-fx-background-color: #fff;">
-			<children>
-						<Text fill="#918f8f" layoutX="470.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cập nhật khách hàng">
-							<font>
-								<Font name="System Bold" size="22.0" />
-							</font>
-						</Text>
-						<Line endX="901.5999755859375" endY="-5.999992370605469" layoutX="119.0" layoutY="64.0" startX="-80.80000305175781" startY="-5.999992370605469" stroke="#cccccc" strokeWidth="2.0" />
-						<Text fx:id="nameFieldAlert" fill="#ff2828" layoutX="183.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Họ và tên không được để trống." visible="false">
-							<font>
-								<Font size="13.0" />
-							</font>
-						</Text>
-						<Text fx:id="phoneFieldAlert" fill="#ff2828" layoutX="184.0" layoutY="315.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Số điện thoại không được để trống." visible="false">
-							<font>
-								<Font size="13.0" />
-							</font>
-						</Text>
-						<Text fx:id="genderFieldAlert" fill="#ff2828" layoutX="183.0" layoutY="406.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chưa chọn giới tính." visible="false">
-							<font>
-								<Font size="13.0" />
-							</font>
-						</Text>
-						<Button fx:id="submitBtn" alignment="CENTER" layoutX="367.0" layoutY="318.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="168.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Xác nhận thay đổi" textAlignment="CENTER" textFill="WHITE">
-							<graphic>
-								<ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-									<image>
-										<Image url="@../images/white-tick.png" />
-									</image>
-								</ImageView>
-							</graphic>
-							<font>
-								<Font name="System Bold" size="13.0" />
-							</font>
-							<cursor>
-								<Cursor fx:constant="HAND" />
-							</cursor>
-						</Button>
+<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="650.0" prefWidth="1060.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.CapNhatKhachHang_GUI">
+   <children>
+      <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="662.0" prefWidth="1059.0" style="-fx-background-color: #fff;">
+         <children>
+            <Text fill="#918f8f" layoutX="470.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cập nhật khách hàng">
+               <font>
+                  <Font name="System Bold" size="22.0" />
+               </font>
+            </Text>
+            <Line endX="901.5999755859375" endY="-5.999992370605469" layoutX="119.0" layoutY="64.0" startX="-80.80000305175781" startY="-5.999992370605469" stroke="#cccccc" strokeWidth="2.0" />
+            <Text fx:id="nameFieldAlert" fill="#ff2828" layoutX="183.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Họ và tên không được để trống." visible="false">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Text>
+            <Text fx:id="phoneFieldAlert" fill="#ff2828" layoutX="184.0" layoutY="315.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Số điện thoại không được để trống." visible="false">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Text>
+            <Text fx:id="genderFieldAlert" fill="#ff2828" layoutX="183.0" layoutY="406.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Chưa chọn giới tính." visible="false">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Text>
+            <Button fx:id="submitBtn" alignment="CENTER" layoutX="367.0" layoutY="318.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="168.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Xác nhận thay đổi" textAlignment="CENTER" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="31.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/white-tick.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="34.0" layoutY="409.0" prefHeight="224.0" prefWidth="984.0">
                <content>
                   <TableView fx:id="customerHistory" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="222.0" prefWidth="964.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
@@ -90,49 +90,49 @@
                   <Font name="System Bold" size="22.0" />
                </font>
             </Text>
-				<Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="114.0" style="-fx-background-color: transparent;" text="Trở lại">
-					<graphic>
-						<ImageView fitHeight="37.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@../images/back-icon.png" />
-							</image>
-						</ImageView>
-					</graphic>
-					<font>
-						<Font name="System Bold" size="15.0" />
-					</font>
-					<cursor>
-						<Cursor fx:constant="HAND" />
-					</cursor>
-				</Button>
+            <Button fx:id="backBtn" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="114.0" style="-fx-background-color: transparent;" text="Trở lại">
+               <graphic>
+                  <ImageView fitHeight="37.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/back-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
             <GridPane layoutX="59.0" layoutY="67.0" prefHeight="234.0" prefWidth="975.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="433.0" minWidth="10.0" percentWidth="45.0" prefWidth="433.0" />
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="433.0" minWidth="10.0" percentWidth="45.0" prefWidth="433.0" />
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.20001220703125" minWidth="10.0" prefWidth="156.80000000000007" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="384.0" minWidth="10.0" percentWidth="45.0" prefWidth="384.0" />
-              </columnConstraints>
-              <rowConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="384.0" minWidth="10.0" percentWidth="45.0" prefWidth="384.0" />
+               </columnConstraints>
+               <rowConstraints>
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
                <children>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
                      <children>
-            						<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Họ và tên:">
-            							<font>
-            								<Font name="System Bold" size="15.0" />
-            							</font>
-            						</Text>
-            						<TextField fx:id="nameField" prefHeight="43.0" prefWidth="338.0" promptText="Nhập họ tên đầy đủ" style="-fx-background-color: #f0f0f0;">
-            							<font>
-            								<Font name="System Bold" size="12.0" />
-            							</font>
-            							<cursor>
-            								<Cursor fx:constant="TEXT" />
-            							</cursor>
-            						</TextField>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Họ và tên:">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="nameField" prefHeight="43.0" prefWidth="338.0" promptText="Nhập họ tên đầy đủ" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
                         <Label fx:id="nameAlert" text="Label" visible="false" />
                      </children>
                   </VBox>
@@ -143,40 +143,40 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Text>
-                        <DatePicker fx:id="birthdayField" prefHeight="45.0" prefWidth="439.0" promptText="Ngày sinh của khách hàng" style="-fx-background-color: #f0f0f0; -fx-border-color: #f0f0f0;" />
+                        <DatePicker fx:id="birthdayField" prefHeight="45.0" prefWidth="439.0" promptText="Ngày sinh của khách hàng" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;" />
                         <Label fx:id="birthDateAlert" text="Label" visible="false" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="3">
                      <children>
-            						<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Số điện thoại:">
-            							<font>
-            								<Font name="System Bold" size="15.0" />
-            							</font>
-            						</Text>
-            						<TextField fx:id="phoneField" prefHeight="43.0" prefWidth="338.0" promptText="Nhập số điện thoại" style="-fx-background-color: #f0f0f0;">
-            							<font>
-            								<Font name="System Bold" size="12.0" />
-            							</font>
-            							<cursor>
-            								<Cursor fx:constant="TEXT" />
-            							</cursor>
-            						</TextField>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Số điện thoại:">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <TextField fx:id="phoneField" prefHeight="43.0" prefWidth="338.0" promptText="Nhập số điện thoại" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
                         <Label fx:id="phoneAlert" text="Label" visible="false" />
                      </children>
                   </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
                      <children>
-            						<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Giới tính:">
-            							<font>
-            								<Font name="System Bold" size="15.0" />
-            							</font>
-            						</Text>
-            						<ComboBox fx:id="genderSelect" prefHeight="44.0" prefWidth="439.0" promptText="-- Chọn giới tính --" style="-fx-background-color: #f0f0f0;" visibleRowCount="3">
-            							<cursor>
-            								<Cursor fx:constant="HAND" />
-            							</cursor>
-            						</ComboBox>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Giới tính:">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <ComboBox fx:id="genderSelect" prefHeight="44.0" prefWidth="439.0" promptText="-- Chọn giới tính --" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;" visibleRowCount="3">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ComboBox>
                         <Label fx:id="genderAlert" text="Label" visible="false" />
                      </children>
                   </VBox>
@@ -189,7 +189,7 @@
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </Text>
-                              <TextField fx:id="pointField" prefHeight="43.0" prefWidth="338.0" promptText="Nhập điểm tích lũy" style="-fx-background-color: #f0f0f0;">
+                              <TextField fx:id="pointField" editable="false" prefHeight="43.0" prefWidth="338.0" promptText="Nhập điểm tích lũy" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
@@ -200,7 +200,8 @@
                               <Label fx:id="pointAlert" text="Label" visible="false" />
                            </children>
                         </VBox>
-                     </children></VBox>
+                     </children>
+                  </VBox>
                   <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mã khách hàng:">
@@ -208,7 +209,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="idField" prefHeight="43.0" prefWidth="338.0" promptText="KHXXXX" style="-fx-background-color: #f0f0f0;">
+                        <TextField fx:id="idField" editable="false" prefHeight="43.0" prefWidth="338.0" promptText="Nhập mã khách hàng" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -226,7 +227,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="createField" prefHeight="43.0" prefWidth="338.0" promptText="26/12/2004 12:12" style="-fx-background-color: #f0f0f0;">
+                        <TextField fx:id="createDateField" editable="false" prefHeight="43.0" prefWidth="338.0" promptText="26/12/2004 12:12" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -244,7 +245,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="noteField" prefHeight="43.0" prefWidth="338.0" promptText="Nhập ghi chú" style="-fx-background-color: #f0f0f0;">
+                        <TextField fx:id="noteField" prefHeight="43.0" prefWidth="338.0" promptText="Nhập ghi chú" style="-fx-background-color: #f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #7e7e7e;">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
@@ -293,7 +294,7 @@
                   <Image url="@../images/history-log-icon.png" />
                </image>
             </ImageView>
-			</children>
-		</Pane>
-	</children>
+         </children>
+      </Pane>
+   </children>
 </HBox>
