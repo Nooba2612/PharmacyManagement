@@ -28,17 +28,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import pharmacy.bus.HistoryLogCustomer_BUS;
 import pharmacy.bus.HistoryLog_BUS;
 import pharmacy.bus.KhachHang_BUS;
-import pharmacy.bus.SanPham_BUS;
 import pharmacy.bus.TaiKhoan_BUS;
 import pharmacy.entity.CustomerHistoryLog;
 import pharmacy.entity.KhachHang;
 import pharmacy.entity.NhanVien;
-import pharmacy.entity.ProductHistoryLog;
-import pharmacy.entity.SanPham;
 import pharmacy.utils.NodeUtil;
+import pharmacy.utils.StringUtil;
 
 public class CapNhatKhachHang_GUI {
 
@@ -76,6 +73,9 @@ public class CapNhatKhachHang_GUI {
     private TableColumn<CustomerHistoryLog, String> idColumn;
 
     @FXML
+    private TextField createDateField;
+
+    @FXML
     private TextField idField;
 
     @FXML
@@ -85,25 +85,10 @@ public class CapNhatKhachHang_GUI {
     private TextField pointField;
 
     @FXML
-    private Label pointAlert;
-    
-    @FXML
-    private Label createAlert;
-
-    @FXML
     private TableColumn<CustomerHistoryLog, String> nameColumn;
 
     @FXML
     private TextField nameField;
-
-    @FXML
-    private TextField createField;
-
-    @FXML
-    private Text nameFieldAlert;
-
-    @FXML
-    private Label noteAlert;
 
     @FXML
     private TableColumn<CustomerHistoryLog, String> noteColumn;
@@ -112,7 +97,7 @@ public class CapNhatKhachHang_GUI {
     private TableColumn<CustomerHistoryLog, String> employeeColumn;
 
     @FXML
-    private TableColumn<CustomerHistoryLog, LocalDate> updatedAtColumn;
+    private TableColumn<CustomerHistoryLog, LocalDateTime> updatedAtColumn;
 
     @FXML
     private TextField noteField;
@@ -125,9 +110,6 @@ public class CapNhatKhachHang_GUI {
 
     @FXML
     private TextField phoneField;
-
-    @FXML
-    private Text phoneFieldAlert;
 
     @FXML
     private TableColumn<CustomerHistoryLog, Number> pointsColumn;
@@ -143,50 +125,33 @@ public class CapNhatKhachHang_GUI {
 
     @FXML
     private TableColumn<CustomerHistoryLog, LocalDate> yearColumn;
-    
+
     private ObservableList<CustomerHistoryLog> historyCustomerList = FXCollections.observableArrayList();
 
     private KhachHang currentCustomer;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
     @FXML
     public void initialize() throws SQLException {
         handleReject();
         renderHistory();
     }
-    
-    @FXML
-    public void handleReject() {
-        rejectBtn.setOnMouseEntered(event -> {
-            NodeUtil.applyFadeTransition(rejectBtn, 1, 0.7, 300, () -> {
-            });
-        });
 
-        rejectBtn.setOnMouseExited(event -> {
-            NodeUtil.applyFadeTransition(rejectBtn, 0.7, 1, 300, () -> {
-            });
-        });
-
-        rejectBtn.setOnAction(event -> {
-            Stage stage = (Stage) rejectBtn.getScene().getWindow();
-            stage.close();
-        });
-    }
-    
     @FXML
     public void setUpForm(KhachHang customer) throws SQLException {
         currentCustomer = customer;
-
+        historyCustomerList.addAll(new HistoryLog_BUS().getCustomerHistoryById(customer.getMaKhachHang()));
+        createDateField.setText(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss").format(LocalDateTime.now()));
+        noteField.setText(currentCustomer.getGhiChu());
         genderSelect.getItems().addAll("Nam", "Nữ", "Khác");
-        
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        createField.setText(LocalDateTime.now().format(formatter));
 
         TextFormatter<String> phoneFormatter = new TextFormatter<>(change -> {
             String newText = change.getControlNewText();
             return newText.matches("\\d*") ? change : null;
         });
+
         phoneField.setTextFormatter(phoneFormatter);
 
         clearDataBtn.setOnMouseEntered(event -> {
@@ -211,24 +176,19 @@ public class CapNhatKhachHang_GUI {
             customerHistory.setPlaceholder(noCustomerLabel);
         }
 
-        
         idField.setText(customer.getMaKhachHang());
         nameField.setText(customer.getHoTen());
         genderSelect.setValue(customer.getGioiTinh());
         phoneField.setText(customer.getSoDienThoai());
         genderSelect.setValue(customer.getGioiTinh());
         birthdayField.setValue(customer.getNamSinh());
-        noteAlert.setText(customer.getGhiChu());
         pointField.setText(String.valueOf(customer.getDiemTichLuy()));
 
         handleUpdateCustomer();
     }
 
-    
     @FXML
     public void renderHistory() throws SQLException {
-      
-    	historyCustomerList = FXCollections.observableArrayList(new HistoryLogCustomer_BUS().getAllCusHistory());
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("maKhachHang"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
@@ -239,8 +199,7 @@ public class CapNhatKhachHang_GUI {
         noteColumn.setCellValueFactory(new PropertyValueFactory<>("ghiChu"));
         updatedAtColumn.setCellValueFactory(new PropertyValueFactory<>("ngayCapNhat"));
         employeeColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
-        
-        
+
         yearColumn.setCellFactory(col -> new TableCell<CustomerHistoryLog, LocalDate>() {
             @Override
             protected void updateItem(LocalDate item, boolean empty) {
@@ -253,14 +212,14 @@ public class CapNhatKhachHang_GUI {
             }
         });
 
-        updatedAtColumn.setCellFactory(col -> new TableCell<CustomerHistoryLog, LocalDate>() {
+        updatedAtColumn.setCellFactory(col -> new TableCell<CustomerHistoryLog, LocalDateTime>() {
             @Override
-            protected void updateItem(LocalDate item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText("");
                 } else {
-                    setText(formatter.format(item));
+                    setText(dateTimeFormatter.format(item));
                 }
             }
         });
@@ -268,17 +227,15 @@ public class CapNhatKhachHang_GUI {
         customerHistory.setItems(historyCustomerList);
     }
 
-    
     @FXML
     public void renderCustomerHistory() throws SQLException {
-    	historyCustomerList = FXCollections.observableArrayList(new HistoryLogCustomer_BUS().getAllCusHistory());
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("maKhachHang"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gioiTinh"));
-        pointsColumn.setCellValueFactory(new PropertyValueFactory<>("diemTichLuy"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("namSinh"));
+        pointsColumn.setCellValueFactory(new PropertyValueFactory<>("ghiChu"));
         updatedAtColumn.setCellValueFactory(new PropertyValueFactory<>("ngayCapNhat"));
         employeeColumn.setCellValueFactory(new PropertyValueFactory<>("hoTen"));
 
@@ -294,14 +251,14 @@ public class CapNhatKhachHang_GUI {
             }
         });
 
-        updatedAtColumn.setCellFactory(col -> new TableCell<CustomerHistoryLog, LocalDate>() {
+        updatedAtColumn.setCellFactory(col -> new TableCell<CustomerHistoryLog, LocalDateTime>() {
             @Override
-            protected void updateItem(LocalDate item, boolean empty) {
+            protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText("");
                 } else {
-                    setText(formatter.format(item));
+                    setText(dateTimeFormatter.format(item));
                 }
             }
         });
@@ -309,7 +266,6 @@ public class CapNhatKhachHang_GUI {
         customerHistory.setItems(historyCustomerList);
     }
 
-    
     @FXML
     public void handleUpdateCustomer() throws SQLException {
         submitBtn.setOnMouseEntered(event -> {
@@ -330,7 +286,7 @@ public class CapNhatKhachHang_GUI {
             String sdt = phoneField.getText().trim();
             String gioiTinh = genderSelect.getValue().trim();
             int diemTichLuy = Integer.parseInt(!pointField.getText().trim().isEmpty() ? pointField.getText().trim() : "0");
-            
+
             LocalDate namSinh = birthdayField.getValue();
             String ghiChu = noteField.getText().trim();
 
@@ -342,14 +298,14 @@ public class CapNhatKhachHang_GUI {
             }
 
             KhachHang khachHang = new KhachHang(maKH, hoTen, sdt, diemTichLuy, namSinh, ghiChu, gioiTinh);
-            
+
             try {
                 if (validateForm()) {
                     new KhachHang_BUS().updateKhachHang(khachHang);
-     
+
                     NhanVien nhanVien = new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap();
-                    CustomerHistoryLog history = new CustomerHistoryLog(khachHang, nhanVien);
-                    new HistoryLogCustomer_BUS().addCustomerHistory(history);      
+                    CustomerHistoryLog history = new CustomerHistoryLog(khachHang, nhanVien, LocalDateTime.now());
+                    new HistoryLog_BUS().addCustomerHistory(history);
                     showAddCustomerSuccessModal("Cập nhật khách hàng thành công");
                     submitBtn.getScene().getWindow().hide();
                     refreshForm();
@@ -362,85 +318,68 @@ public class CapNhatKhachHang_GUI {
         });
     }
 
-    
     @FXML
-	public boolean validateForm() {
-		boolean isValid = true;
+    public boolean validateForm() {
+        boolean isValid = true;
 
-		// Validate ID field
-        if (idField.getText().trim().isEmpty()) {
-            idAlert.setText("Mã khách hàng không được rỗng.");
-            idAlert.setVisible(true);
+        // Validate Name field
+        if (nameField.getText().trim().isEmpty()) {
+            nameAlert.setText("Họ và tên không được rỗng.");
+            nameAlert.setVisible(true);
+            isValid = false;
+        } else if (!nameField.getText().matches("[a-zA-ZÀ-ỹ\\s]+")) {
+            nameAlert.setText("Họ và tên không hợp lệ. Vui lòng nhập đúng định dạng.");
+            nameAlert.setVisible(true);
             isValid = false;
         } else {
-            idAlert.setVisible(false);
+            String name = StringUtil.capitalizeWords(nameField.getText().trim());
+            nameField.setText(name);
+            nameAlert.setVisible(false);
         }
-		
-		// Validate Name field
-		if (nameField.getText().trim().isEmpty()) {
-		    nameAlert.setText("Họ và tên không được rỗng.");
-		    nameAlert.setVisible(true);
-		    isValid = false;
-		} else if (!nameField.getText().matches("^([A-Z][a-z]*\\s)+$")) {
-		    nameAlert.setText("Họ và tên không hợp lệ. Vui lòng nhập đúng định dạng.");
-		    nameAlert.setVisible(true);
-		    isValid = false;
-		} else {
-		    nameAlert.setVisible(false);
-		}
 
-		// Validate Phone field
-		String phoneText = phoneField.getText().trim();
-		if (phoneText.isEmpty()) {
-			phoneAlert.setText("Số điện thoại không được để trống.");
-			phoneAlert.setVisible(true);
-			isValid = false;
-		} else if (!phoneText.matches("^09\\d{8}$")) { 
-			phoneAlert.setText("Số điện thoại không hợp lệ.");
-			phoneAlert.setVisible(true);
-			isValid = false;
-		} else {
-			phoneAlert.setVisible(false);
-		}
+        // Validate Phone field
+        String phoneText = phoneField.getText().trim();
+        if (phoneText.isEmpty()) {
+            phoneAlert.setText("Số điện thoại không được để trống.");
+            phoneAlert.setVisible(true);
+            isValid = false;
+        } else if (!phoneText.matches("^0\\d{9}$")) {
+            phoneAlert.setText("Số điện thoại không hợp lệ.");
+            phoneAlert.setVisible(true);
+            isValid = false;
+        } else {
+            phoneAlert.setVisible(false);
+        }
 
-		// Validate Customer type field
-        String[] VALID_TYPES = { "Nam", "Nữ", "Khác" };
+        // Validate Customer type field
+        String[] VALID_TYPES = {"Nam", "Nữ", "Khác"};
         String customerTypeValue = (genderSelect.getValue() != null) ? genderSelect.getValue().trim()
                 : genderSelect.getEditor().getText().trim();
 
         if (customerTypeValue.isEmpty()) {
-        	genderAlert.setText("Giới tính chưa được chọn.");
-        	genderAlert.setVisible(true);
+            genderAlert.setText("Giới tính chưa được chọn.");
+            genderAlert.setVisible(true);
             isValid = false;
         } else if (!Arrays.asList(VALID_TYPES).contains(customerTypeValue)) {
-        	genderAlert.setText("Giới tính không hợp lệ.");
-        	genderAlert.setVisible(true);
+            genderAlert.setText("Giới tính không hợp lệ.");
+            genderAlert.setVisible(true);
             isValid = false;
         } else {
-        	genderAlert.setVisible(false);
+            genderAlert.setVisible(false);
         }
-		
-		// Validate Birthday field
-		if (birthdayField.getValue() == null) {
-			birthDateAlert.setText("Ngày sinh không được rỗng.");
-			birthDateAlert.setVisible(true);
-			isValid = false;
-		} else {
-			birthDateAlert.setVisible(false);
-		}
 
-		// Optional Note field validation (if needed)
-		if (noteField.getText().trim().isEmpty()) {
-			noteAlert.setText("Ghi chú không được rỗng.");
-			noteAlert.setVisible(true);
-			isValid = false;
-		} else {
-			noteAlert.setVisible(false);
-		}
+        // Validate Birthday field
+        if (birthdayField.getValue() == null) {
+            birthDateAlert.setText("Ngày sinh không được rỗng.");
+            birthDateAlert.setVisible(true);
+            isValid = false;
+        } else {
+            birthDateAlert.setVisible(false);
+        }
 
-		return isValid;
-	}
-    
+        return isValid;
+    }
+
     @FXML
     private void showAddCustomerSuccessModal(String message) {
         Stage modalStage = new Stage();
@@ -460,7 +399,7 @@ public class CapNhatKhachHang_GUI {
         Button closeButton = new Button("Đóng");
         closeButton.setStyle(
                 "-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; "
-                        + "-fx-border-radius: 10px; -fx-cursor: hand; -fx-padding: 8px 20px;");
+                + "-fx-border-radius: 10px; -fx-cursor: hand; -fx-padding: 8px 20px;");
         closeButton.setOnAction(e -> modalStage.close());
 
         closeButton.setOnMouseEntered(event -> {
@@ -478,23 +417,40 @@ public class CapNhatKhachHang_GUI {
         VBox layout = new VBox(15, contentLayout, closeButton);
         layout.setStyle(
                 "-fx-alignment: center; -fx-background-color: #ffffff; "
-                        + "-fx-border-color: black; -fx-border-width: 1px; -fx-padding: 20px;");
+                + "-fx-border-color: black; -fx-border-width: 1px; -fx-padding: 20px;");
 
         Scene scene = new Scene(layout, 400, 150);
         modalStage.setScene(scene);
 
         modalStage.showAndWait();
     }
-    
+
     @FXML
     public void refreshForm() throws SQLException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        createField.setText(LocalDateTime.now().format(formatter));
+        createDateField.setText(LocalDateTime.now().format(dateTimeFormatter));
         idField.setText(currentCustomer.getMaKhachHang());
         nameField.setText(currentCustomer.getHoTen());
         phoneField.setText(currentCustomer.getSoDienThoai());
         genderSelect.setValue(currentCustomer.getGioiTinh());
         birthdayField.setValue(currentCustomer.getNamSinh());
         noteField.setText(currentCustomer.getGhiChu());
+    }
+
+    @FXML
+    public void handleReject() {
+        rejectBtn.setOnMouseEntered(event -> {
+            NodeUtil.applyFadeTransition(rejectBtn, 1, 0.7, 300, () -> {
+            });
+        });
+
+        rejectBtn.setOnMouseExited(event -> {
+            NodeUtil.applyFadeTransition(rejectBtn, 0.7, 1, 300, () -> {
+            });
+        });
+
+        rejectBtn.setOnAction(event -> {
+            Stage stage = (Stage) rejectBtn.getScene().getWindow();
+            stage.close();
+        });
     }
 }

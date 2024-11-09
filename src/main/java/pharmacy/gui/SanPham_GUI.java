@@ -522,8 +522,8 @@ public class SanPham_GUI {
         setDateColumnEditable(manufactureDateColumn, "ngaySX");
         setFloatComboBoxColumnEditable(taxColumn, "thue", new String[] { "0%", "5%", "10%", "15%", "20%" });
         setDateColumnEditable(expirationDateColumn, "hanSuDung");
-        // setStringComboBoxColumnEditable(productTypeColumn, "loaiSanPham",
-        // new String[] { "Thuốc", "Thiết bị y tế" });
+        setStringComboBoxColumnEditable(productTypeColumn, "loaiSanPham",
+        new String[] { "Thuốc", "Thiết bị y tế" });
 
         // set up unit column
         unitColumn.setCellFactory(col -> new TableCell<SanPham, String>() {
@@ -1068,8 +1068,8 @@ public class SanPham_GUI {
             TableColumn.CellEditEvent<SanPham, T> event, String property) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Xác nhận thay đổi");
-        alert.setHeaderText("Thay đổi thông tin thuốc " + product.getTenSanPham());
-        alert.setContentText("Mã thuốc: " + product.getMaSanPham());
+        alert.setHeaderText("Thay đổi thông tin sản phẩm " + product.getTenSanPham());
+        alert.setContentText("Mã sản phẩm: " + product.getMaSanPham());
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
@@ -1260,7 +1260,7 @@ public class SanPham_GUI {
                 document.add(headerTable.setMarginBottom(10));
 
                 // Title
-                document.add(new Paragraph("DANH SÁCH THUỐC")
+                document.add(new Paragraph("DANH SÁCH SẢN PHẨM")
                         .setFont(font)
                         .setFontSize(20)
                         .setBold()
@@ -1272,9 +1272,9 @@ public class SanPham_GUI {
                 Table table = new Table(new float[] { 1, 2, 2, 2, 2, 2, 2, 2 });
                 table.setWidth(UnitValue.createPercentValue(100));
 
-                table.addHeaderCell(new Cell().add(new Paragraph("Mã thuốc").setFont(font).setFontSize(8))
+                table.addHeaderCell(new Cell().add(new Paragraph("Mã sản phẩm").setFont(font).setFontSize(8))
                         .setBackgroundColor(ColorConstants.LIGHT_GRAY));
-                table.addHeaderCell(new Cell().add(new Paragraph("Tên thuốc").setFont(font).setFontSize(8))
+                table.addHeaderCell(new Cell().add(new Paragraph("Tên sản phẩm").setFont(font).setFontSize(8))
                         .setBackgroundColor(ColorConstants.LIGHT_GRAY));
                 table.addHeaderCell(new Cell().add(new Paragraph("Đơn vị tính").setFont(font).setFontSize(8))
                         .setBackgroundColor(ColorConstants.LIGHT_GRAY));

@@ -175,7 +175,6 @@ public class KhachHang_GUI {
         customerTable.setItems(customerList);
         handleSeacrhCustomerAction(customerList);
         handleEditableCustomerTable();
-
     }
 
     // xóa khách hàng
@@ -843,14 +842,13 @@ public class KhachHang_GUI {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                try {
-                    new KhachHang_BUS().refreshKhachHang();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
 
                 Platform.runLater(() -> {
-                    setupTablePlaceholder();
+                    try {
+                        renderKhachHangs();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 });
             }).start();
         });
