@@ -14,6 +14,8 @@ public interface HoaDon_Interface {
 
 	List<HoaDon> getAllHoaDon();
 
+	List<HoaDon> getHoaDonTam();
+
 	boolean updateHoaDon(HoaDon hoaDon);
 
 	boolean deleteHoaDon(String maHoaDon);

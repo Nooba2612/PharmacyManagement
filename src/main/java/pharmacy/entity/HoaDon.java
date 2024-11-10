@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import pharmacy.bus.ChiTietHoaDon_BUS;
 import pharmacy.bus.SanPham_BUS;
 
 public class HoaDon {
@@ -21,11 +22,10 @@ public class HoaDon {
     private Double tongTien;
 
     public HoaDon() {
-        chiTietHoaDonList = new ArrayList<>();
     }
 
     public HoaDon(String maHoaDon, KhachHang khachHang, NhanVien nhanVien, LocalDateTime ngayTao, double tienKhachDua,
-            double diemSuDung, String loaiThanhToan, List<ChiTietHoaDon> chiTietHoaDonList) throws SQLException {
+            double diemSuDung, String loaiThanhToan, double tongTien) throws SQLException {
         this.maHoaDon = maHoaDon;
         this.khachHang = khachHang;
         this.nhanVien = nhanVien;
@@ -33,19 +33,7 @@ public class HoaDon {
         this.tienKhachDua = tienKhachDua;
         this.diemSuDung = diemSuDung;
         this.loaiThanhToan = loaiThanhToan;
-        this.chiTietHoaDonList = chiTietHoaDonList != null ? chiTietHoaDonList : new ArrayList<>();
-        this.tongTien = 0.0;
-        if (chiTietHoaDonList != null && !chiTietHoaDonList.isEmpty()) {
-            for (ChiTietHoaDon cthd : chiTietHoaDonList) {
-                if (cthd != null && cthd.getMaSanPham() != null) {
-                    SanPham sp = new SanPham_BUS().getSanPhamByMaSanPham(cthd.getMaSanPham());
-                    if (sp != null) {
-                        this.tongTien += (sp.getDonGiaBan() * cthd.getSoLuong())
-                                - (sp.getDonGiaBan() * cthd.getSoLuong() * cthd.getThue());
-                    }
-                }
-            }
-        }
+        this.tongTien = tongTien;
 
         if (tienKhachDua - tongTien >= 0) {
             this.tienThua = tienKhachDua - tongTien;
@@ -119,7 +107,7 @@ public class HoaDon {
     }
 
     public List<ChiTietHoaDon> getChiTietHoaDonList() {
-        return chiTietHoaDonList;
+        return new ChiTietHoaDon_BUS().getChiTietHoaDonByMaHoaDon(maHoaDon);
     }
 
     public void setChiTietHoaDonList(List<ChiTietHoaDon> chiTietHoaDonList) {

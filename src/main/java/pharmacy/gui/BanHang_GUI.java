@@ -53,6 +53,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
+import pharmacy.bus.ChiTietHoaDon_BUS;
 import pharmacy.bus.HoaDon_BUS;
 import pharmacy.bus.KhachHang_BUS;
 import pharmacy.bus.SanPham_BUS;
@@ -305,7 +306,6 @@ public class BanHang_GUI {
             popupStage.setScene(new Scene(popupContent));
 
             popupStage.setOnHidden(event -> {
-                System.out.println(controller.getStatus());
                 if (controller.getStatus() == true) {
                     try {
                         refreshForm();
@@ -344,13 +344,14 @@ public class BanHang_GUI {
             String dosage = dosageSelect.getValue();
             int quantity = quantityField.getValue();
             if (validateProduct()) {
-                ChiTietHoaDon cthd = new ChiTietHoaDon(invoiceId.getText(), currentProduct.getMaSanPham(), quantity, 0.08f, dosage);
+                ChiTietHoaDon cthd = new ChiTietHoaDon(invoiceId.getText(), currentProduct.getMaSanPham(), quantity, 0.08f, dosage, 8000);
                 currentDetailInvoice.add(cthd);
                 renderAddedProduct(cthd);
                 searchProductField.setValue(null);
                 dosageSelect.setValue(null);
                 quantityField.getValueFactory().setValue(0);
                 productTable.getItems().clear();
+                currentProduct = null;
                 try {
                     calulateTotalPrice();
                 } catch (SQLException e) {
@@ -377,6 +378,7 @@ public class BanHang_GUI {
                 }
             }
         }
+        checkoutPrice -= usePointField.getValue();
     }
 
     @FXML
@@ -387,11 +389,18 @@ public class BanHang_GUI {
         employeeName.setText(new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getHoTen());
         invoiceId.setText(generateId());
         createDate.setText(formatter.format(LocalDateTime.now()));
+        currentDetailInvoice.clear();
+        currentProduct = null;
         productTable.getItems().clear();
         addedProductTable.getItems().clear();
         customerPhoneField.setText("");
         customerName.setText("Khách hàng lẻ");
         usePointField.getValueFactory().setValue(0);
+        totalProduct.setText("0");
+        totalPrice.setText("0");
+        discountPrice.setText("0");
+        loyaltyPoint.setText("0");
+        checkoutPrice = 0;
     }
 
     @FXML
@@ -444,7 +453,7 @@ public class BanHang_GUI {
             }
 
             if (customer != null) {
-                int maxPoints = (int) (checkoutPrice * 0.1);
+                int maxPoints = (int) (checkoutPrice * 0.1) > customer.getDiemTichLuy() ? customer.getDiemTichLuy() : (int) (checkoutPrice * 0.1);
                 customerName.setText(customer.getHoTen());
                 usePointField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, maxPoints));
                 loyaltyPoint.setText(String.valueOf(customer.getDiemTichLuy()));
@@ -514,33 +523,50 @@ public class BanHang_GUI {
         });
 
         addCustomerBtn.setOnAction(event -> {
-            if (customerPhoneField.getText().matches("^09\\d{8}$")) {
-                phoneAlert.setVisible(false);
+            try {
 
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThemKhachHangNhanh_GUI.fxml"));
-                    Parent popupContent = loader.load();
-                    ThemKhachHangNhanh_GUI controller = loader.getController();
+                if (!customerPhoneField.getText().matches("^09\\d{8}$")) {
+                    showErrorDialog("Chưa nhập số điện thoại.");
+                    phoneAlert.setText("Chưa nhập số điện thoại.");
+                    phoneAlert.setVisible(true);
+                    return;
+                }
+
+                if (new KhachHang_BUS().getKhachHangByPhone(customerPhoneField.getText()) != null) {
+                    showErrorDialog("Khách hàng đã tồn tại.");
+                    phoneAlert.setText("Khách hàng đã tồn tại.");
+                    phoneAlert.setVisible(true);
+                    return;
+                }
+
+                if (customerPhoneField.getText().matches("^09\\d{8}$") && new KhachHang_BUS().getKhachHangByPhone(customerPhoneField.getText()) == null) {
+                    phoneAlert.setVisible(false);
 
                     try {
-                        controller.setUpForm(customerPhoneField.getText());
-                    } catch (SQLException e) {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThemKhachHangNhanh_GUI.fxml"));
+                        Parent popupContent = loader.load();
+                        ThemKhachHangNhanh_GUI controller = loader.getController();
+
+                        try {
+                            controller.setUpForm(customerPhoneField.getText());
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        Stage popupStage = new Stage();
+                        popupStage.initModality(Modality.APPLICATION_MODAL);
+                        popupStage.setTitle("Thêm khách hàng");
+                        popupStage.getIcons().add(new Image(getClass().getResource("/images/customer-icon-2.png").toExternalForm()));
+                        popupStage.setScene(new Scene(popupContent));
+
+                        popupStage.showAndWait();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
-
-                    Stage popupStage = new Stage();
-                    popupStage.initModality(Modality.APPLICATION_MODAL);
-                    popupStage.setTitle("Thêm khách hàng");
-                    popupStage.getIcons().add(new Image(getClass().getResource("/images/customer-icon-2.png").toExternalForm()));
-                    popupStage.setScene(new Scene(popupContent));
-
-                    popupStage.showAndWait();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-            } else {
-                showErrorDialog("Chưa nhập số điện thoại.");
-                phoneAlert.setVisible(true);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         });
 
@@ -548,6 +574,13 @@ public class BanHang_GUI {
 
     private String generateId() throws SQLException {
         int productNumber = new HoaDon_BUS().countHoaDon();
+        String id = String.format("HD%04d", productNumber + 1);
+
+        return id;
+    }
+
+    private String generateTempInvoiceId() throws SQLException {
+        int productNumber = new HoaDon_BUS().countHoaDon() + new HoaDon_BUS().countHoaDon();
         String id = String.format("HD%04d", productNumber + 1);
 
         return id;
@@ -580,10 +613,28 @@ public class BanHang_GUI {
                 double diemSuDung = usePointField.getValue();
                 String loaiThanhToan = paymentMethodSelect.getValue();
 
+                double tongTien = 0.0;
+                if (currentDetailInvoice != null && !currentDetailInvoice.isEmpty()) {
+                    for (ChiTietHoaDon chiTietHoaDon : currentDetailInvoice) {
+                        if (chiTietHoaDon == null || chiTietHoaDon.getMaSanPham() == null) {
+                        } else {
+                            SanPham sp = new SanPham();
+                            try {
+                                sp = new SanPham_BUS().getSanPhamByMaSanPham(chiTietHoaDon.getMaSanPham());
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            if (sp != null) {
+                                tongTien += (sp.getDonGiaBan() * chiTietHoaDon.getSoLuong())
+                                        - (sp.getDonGiaBan() * chiTietHoaDon.getSoLuong() * chiTietHoaDon.getThue());
+                            }
+                        }
+                    }
+                }
+
                 HoaDon hoaDon = new HoaDon();
                 try {
-                    hoaDon = new HoaDon(generateId(), khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan,
-                            currentDetailInvoice);
+                    hoaDon = new HoaDon(generateId(), khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan, tongTien);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -594,6 +645,14 @@ public class BanHang_GUI {
                         refreshForm();
                     }
                 } catch (SQLException ex) {
+                }
+
+                if (currentDetailInvoice != null) {
+                    for (ChiTietHoaDon chiTietHoaDon : currentDetailInvoice) {
+                        new ChiTietHoaDon_BUS().createChiTietHoaDon(chiTietHoaDon);
+                    }
+                } else {
+                    System.out.println("Danh sách chi tiết hóa đơn trống!");
                 }
             } else {
                 showErrorDialog("Chưa có sản phẩm trong giỏ hàng");
@@ -730,7 +789,7 @@ public class BanHang_GUI {
             }
         }
         totalProduct.setText(String.valueOf(quantity));
-        totalPrice.setText(String.valueOf(checkoutPrice));
+        totalPrice.setText(String.valueOf(checkoutPrice).replace(".0", ""));
         discountPrice.setText(String.valueOf(usePointField.getValue()));
     }
 
@@ -755,12 +814,13 @@ public class BanHang_GUI {
             double thanhTien = 0.0;
             try {
                 thanhTien = detail.getDonGiaBan() * detail.getSoLuong();
-            } catch (SQLException ex) {
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
             return new ReadOnlyObjectWrapper<>(thanhTien);
         });
-        handleAddDeleteButtonToColumn();
 
+        handleAddDeleteButtonToColumn();
         setIntegerSpinnerColumnEditable(addedProductQuantityColumn);
         setStringComboBoxColumnEditable(addedProductDosageColumn, new String[]{"1 lần/ngày", "2 lần/ngày", "3 lần/ngày", "4 lần/ngày", "Mỗi 6 giờ một lần", "Mỗi 8 giờ một lần", "Mỗi 12 giờ một lần", "Mỗi 24 giờ một lần"});
 
@@ -776,7 +836,19 @@ public class BanHang_GUI {
             }
         });
 
-        addedProductList.add(cthd);
+        boolean isProductExists = false;
+        for (ChiTietHoaDon detail : addedProductList) {
+            if (detail.getMaSanPham().equals(cthd.getMaSanPham())) {
+                detail.setSoLuong(detail.getSoLuong() + cthd.getSoLuong());
+                isProductExists = true;
+                break;
+            }
+        }
+
+        if (!isProductExists) {
+            addedProductList.add(cthd);
+        }
+
         addedProductTable.getItems().clear();
         addedProductTable.getItems().addAll(addedProductList);
     }
