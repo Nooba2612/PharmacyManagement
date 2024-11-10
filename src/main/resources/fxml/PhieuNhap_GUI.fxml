@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.PhieuNhap_GUI">
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.PhieuNhap_GUI">
     <children>
         <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="667.0" prefWidth="1179.0">
             <children>
@@ -72,27 +72,27 @@
                                 </Button>
                             </children>
                         </Pane>
-                        <Label layoutX="368.0" layoutY="34.0" prefHeight="40.0" prefWidth="72.0" text="Từ ngày  :">
+                        <Label layoutX="372.0" layoutY="36.0" prefHeight="40.0" prefWidth="55.0" text="Từ ngày :">
                             <font>
                                 <Font name="System Bold" size="13.0" />
                             </font>
                         </Label>
-                        <DatePicker fx:id="fromDate" layoutX="440.0" layoutY="33.0" prefHeight="40.0" prefWidth="175.0" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;">
+                        <DatePicker fx:id="fromDate" layoutX="435.0" layoutY="36.0" prefHeight="40.0" prefWidth="175.0" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;">
                             <cursor>
                                 <Cursor fx:constant="TEXT" />
                             </cursor>
                         </DatePicker>
-                        <Text layoutX="629.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="13.19677734375">
+                        <Text layoutX="630.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" wrappingWidth="13.19677734375">
                             <font>
                                 <Font size="33.0" />
                             </font>
                         </Text>
-                        <Label layoutX="650.0" layoutY="34.0" prefHeight="40.0" prefWidth="82.0" text="Đến ngày  :">
+                        <Label layoutX="655.0" layoutY="35.0" prefHeight="40.0" prefWidth="66.0" text="Đến ngày :">
                             <font>
                                 <Font name="System Bold" size="13.0" />
                             </font>
                         </Label>
-                        <DatePicker fx:id="toDate" layoutX="732.0" layoutY="34.0" prefHeight="40.0" prefWidth="175.0" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;">
+                        <DatePicker fx:id="toDate" layoutX="718.0" layoutY="35.0" prefHeight="40.0" prefWidth="175.0" showWeekNumbers="true" style="-fx-background-color: #f0f0f0;">
                             <cursor>
                                 <Cursor fx:constant="TEXT" />
                             </cursor>
@@ -106,6 +106,17 @@
                      </font>
                      <graphic>
                         <ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/plus-icon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                    <Button fx:id="importAddButton" layoutX="205.0" layoutY="36.0" prefHeight="40.0" prefWidth="138.0" styleClass="import-btn" text="Thêm bằng File">
+
+                  <!-- <Button fx:id="importButton" layoutX="205.0" layoutY="36.0" onAction="#handleImport" prefHeight="40.0" prefWidth="138.0" styleClass="import-btn" text="Nhập file"> -->
+                     <graphic>
+                        <ImageView fx:id="importIcon" fitHeight="20" fitWidth="36.0" preserveRatio="true">
                            <image>
                               <Image url="@../images/plus-icon.png" />
                            </image>

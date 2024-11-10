@@ -1,5 +1,7 @@
 package pharmacy.entity;
 
+import java.time.LocalDate;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 
@@ -9,22 +11,28 @@ public class ChiTietPhieuNhap {
 	private int soLuong;
 	private double donGia;
 	private float thue;
+	private LocalDate ngaySX;
+	private LocalDate hanSuDung;
+	private String ghiChu;
 
 	public ChiTietPhieuNhap() {
 	}
 
 	public ChiTietPhieuNhap(SanPham sanpham, PhieuNhap phieuNhap, int soLuong, double donGia,
-			float thue) {
+			float thue, LocalDate ngaySX, LocalDate hanSuDung) {
 		setSanPham(sanpham);
 		setPhieuNhap(phieuNhap);
 		setSoLuong(soLuong);
 		setDonGia(donGia);
 		setThue(thue);
+		setNgaySX(ngaySX);
+		setHanSuDung(hanSuDung);
 	}
 
 	public ChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap) {
 		this(chiTietPhieuNhap.getSanPham(), chiTietPhieuNhap.getPhieuNhap(),
-				chiTietPhieuNhap.getSoLuong(), chiTietPhieuNhap.getDonGia(), chiTietPhieuNhap.getThue());
+				chiTietPhieuNhap.getSoLuong(), chiTietPhieuNhap.getDonGia(), chiTietPhieuNhap.getThue(), chiTietPhieuNhap.getNgaySX(),
+				chiTietPhieuNhap.getHanSuDung());
 	}
 
 	public SanPham getSanPham() {
@@ -85,6 +93,28 @@ public class ChiTietPhieuNhap {
 		updateThanhTien();
 	}
 
+	public LocalDate getNgaySX() {
+		return ngaySX;
+	}
+
+	public void setNgaySX(LocalDate ngaySX) {
+		if (ngaySX == null || ngaySX.isAfter(LocalDate.now())) {
+			throw new IllegalArgumentException("Ngày sản xuất không thể trong tương lai.");
+		}
+		this.ngaySX = ngaySX;
+	}
+
+	public LocalDate getHanSuDung() {
+		return hanSuDung;
+	}
+
+	public void setHanSuDung(LocalDate hanSuDung) {
+		if (hanSuDung == null) {
+			throw new IllegalArgumentException("Hạn sử dụng không được rỗng.");
+		}
+		this.hanSuDung = hanSuDung;
+	}
+
 	public String getMaSanPham() {
         return sanpham.getMaSanPham();
     }
@@ -93,6 +123,15 @@ public class ChiTietPhieuNhap {
     public String getTenSanPham() {
         return sanpham.getTenSanPham();
     }
+
+	//  public LocalDate getNgaySX() {
+    //     return sanpham.getNgaySX();
+    // }
+
+	// public LocalDate getHanSuDung() {
+    //     return sanpham.getHanSuDung();
+    // }
+
 	// Thêm property cho thành tiền
 	private final DoubleProperty thanhTien = new SimpleDoubleProperty();
 
@@ -113,9 +152,17 @@ public class ChiTietPhieuNhap {
 		return thanhTien.get();
 	}
 
+	public String getGhiChu() {
+        return ghiChu;
+    }
+
+    public void setGhiChu(String ghiChu) {
+        this.ghiChu = ghiChu;
+    }
+
 	@Override
 	public String toString() {
 		return "ChiTietPhieuNhap{" + ", sanpham=" + sanpham + ", phieuNhap=" + phieuNhap
-				+ ", soLuong=" + soLuong + ", donGia=" + donGia + ", thue=" + thue + '}';
+				+ ", soLuong=" + soLuong + ", donGia=" + donGia + ", thue=" + thue + ", ngaySX=" + ngaySX + ", hanSuDung=" + hanSuDung + '}';
 	}
 }

@@ -1,17 +1,26 @@
 package pharmacy.gui;
 
+import java.beans.PropertyDescriptor;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import com.itextpdf.io.exceptions.IOException;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -22,6 +31,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -34,9 +44,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.Node;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import pharmacy.bus.ChiTietPhieuNhap_BUS;
@@ -46,6 +59,7 @@ import pharmacy.bus.SanPham_BUS;
 import pharmacy.bus.TaiKhoan_BUS;
 import pharmacy.connections.DatabaseConnection;
 import pharmacy.entity.ChiTietPhieuNhap;
+import pharmacy.entity.KhachHang;
 import pharmacy.entity.NhaCungCap;
 import pharmacy.entity.NhanVien;
 import pharmacy.entity.PhieuNhap;
@@ -64,19 +78,22 @@ public class ThemPhieuNhap_GUI {
 	private TextField createDateField;
 
 	@FXML
-	private Button submitBtn, resetBtn;
+	private Button submitBtn, resetBtn, resetBtnAddProduct;
 
 	@FXML
-	private TextField phieuNhapId;
-
-	// @FXML
-	// private ComboBox<String> productTypeField;
+	private TextField phieuNhapId, nameField;
 
 	@FXML
 	private ComboBox<String> supplierSelect;
 
-	// @FXML
-	// private ComboBox<String> unitField;
+	@FXML
+	private ComboBox<String> unitField;
+
+	@FXML
+	private TextField manufacturerField;
+
+	@FXML
+	private DatePicker manufactureDateField, expirationDateField;
 
 	private List<NhaCungCap> listSupplier;
 	private List<SanPham> listProductSearch;
@@ -94,8 +111,11 @@ public class ThemPhieuNhap_GUI {
 	@FXML
 	private TableColumn<ChiTietPhieuNhap, Integer> soLuongNhap;
 
-	// @FXML
-	// private TableColumn<SanPham, String> donViTinh;
+	@FXML
+	private TableColumn<ChiTietPhieuNhap, LocalDate> ngaySanXuat;
+
+	@FXML
+	private TableColumn<ChiTietPhieuNhap, LocalDate> ngayHetHan;
 
 	@FXML
 	private TableColumn<ChiTietPhieuNhap, Double> donGiaNhap;
@@ -108,6 +128,12 @@ public class ThemPhieuNhap_GUI {
 
 	@FXML
 	private TableColumn<ChiTietPhieuNhap, Void> actionColumn;
+	
+	@FXML
+	private TableColumn<ChiTietPhieuNhap, String> ghiChuColumn;
+
+	@FXML
+	private TableColumn<ChiTietPhieuNhap, String> statusSPColumn;
 
 	@FXML
 	private ComboBox<String> productField;
@@ -126,34 +152,169 @@ public class ThemPhieuNhap_GUI {
 	private NhanVien nhanVien;
 
 	@FXML
+    private ComboBox<String> productTypeField;
+
+	@FXML
+	private ComboBox<String> categoryField;
+
+	@FXML
 	public void initialize() throws SQLException {
 		setUpForm();
 		handleBackBtnClick();
 		handleSearchProduct();
 		handleEditableProductTable();
 		resetForm();
+		resetFormProduct();
+		handleAddProduct();
+		handleAddPhieuNhap();
+
 	}
 
 	@FXML
-	public void setUpForm() throws SQLException {
+public void handleImport(ActionEvent event) throws FileNotFoundException, java.io.IOException {
+    System.out.println("Import button clicked!");
+
+    // Tạo FileChooser và thiết lập bộ lọc cho file CSV
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+    
+    // Lấy cửa sổ hiện tại để hiển thị FileChooser
+    File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+
+	if (selectedFile != null) {
+        List<ChiTietPhieuNhap> importedProducts = readProductsFromCSV(selectedFile);
+        if (importedProducts != null) {
+            addedProductList.clear();
+            addedProductList.addAll(importedProducts);
+            handleRenderAddedProductsTable();  // Cập nhật bảng với dữ liệu mới
+            System.out.println("Import file thành công1!");
+        } else {
+            System.out.println("Lỗi khi đọc file CSV.");
+        }
+    }
+}
 
 
-		actionColumn.setCellFactory(col -> new TableCell<ChiTietPhieuNhap, Void>() {
-			ImageView deleteIcon = new ImageView(new Image(
+private List<ChiTietPhieuNhap> readProductsFromCSV(File file) throws java.io.IOException {
+    List<ChiTietPhieuNhap> productList = new ArrayList<>();
+    DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    try (CSVReader csvReader = new CSVReader(new FileReader(file))) {
+        String[] header = csvReader.readNext(); // Đọc dòng tiêu đề
+        String[] line;
+
+        while ((line = csvReader.readNext()) != null) {
+            SanPham sanpham = new SanPham();
+            sanpham.setMaSanPham(line[0]);
+            sanpham.setTenSanPham(line[1]);
+
+            ChiTietPhieuNhap product = new ChiTietPhieuNhap();
+            product.setSanPham(sanpham); // Gán đối tượng SanPham vào ChiTietPhieuNhap
+            product.setSoLuong(Integer.parseInt(line[7]));
+            product.setDonGia(Double.parseDouble(line[8]));
+            product.setThue(Float.parseFloat(line[9]));
+
+            // Tính toán thành tiền
+            double thanhTien = product.getSoLuong() * product.getDonGia() * (1 + product.getThue() / 100);
+            productList.add(product);
+        }
+    } catch (IOException | CsvValidationException | NumberFormatException e) {
+        e.printStackTrace();
+        return null;
+    }
+    return productList;
+}
+
+
+	@FXML
+    private void setUpForm() throws SQLException {
+        // Set up icon for Import button
+        ImageView importIcon = new ImageView(new Image(
+            getClass().getClassLoader().getResource("images/arrow.png").toExternalForm()));
+        importIcon.setFitHeight(15);
+        importIcon.setFitWidth(15);
+
+        // Set up ID, current employee name, and creation date
+        phieuNhapId.setText(generateId());
+        nhanVien = new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap();
+		employeeName.setText(nhanVien.getHoTen());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        createDateField.setText(LocalDateTime.now().format(formatter));
+
+        // Load initial list of products and suppliers
+        listProductSearch = new SanPham_BUS().getTop20SanPhamTheoSLTon();
+        listProductInit = listProductSearch;
+        for (SanPham sanPham : listProductSearch) {
+            String displayText = sanPham.getMaSanPham() + " - " + sanPham.getTenSanPham();
+            productField.getItems().add(displayText);
+        }
+
+        listSupplier = new NhaCungCap_BUS().getAllNhaCungCap();
+        for (NhaCungCap supplier : listSupplier) {
+            String displayText = supplier.getMaNCC() + " - " + supplier.getTenNCC();
+            supplierSelect.getItems().add(displayText);
+        }
+
+        // Set up placeholder for empty table
+        if (productTable.getItems().isEmpty()) {
+            Label noProductLabel = new Label("Không có sản phẩm nào trong bảng.");
+            noProductLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #339933;");
+            productTable.setPlaceholder(noProductLabel);
+        }
+
+		//set up create product
+		DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+		manufactureDateField.setConverter(new StringConverter<LocalDate>() {
+			@Override
+			public String toString(LocalDate date) {
+				return date != null ? formatterDate.format(date) : "";
+			}
+
+			@Override
+			public LocalDate fromString(String string) {
+				return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatterDate) : null;
+			}
+		});
+
+		manufactureDateField.setValue(LocalDate.now());
+
+		expirationDateField.setConverter(new StringConverter<LocalDate>() {
+			@Override
+			public String toString(LocalDate date) {
+				return date != null ? formatterDate.format(date) : "";
+			}
+
+			@Override
+			public LocalDate fromString(String string) {
+				return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatterDate) : null;
+			}
+		});
+
+		expirationDateField.setValue(LocalDate.now().plusDays(1));
+        setupActionColumn();
+    }
+
+    private void setupActionColumn() throws SQLException {
+        actionColumn.setCellFactory(col -> new TableCell<ChiTietPhieuNhap, Void>() {
+            private final ImageView deleteIcon = new ImageView(new Image(
                 getClass().getClassLoader().getResource("images/x-icon.png").toExternalForm()));
-            // private final ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/images/x-icon.png"))); // Đường dẫn đến icon
             private final HBox hbox = new HBox(deleteIcon);
 
             {
-                deleteIcon.setFitHeight(15); // Kích thước icon
+                deleteIcon.setFitHeight(15);
                 deleteIcon.setFitWidth(15);
-				hbox.setAlignment(Pos.CENTER);
-                hbox.setStyle("-fx-padding: 5;"); 
-                deleteIcon.setOnMouseClicked((MouseEvent event) -> {
-                    ChiTietPhieuNhap ctpn = getTableView().getItems().get(getIndex());
-                    // Xử lý xóa sản phẩm
-                    getTableView().getItems().remove(ctpn);
-                });
+                hbox.setAlignment(Pos.CENTER);
+                hbox.setStyle("-fx-padding: 5;");
+                deleteIcon.setOnMouseClicked(this::handleDeleteProduct);
+            }
+
+            private void handleDeleteProduct(MouseEvent event) {
+                ChiTietPhieuNhap ctpn = getTableView().getItems().get(getIndex());
+                getTableView().getItems().remove(ctpn);
+				updateTotalProductCount();
+				updateTotalAmount();
             }
 
             @Override
@@ -166,8 +327,6 @@ public class ThemPhieuNhap_GUI {
                 }
             }
         });
-
-
 
 		// id
 		phieuNhapId.setText(generateId());
@@ -192,10 +351,23 @@ public class ThemPhieuNhap_GUI {
 		}
 
 		// loai san pham
-		// productTypeField.getItems().addAll("Thuốc", "Thiết bị y tế");
-
+		productTypeField.getItems().addAll("Thuốc", "Thiết bị y tế");
+		productTypeField.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			categoryField.getItems().clear();
+			if (newValue != null) {
+				if (newValue.equals("Thuốc")) {
+					categoryField.setDisable(false);
+					categoryField.getItems().addAll("Giảm đau", "Hạ sốt", "Kháng sinh", "Chống viêm", "Vitamin",
+							"An thần", "Siro", "Khác");
+				} else if (newValue.equals("Thiết bị y tế")) {
+					categoryField.getItems().addAll("Dụng cụ y tế", "Sản phẩm bảo vệ cá nhân", "Dung dịch vệ sinh",
+							"Khác");
+					categoryField.setDisable(false);
+				}
+			}
+		});
 		// don vi tinh
-		// unitField.getItems().addAll("Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói");
+		unitField.getItems().addAll("Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói");
 
 		// danh sach ncc
 		listSupplier = new NhaCungCap_BUS().getAllNhaCungCap();
@@ -211,8 +383,8 @@ public class ThemPhieuNhap_GUI {
 			productTable.setPlaceholder(noProductLabel);
 		}
 
-		handleAddPhieuNhap();
-	}
+
+    }
 
 	@SuppressWarnings("unused")
 	@FXML
@@ -257,10 +429,12 @@ public class ThemPhieuNhap_GUI {
 						if (!isAlreadyAdded) {
 							ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap();
 							chiTiet.setSanPham(sanPham);
-							chiTiet.setSanPham(sanPham);
 							chiTiet.setDonGia(10000);
 							chiTiet.setSoLuong(1);
 							chiTiet.setThue(0.1f);
+							chiTiet.setNgaySX(sanPham.getNgaySX());
+							chiTiet.setHanSuDung(sanPham.getHanSuDung());
+							chiTiet.setGhiChu("Sản phẩm đã tồn tại");
 
 							addedProductList.add(chiTiet);
 						}
@@ -273,6 +447,56 @@ public class ThemPhieuNhap_GUI {
 			}
 		});
 
+	}
+
+	@FXML
+	public void handleAddProduct() throws SQLException {
+			addProductBtn.setOnMouseEntered(event -> {
+				NodeUtil.applyFadeTransition(submitBtn, 1, 0.6, 200, () -> {
+				});
+			});
+			addProductBtn.setOnMouseExited(event -> {
+				NodeUtil.applyFadeTransition(submitBtn, 0.6, 1, 200, () -> {
+				});
+			});
+			addProductBtn.setCursor(Cursor.HAND);
+	 
+			// add san pham
+			addProductBtn.setOnAction(event -> {	
+				try {
+					SanPham sp = new SanPham();
+					sp.setMaSanPham(generateIdSanPham());
+					sp.setTenSanPham(nameField.getText().trim());
+					sp.setLoaiSanPham(productTypeField.getValue());
+					sp.setDanhMuc(categoryField.getValue());
+					sp.setNhaSX(manufacturerField.getText().trim());
+					sp.setDonViTinh(unitField.getValue());
+					sp.setNgayTao(LocalDate.now());
+					sp.setNgayCapNhat(LocalDateTime.now());
+					sp.setNgaySX(manufactureDateField.getValue());
+					sp.setHanSuDung(expirationDateField.getValue());
+					sp.setSoLuongTon(1);
+					sp.setDonGiaBan(10000);
+					sp.setThue(0);
+
+					ChiTietPhieuNhap ctpn = new ChiTietPhieuNhap();
+					ctpn.setSanPham(sp);;
+					ctpn.setDonGia(10000);
+					ctpn.setSoLuong(1);
+					ctpn.setThue(0.1f);
+					ctpn.setNgaySX(manufactureDateField.getValue());
+					ctpn.setHanSuDung(expirationDateField.getValue());
+					ctpn.setGhiChu("Sản phẩm mới");
+
+					addedProductList.add(ctpn);
+					handleRenderAddedProductsTable(); // Cập nhật bảng
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+
+		});
 	}
 
 	private void filterProducts(String keySearch) throws SQLException {
@@ -347,12 +571,41 @@ public class ThemPhieuNhap_GUI {
 				}
 				// Thêm chi tiết phiếu nhập
 				for (ChiTietPhieuNhap sp : addedProductList) {
+
+					if ("Sản phẩm mới".equals(sp.getGhiChu())) {
+						sp.getSanPham().setSoLuongTon(sp.getSoLuong());
+						sp.getSanPham().setDonGiaBan(Math.round(sp.getDonGia() * (1 + sp.getThue() / 100)));
+						sp.getSanPham().setThue(sp.getThue());
+						sp.getSanPham().setNgaySX(sp.getNgaySX());
+						sp.getSanPham().setHanSuDung(sp.getHanSuDung());
+
+						boolean isCreatedProduct = new SanPham_BUS().createSanPham(sp.getSanPham(), connection);
+						if (!isCreatedProduct) {
+							connection.rollback(); // Rollback nếu không thể tạo sản phẩm mới
+							showErrorDialog("Lỗi tạo sản phẩm mới", "Không thể tạo sản phẩm mới: " + sp.getMaSanPham());
+							return;
+						}
+					} else {
+						// Cập nhật số lượng tồn cho sản phẩm
+						int newQuantity = sp.getSoLuong();
+						boolean isUpdated = new SanPham_BUS().updateProductStock(sp.getMaSanPham(), sp.getTenSanPham(), sp.getSanPham().getNhaSX(), newQuantity,
+								connection);
+						if (!isUpdated) {
+							connection.rollback(); // Rollback nếu có lỗi
+							showErrorDialog("Lỗi cập nhật tồn kho",
+									"Không thể cập nhật số lượng tồn cho sản phẩm: " + sp.getMaSanPham());
+							return;
+						}
+					}
+
 					ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap();
 					chiTiet.setPhieuNhap(phieuNhap);
 					chiTiet.setSanPham(sp.getSanPham());
 					chiTiet.setSoLuong(sp.getSoLuong());
 					chiTiet.setDonGia(sp.getDonGia());
 					chiTiet.setThue(sp.getThue());
+					chiTiet.setNgaySX(sp.getNgaySX());
+					chiTiet.setHanSuDung(sp.getHanSuDung());
 
 					// Lưu chi tiết phiếu nhập vào cơ sở dữ liệu
 					boolean isCreatedCTPN = new ChiTietPhieuNhap_BUS().createChiTietPhieuNhap(chiTiet, connection);
@@ -361,17 +614,7 @@ public class ThemPhieuNhap_GUI {
 						showErrorDialog("Lỗi thêm chi tiết phiếu nhập", "Có lỗi xảy ra khi thêm chi tiết phiếu nhập.");
 						return;
 					}
-
-					// Cập nhật số lượng tồn cho sản phẩm
-					int newQuantity = sp.getSoLuong();
-					boolean isUpdated = new SanPham_BUS().updateProductStock(sp.getMaSanPham(), newQuantity,
-							connection);
-					if (!isUpdated) {
-						connection.rollback(); // Rollback nếu có lỗi
-						showErrorDialog("Lỗi cập nhật tồn kho",
-								"Không thể cập nhật số lượng tồn cho sản phẩm: " + sp.getMaSanPham());
-						return;
-					}
+					
 				}
 
 				connection.commit(); // Xác nhận giao dịch nếu tất cả đều thành công
@@ -444,6 +687,57 @@ public class ThemPhieuNhap_GUI {
 		});
 	}
 
+	@FXML
+	public void resetFormProduct() {
+		resetBtnAddProduct.setOnMouseEntered(event -> {
+			NodeUtil.applyFadeTransition(resetBtn, 1, 0.5, 200, () -> {
+			});
+		});
+
+		resetBtnAddProduct.setOnMouseExited(event -> {
+			NodeUtil.applyFadeTransition(resetBtn, 0.5, 1, 200, () -> {
+			});
+		});
+
+		resetBtnAddProduct.setOnMouseClicked(event -> {
+			//set up create product
+		DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+		manufactureDateField.setConverter(new StringConverter<LocalDate>() {
+			@Override
+			public String toString(LocalDate date) {
+				return date != null ? formatterDate.format(date) : "";
+			}
+
+			@Override
+			public LocalDate fromString(String string) {
+				return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatterDate) : null;
+			}
+		});
+
+		manufactureDateField.setValue(LocalDate.now());
+
+		expirationDateField.setConverter(new StringConverter<LocalDate>() {
+			@Override
+			public String toString(LocalDate date) {
+				return date != null ? formatterDate.format(date) : "";
+			}
+
+			@Override
+			public LocalDate fromString(String string) {
+				return (string != null && !string.isEmpty()) ? LocalDate.parse(string, formatterDate) : null;
+			}
+		});
+
+		expirationDateField.setValue(LocalDate.now().plusDays(1));
+			nameField.setText("");
+			manufacturerField.setText("");
+			productTypeField.setValue(null);
+			categoryField.setValue(null);
+			unitField.setValue(null);
+		});
+	}
+
 	@SuppressWarnings("unused")
 	@FXML
 	public void handleBackBtnClick() {
@@ -493,6 +787,11 @@ public class ThemPhieuNhap_GUI {
 				}
 			}
 		});
+
+		ngaySanXuat.setCellValueFactory(new PropertyValueFactory<>("ngaySX"));
+		ngayHetHan.setCellValueFactory(new PropertyValueFactory<>("hanSuDung"));
+		ghiChuColumn.setCellValueFactory(new PropertyValueFactory<>("ghiChu"));
+
 		updateTotalProductCount();
 		updateTotalAmount();
 	}
@@ -546,6 +845,9 @@ public class ThemPhieuNhap_GUI {
 			updateTotalAmount();
 		});
 
+		setDateColumnEditable(ngaySanXuat, "ngaySX");
+		setDateColumnEditable(ngayHetHan, "hanSuDung");
+
 		donGiaNhap.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
 		donGiaNhap.setOnEditCommit(event -> {
 			ChiTietPhieuNhap ctpn = event.getRowValue();
@@ -554,6 +856,89 @@ public class ThemPhieuNhap_GUI {
 			updateTotalAmount();
 		});
 
+		tenSanPham.setCellFactory(TextFieldTableCell.forTableColumn());
+		tenSanPham.setOnEditCommit(event -> {
+			ChiTietPhieuNhap ctpn = event.getRowValue();
+			if ("Sản phẩm mới".equals(ctpn.getGhiChu())) {  // Kiểm tra ghi chú
+				ctpn.getSanPham().setTenSanPham(event.getNewValue());
+			} else {
+				showErrorDialog("Lỗi chỉnh sửa sản phẩm", "Chỉ \"sản phẩm mới\" được phép chỉnh sửa tên.");
+				productTable.refresh(); 
+			}
+		});
+
+	}
+
+	private void setDateColumnEditable(TableColumn<ChiTietPhieuNhap, LocalDate> column, String property) {
+		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		column.setCellFactory(col -> new TableCell<ChiTietPhieuNhap, LocalDate>() {
+			private final DatePicker datePicker = new DatePicker();
+	
+			{
+				datePicker.setEditable(true);
+	
+				// Lắng nghe sự kiện khi người dùng chọn ngày và commit giá trị
+				datePicker.setOnAction(event -> commitEdit(datePicker.getValue()));
+	
+				// Lắng nghe sự kiện mất focus (người dùng nhấn ra ngoài)
+				datePicker.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+					if (!isNowFocused && isEditing()) {
+						commitEdit(datePicker.getValue());  // Commit giá trị khi mất focus
+					}
+				});
+			}
+	
+			@Override
+			protected void updateItem(LocalDate item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					if (isEditing()) {
+						datePicker.setValue(getItem());
+						setGraphic(datePicker);
+						setText(null);
+					} else {
+						setText(item == null ? "" : formatter.format(item));
+						setGraphic(null);
+					}
+				}
+			}
+	
+			@Override
+			public void startEdit() {
+				super.startEdit();
+				datePicker.setValue(getItem());
+				setGraphic(datePicker);
+				setText(null);
+				datePicker.requestFocus();
+			}
+	
+			@Override
+			public void cancelEdit() {
+				super.cancelEdit();
+				setText(getItem() == null ? "" : formatter.format(getItem()));
+				setGraphic(null);
+			}
+		});
+	
+		// Xử lý khi người dùng chọn ngày hoặc mất focus
+		column.setOnEditCommit(event -> {
+			ChiTietPhieuNhap ctpn = event.getRowValue();
+			Object newValue = event.getNewValue();
+	
+			// Cập nhật ngày sản xuất hoặc hạn sử dụng tùy theo cột được chỉnh sửa
+			if ("ngaySX".equals(property)) {
+				
+				ctpn.getSanPham().setNgaySX((LocalDate) newValue);  // Cập nhật ngày sản xuất
+			} else if ("hanSuDung".equals(property)) {
+				ctpn.getSanPham().setHanSuDung((LocalDate) newValue);  // Cập nhật hạn sử dụng
+			} else {
+				// Có thể thông báo lỗi nếu không có trường ngày nào phù hợp
+				System.out.println("Không có trường ngày phù hợp với property: " + property);
+			}
+		});
 	}
 
 	private void setFloatComboBoxColumnEditable(TableColumn<ChiTietPhieuNhap, Float> column, String property,
@@ -632,6 +1017,20 @@ public class ThemPhieuNhap_GUI {
 	private String generateId() throws SQLException {
 		int count = new PhieuNhap_BUS().countPhieuNhap();
 		String id = String.format("PN%04d", count + 1);
+
+		return id;
+	}
+
+	private String generateIdSanPham() throws SQLException {
+		int count = new SanPham_BUS().countSanPham();
+
+		long newProductCount = addedProductList.stream()
+        .filter(ctpn -> "Sản phẩm mới".equals(ctpn.getGhiChu()))
+        .count();
+
+		// Cộng tổng số để tạo ID mới
+		int totalCount = count + (int) newProductCount;
+		String id = String.format("SP%04d", totalCount + 1);
 
 		return id;
 	}
