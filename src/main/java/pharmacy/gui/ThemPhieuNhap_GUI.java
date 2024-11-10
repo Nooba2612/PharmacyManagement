@@ -659,7 +659,7 @@ public class ThemPhieuNhap_GUI {
 					sp.getSanPham().setNgaySX(sp.getNgaySX());
 					sp.getSanPham().setHanSuDung(sp.getHanSuDung());
 
-					boolean isCreatedProduct = new SanPham_BUS().createSanPham(sp.getSanPham(), connection);
+					boolean isCreatedProduct = new SanPham_BUS().createSanPham(sp.getSanPham());
 					if (!isCreatedProduct) {
 						connection.rollback(); // Rollback nếu không thể tạo sản phẩm mới
 						showErrorDialog("Lỗi tạo sản phẩm mới", "Không thể tạo sản phẩm mới: " + sp.getMaSanPham());

@@ -460,7 +460,8 @@ INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gi
 ('KH0009', N'Đỗ Minh Tuấn', '0991234568', '1987-02-05', 210222, N'Nam', N'Khó tiêu'),
 ('KH0010', N'Vũ Ngọc Lan', '0902345679', '1991-04-18', 6022919, N'Nữ', N'Đau dạ dày');
 
-insert KhachHang ('KH0000', N'Khách hàng lẻ', '0000000000', '1111-11-11', 0, N'Khác', N'Khách hàng lẻ')
+insert KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gioiTinh, ghiChu) VALUES 
+('KH0000', N'Khách hàng lẻ', '0000000000', '1111-11-11', 0, N'Khác', N'Khách hàng lẻ')
 
 -- Thêm dữ liệu vào bảng HoaDon
 INSERT INTO HoaDon (maHoaDon, maKhachHang, maNhanVien, ngayTao, tienKhachDua, tongTien, tienThua, diemSuDung, loaiThanhToan) VALUES 

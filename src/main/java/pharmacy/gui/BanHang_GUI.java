@@ -1,4 +1,3 @@
-
 package pharmacy.gui;
 
 import java.beans.PropertyDescriptor;
@@ -68,7 +67,6 @@ import pharmacy.entity.KhachHang;
 import pharmacy.entity.NhanVien;
 import pharmacy.entity.SanPham;
 import pharmacy.utils.NodeUtil;
-
 
 public class BanHang_GUI {
 
@@ -858,7 +856,6 @@ public class BanHang_GUI {
         //         break;
         //     }
         // }
-
         if (!isProductExists) {
             addedProductList.add(cthd);
         }
@@ -1144,6 +1141,7 @@ public class BanHang_GUI {
         if (result.isPresent() && result.get() == confirmButton) {
             currentDetailInvoice.remove(product);
             addedProductList.remove(product);
+            renderTotalInvoice();
             table.getItems().remove(product);
         }
     }

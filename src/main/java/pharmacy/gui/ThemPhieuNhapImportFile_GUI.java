@@ -477,7 +477,7 @@ public class ThemPhieuNhapImportFile_GUI {
 						sanPham.setNgaySX(chiTiet.getNgaySX());
 						sanPham.setHanSuDung(chiTiet.getHanSuDung());
 
-						boolean isCreatedProduct = new SanPham_BUS().createSanPham(sanPham, connection);
+						boolean isCreatedProduct = new SanPham_BUS().createSanPham(sanPham);
 						if (!isCreatedProduct) {
 							connection.rollback();
 							showErrorDialog("Lỗi tạo sản phẩm mới",

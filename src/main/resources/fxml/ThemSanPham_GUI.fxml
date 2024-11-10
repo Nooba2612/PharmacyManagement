@@ -89,7 +89,7 @@
                               <TableColumn fx:id="descriptionColumn" prefWidth="91.20001220703125" text="Mô tả" />
                               <TableColumn fx:id="expirationDateColumn" prefWidth="100.79998779296875" text="Hạn sử dụng" />
                               <TableColumn fx:id="categoryColumn" prefWidth="75.0" text="Danh mục" />
-                              <TableColumn fx:id="typeColumn" prefWidth="75.0" text="Loại" />
+                              <TableColumn fx:id="productTypeColumn" prefWidth="75.0" text="Loại" />
                            </columns>
                            <cursor>
                               <Cursor fx:constant="TEXT" />

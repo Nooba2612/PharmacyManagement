@@ -34,46 +34,11 @@ public class SanPham_DAO implements SanPham_Interface {
 
 	@Override
 	public boolean createSanPham(SanPham product) {
-		String query = "INSERT INTO SanPham (maSanPham, tenSanPham, danhMuc, loaiSanPham, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa) "
+		 query = "INSERT INTO SanPham (maSanPham, tenSanPham, danhMuc, loaiSanPham, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try {
 			statement = connection.prepareStatement(query);
-			statement.setString(1, product.getMaSanPham());
-			statement.setString(2, product.getTenSanPham());
-			statement.setString(3, product.getDanhMuc());
-			statement.setString(4, product.getDanhMuc());
-			statement.setDate(5, Date.valueOf(product.getNgaySX()));
-			statement.setString(6, product.getNhaSX());
-			statement.setInt(7, product.getSoLuongTon());
-			statement.setDouble(8, product.getDonGiaBan());
-			statement.setFloat(9, product.getThue());
-			statement.setDate(10, Date.valueOf(product.getHanSuDung()));
-			statement.setString(11, product.getDonViTinh());
-			statement.setString(12, product.getMoTa());
-
-			int result = statement.executeUpdate();
-			return result > 0;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	public boolean createSanPham(SanPham product, Connection connection) {
-		String query = "INSERT INTO SanPham (maSanPham, tenSanPham, danhMuc, loaiSanPham, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, product.getMaSanPham());
 			statement.setString(2, product.getTenSanPham());
 			statement.setString(3, product.getDanhMuc());
