@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -56,6 +57,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -72,6 +74,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
@@ -182,6 +185,9 @@ public class ThemPhieuNhap_GUI {
 	private ComboBox<String> categoryField;
 
 	@FXML
+	private Label nameProductAlert, manufacturerAlert, unitAlert, productTypeAlert, categoryAlert, manufactureDateAlert, expirationDateAlert;
+
+	@FXML
 	public void initialize() throws SQLException {
 		setUpForm();
 		handleBackBtnClick();
@@ -192,60 +198,6 @@ public class ThemPhieuNhap_GUI {
 		handleAddProduct();
 		handleAddPhieuNhap();
 		handleExportReceipt();
-	}
-
-	@FXML
-	public void handleImport(ActionEvent event) throws FileNotFoundException, java.io.IOException {
-		System.out.println("Import button clicked!");
-
-		// Tạo FileChooser và thiết lập bộ lọc cho file CSV
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-
-		// Lấy cửa sổ hiện tại để hiển thị FileChooser
-		File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
-
-		if (selectedFile != null) {
-			List<ChiTietPhieuNhap> importedProducts = readProductsFromCSV(selectedFile);
-			if (importedProducts != null) {
-				addedProductList.clear();
-				addedProductList.addAll(importedProducts);
-				handleRenderAddedProductsTable(); // Cập nhật bảng với dữ liệu mới
-				System.out.println("Import file thành công1!");
-			} else {
-				System.out.println("Lỗi khi đọc file CSV.");
-			}
-		}
-	}
-
-	private List<ChiTietPhieuNhap> readProductsFromCSV(File file) throws java.io.IOException {
-		List<ChiTietPhieuNhap> productList = new ArrayList<>();
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-		try (CSVReader csvReader = new CSVReader(new FileReader(file))) {
-			String[] header = csvReader.readNext(); // Đọc dòng tiêu đề
-			String[] line;
-
-			while ((line = csvReader.readNext()) != null) {
-				SanPham sanpham = new SanPham();
-				sanpham.setMaSanPham(line[0]);
-				sanpham.setTenSanPham(line[1]);
-
-				ChiTietPhieuNhap product = new ChiTietPhieuNhap();
-				product.setSanPham(sanpham); // Gán đối tượng SanPham vào ChiTietPhieuNhap
-				product.setSoLuong(Integer.parseInt(line[7]));
-				product.setDonGia(Double.parseDouble(line[8]));
-				product.setThue(Float.parseFloat(line[9]));
-
-				// Tính toán thành tiền
-				double thanhTien = product.getSoLuong() * product.getDonGia() * (1 + product.getThue() / 100);
-				productList.add(product);
-			}
-		} catch (IOException | CsvValidationException | NumberFormatException e) {
-			e.printStackTrace();
-			return null;
-		}
-		return productList;
 	}
 
 	@FXML
@@ -485,6 +437,9 @@ public class ThemPhieuNhap_GUI {
 		// add san pham
 		addProductBtn.setOnAction(event -> {
 			try {
+				if (!validateFormCreateProduct()){
+					return;
+				}
 				SanPham sp = new SanPham();
 				sp.setMaSanPham(generateIdSanPham());
 				sp.setTenSanPham(nameField.getText().trim());
@@ -502,7 +457,6 @@ public class ThemPhieuNhap_GUI {
 
 				ChiTietPhieuNhap ctpn = new ChiTietPhieuNhap();
 				ctpn.setSanPham(sp);
-				;
 				ctpn.setDonGia(10000);
 				ctpn.setSoLuong(1);
 				ctpn.setThue(0.1f);
@@ -518,6 +472,98 @@ public class ThemPhieuNhap_GUI {
 			}
 
 		});
+	}
+
+	@FXML
+	public boolean validateFormCreateProduct() {
+		boolean isValid = true;
+
+		// Validate Name field
+		if (nameField.getText().trim().isEmpty()) {
+			nameProductAlert.setText("Tên sản phẩm không được rỗng.");
+			nameProductAlert.setVisible(true);
+			isValid = false;
+		} else {
+			nameProductAlert.setVisible(false);
+		}
+
+		// Validate Manufacturer field
+		if (manufacturerField.getText().trim().isEmpty()) {
+			manufacturerAlert.setText("Nhà sản xuất thuốc không được rỗng.");
+			manufacturerAlert.setVisible(true);
+			isValid = false;
+		} else {
+			manufacturerAlert.setVisible(false);
+		}
+
+		// Validate Unit field
+		String[] VALID_UNITS = { "Viên", "Vỉ", "Hộp", "Chai", "Ống", "Gói", "Cái", "Chiếc", "Bộ" };
+		String unitValue = (unitField.getValue() != null) ? unitField.getValue().trim()
+				: unitField.getEditor().getText().trim();
+
+		if (unitValue.isEmpty()) {
+			unitAlert.setText("Đơn vị tính chưa được chọn.");
+			unitAlert.setVisible(true);
+			isValid = false;
+		} else if (!Arrays.asList(VALID_UNITS).contains(unitValue)) {
+			unitAlert.setText("Đơn vị tính không hợp lệ.");
+			unitAlert.setVisible(true);
+			isValid = false;
+		} else {
+			unitAlert.setVisible(false);
+		}
+
+		// Validate Product type field
+		String[] VALID_TYPES = { "Thuốc", "Thiết bị y tế" };
+		String productTypeValue = (productTypeField.getValue() != null) ? productTypeField.getValue().trim()
+				: productTypeField.getEditor().getText().trim();
+
+		if (productTypeValue.isEmpty()) {
+			productTypeAlert.setText("Loại sản phẩm chưa được chọn.");
+			productTypeAlert.setVisible(true);
+			isValid = false;
+		} else if (!Arrays.asList(VALID_TYPES).contains(productTypeValue)) {
+			productTypeAlert.setText("Loại sản phẩm không hợp lệ.");
+			productTypeAlert.setVisible(true);
+			isValid = false;
+		} else {
+			productTypeAlert.setVisible(false);
+		}
+
+		// Validate Category field
+		String[] VALID_CATEGORIES = { "giảm đau", "hạ sốt", "kháng sinh", "chống viêm",
+				"vitamin", "an thần", "siro", "dụng cụ y tế", "sản phẩm bảo vệ cá nhân", "dung dịch vệ sinh", "khác" };
+		if (categoryField.getValue() == null || categoryField.getEditor().getText().trim().isEmpty()) {
+			categoryAlert.setText("Danh mục chưa được chọn.");
+			categoryAlert.setVisible(true);
+			isValid = false;
+		} else if (!Arrays.asList(VALID_CATEGORIES).contains(categoryField.getValue().toLowerCase())) {
+			unitAlert.setText("Đơn vị tính không hợp lệ.");
+			unitAlert.setVisible(true);
+			isValid = false;
+		} else {
+			categoryAlert.setVisible(false);
+		}
+
+		// Validate Expiration Date
+		if (expirationDateField.getValue() == null) {
+			expirationDateAlert.setText("Ngày hết hạn không được rỗng.");
+			expirationDateAlert.setVisible(true);
+			isValid = false;
+		} else {
+			expirationDateAlert.setVisible(false);
+		}
+
+		// Validate Manufacture Date
+		if (manufactureDateField.getValue() == null) {
+			manufactureDateAlert.setText("Ngày sản xuất không được rỗng.");
+			manufactureDateAlert.setVisible(true);
+			isValid = false;
+		} else {
+			manufactureDateAlert.setVisible(false);
+		}
+
+		return isValid;
 	}
 
 	private void filterProducts(String keySearch) throws SQLException {
@@ -1190,10 +1236,9 @@ public class ThemPhieuNhap_GUI {
 
 			// Cập nhật ngày sản xuất hoặc hạn sử dụng tùy theo cột được chỉnh sửa
 			if ("ngaySX".equals(property)) {
-
-				ctpn.getSanPham().setNgaySX((LocalDate) newValue); // Cập nhật ngày sản xuất
+				ctpn.setNgaySX((LocalDate) newValue); // Cập nhật ngày sản xuất
 			} else if ("hanSuDung".equals(property)) {
-				ctpn.getSanPham().setHanSuDung((LocalDate) newValue); // Cập nhật hạn sử dụng
+				ctpn.setHanSuDung((LocalDate) newValue); // Cập nhật hạn sử dụng
 			} else {
 				// Có thể thông báo lỗi nếu không có trường ngày nào phù hợp
 				System.out.println("Không có trường ngày phù hợp với property: " + property);
