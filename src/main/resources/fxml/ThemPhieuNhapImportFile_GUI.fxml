@@ -222,7 +222,7 @@
                         </HBox>
                     </children>
                 </GridPane>
-            <Button fx:id="submitBtn" alignment="CENTER" layoutX="725.0" layoutY="681.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="236.0" style="-fx-background-color: #339933;" text="Thêm phiếu nhập" textAlignment="CENTER" textFill="WHITE">
+            <Button fx:id="submitBtn" alignment="CENTER" layoutX="725.0" layoutY="681.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="236.0" style="-fx-background-color: #339933;" text="Lưu phiếu nhập" textAlignment="CENTER" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="28.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
