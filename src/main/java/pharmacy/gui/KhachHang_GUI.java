@@ -507,6 +507,7 @@ public class KhachHang_GUI {
                 showChangeTableConfirmationPopup(customer, newValue, event, property);
             } else {
                 showInvalidInputDataDialog();
+                return;
             }
         });
     }
@@ -571,6 +572,7 @@ public class KhachHang_GUI {
                 showChangeTableConfirmationPopup(customer, newValue, event, property);
             } else {
                 showInvalidInputDataDialog();
+                return;
             }
         });
 
@@ -607,6 +609,7 @@ public class KhachHang_GUI {
                 showChangeTableConfirmationPopup(customer, newValue, event, property);
             } else {
                 showInvalidInputDataDialog();
+                return;
             }
         });
     }
@@ -671,6 +674,7 @@ public class KhachHang_GUI {
                     event.consume();
                 } else {
                     showInvalidInputDataDialog();
+                    return;
                 }
             } catch (Exception ex) {
                 Logger.getLogger(KhachHang_GUI.class.getName()).log(Level.SEVERE, null, ex);
