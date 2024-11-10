@@ -18,48 +18,26 @@
 
 <HBox fx:id="root" alignment="TOP_CENTER" maxHeight=" .7976931348623157E308" maxWidth=" .7976931348623157E308" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.NhaCungCap_GUI">
 	<children>
-		<Pane maxHeight="   .7976931348623157E308"
-			maxWidth="   .7976931348623157E308" minHeight="-Infinity"
-			minWidth="-Infinity">
+		<Pane maxHeight="   .7976931348623157E308" maxWidth="   .7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
 			<children>
-				<Text id="mainTitle" fill="#9e9e9e" layoutY="66.0"
-					strokeType="OUTSIDE" strokeWidth="0.0"
-					text="Danh sách nhà cung cấp" textAlignment="CENTER">
+				<Text id="mainTitle" fill="#9e9e9e" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Danh sách nhà cung cấp" textAlignment="CENTER">
 					<font>
 						<Font name="Arial Bold" size="25.0" />
 					</font>
 				</Text>
-				<Pane layoutY="103.0" maxHeight="-Infinity"
-					maxWidth="-Infinity" prefHeight="564.0" prefWidth="998.0"
-					style="-fx-background-color: #fff;">
+				<Pane layoutY="103.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="564.0" prefWidth="998.0" style="-fx-background-color: #fff;">
 					<children>
-						<Line endX="896.5999755859375" endY="-7.62939453125E-6"
-							layoutX="58.0" layoutY="87.0" startX="-11.400009155273438"
-							stroke="#cccccc" strokeWidth="2.0" />
-						<ScrollPane id="expiredMedicinesTablePane"
-							fitToHeight="true" fitToWidth="true" layoutX="46.0"
-							layoutY="113.0" prefHeight="421.0" prefWidth="923.0"
-							style="-fx-background-color: #fff;">
+						<Line endX="896.5999755859375" endY="-7.62939453125E-6" layoutX="58.0" layoutY="87.0" startX="-11.400009155273438" stroke="#cccccc" strokeWidth="2.0" />
+						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="46.0" layoutY="113.0" prefHeight="421.0" prefWidth="923.0" style="-fx-background-color: #fff;">
 							<content>
-								<TableView fx:id="supplierTable" editable="true"
-									minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0"
-									prefWidth="880.0" style="-fx-background-color: #FFF;"
-									stylesheets="@../css/TableStyles.css"
-									tableMenuButtonVisible="true">
+								<TableView fx:id="supplierTable" editable="true" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
 									<columns>
-										<TableColumn fx:id="idColumn"
-											prefWidth="101.59998017549515" resizable="false"
-											text="Mã NCC" />
-										<TableColumn fx:id="nameColumn"
-											prefWidth="228.80006408691406" text="Tên nhà cung cấp" />
-										<TableColumn fx:id="addressColumn"
-											prefWidth="155.20004272460938" sortable="false"
-											text="Địa chỉ" />
-										<TableColumn fx:id="phoneColumn"
-											prefWidth="145.59994506835938" sortable="false"
-											text="Số điện thoại" />
-										<TableColumn fx:id="emailColumn"
-											prefWidth="190.4000244140625" text="Email" />
+										<TableColumn fx:id="idColumn" prefWidth="101.59998017549515" resizable="false" text="Mã NCC" />
+										<TableColumn fx:id="nameColumn" prefWidth="228.80006408691406" text="Tên nhà cung cấp" />
+										<TableColumn fx:id="addressColumn" prefWidth="160.80001831054688" sortable="false" text="Địa chỉ" />
+										<TableColumn fx:id="phoneColumn" prefWidth="175.199951171875" sortable="false" text="Số điện thoại" />
+										<TableColumn fx:id="emailColumn" prefWidth="167.20001220703125" text="Email" />
+                              <TableColumn fx:id="actionColumn" prefWidth="104.800048828125" text="Hành động" />
 									</columns>
 									<columnResizePolicy>
 										<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -70,11 +48,7 @@
 								</TableView>
 							</content>
 						</ScrollPane>
-						<Button fx:id="addSupplierBtn" layoutX="46.0"
-							layoutY="24.0" mnemonicParsing="false" prefHeight="40.0"
-							prefWidth="160.0"
-							style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));"
-							text="Thêm nhà cung cấp" textFill="WHITE">
+						<Button fx:id="addSupplierBtn" layoutX="46.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="160.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="Thêm nhà cung cấp" textFill="WHITE">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
@@ -82,22 +56,16 @@
 								<Font name="System Bold" size="12.0" />
 							</font>
 							<graphic>
-								<ImageView fitHeight="30.0" fitWidth="27.0"
-									pickOnBounds="true" preserveRatio="true">
+								<ImageView fitHeight="30.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
 									<image>
 										<Image url="@../images/plus-icon.png" />
 									</image>
 								</ImageView>
 							</graphic>
 						</Button>
-						<Pane fx:id="searchPane" layoutX="735.0" layoutY="21.0"
-							prefHeight="46.0" prefWidth="221.0"
-							style="-fx-background-color: #f0f0f0;">
+						<Pane fx:id="searchPane" layoutX="735.0" layoutY="21.0" prefHeight="46.0" prefWidth="221.0" style="-fx-background-color: #f0f0f0;">
 							<children>
-								<TextField fx:id="searchField" layoutX="7.0"
-									layoutY="6.0" prefHeight="34.0" prefWidth="174.0"
-									promptText="Nhập nội dung tìm kiếm"
-									style="-fx-background-color: transparent;">
+								<TextField fx:id="searchField" layoutX="7.0" layoutY="6.0" prefHeight="34.0" prefWidth="174.0" promptText="Nhập nội dung tìm kiếm" style="-fx-background-color: transparent;">
 									<font>
 										<Font size="13.0" />
 									</font>
@@ -116,11 +84,7 @@
 								</Button>
 							</children>
 						</Pane>
-						<Button fx:id="exportListBtn" layoutX="240.0"
-							layoutY="24.0" mnemonicParsing="false" prefHeight="40.0"
-							prefWidth="150.0"
-							style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));"
-							text="In danh sách" textFill="WHITE">
+						<Button fx:id="exportListBtn" layoutX="240.0" layoutY="24.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" style="-fx-background-color: linear-gradient(to right, rgb(63.0, 188.0, 63.0), rgb(0.0, 230.0, 0.0));" text="In danh sách" textFill="WHITE">
 							<cursor>
 								<Cursor fx:constant="HAND" />
 							</cursor>
@@ -128,8 +92,7 @@
 								<Font name="System Bold" size="12.0" />
 							</font>
 							<graphic>
-								<ImageView fitHeight="23.0" fitWidth="34.0"
-									pickOnBounds="true" preserveRatio="true">
+								<ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
 									<image>
 										<Image url="@../images/printer-icon.png" />
 									</image>

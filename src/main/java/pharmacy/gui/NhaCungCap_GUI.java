@@ -31,12 +31,17 @@ import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import com.itextpdf.layout.properties.VerticalAlignment;
 
+import javafx.animation.Animation;
+import javafx.animation.RotateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -51,7 +56,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import pharmacy.bus.NhaCungCap_BUS;
+import pharmacy.bus.SanPham_BUS;
 import pharmacy.entity.*;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.PDFUtil;
@@ -63,6 +72,9 @@ public class NhaCungCap_GUI {
 
     @FXML
     private Button addSupplierBtn;
+
+    @FXML
+    private Button refreshBtn;
 
     @FXML
     private TableColumn<NhaCungCap, String> idColumn;
@@ -104,18 +116,129 @@ public class NhaCungCap_GUI {
     // methods
     @FXML
     public void initialize() {
-        handleSupplierTableAction();
         handleExportNhaCungCapList();
+        handleSupplierTableAction();
     }
 
     @FXML
     public void handleSupplierTableAction() {
+        handleEditableSupplierTable();
         renderNhaCungCap();
         handleSearchSupplierAction(supplierList);
-        handleEditableSupplierTable();
         setupTablePlaceholder();
         handleAddSupplierAction();
+        addIconToActionColumn();
     }
+
+    
+
+    @FXML
+    private void addIconToActionColumn() {
+        actionColumn.setCellFactory(column -> new TableCell<NhaCungCap, Void>() {
+            private final Button actionButton = new Button();
+
+            {
+                ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/edit-icon.png")));
+                icon.setFitHeight(20);
+                icon.setFitWidth(20);
+                actionButton.setGraphic(icon);
+                actionButton.setVisible(false);
+                actionButton.setStyle("-fx-background-color: transparent;");
+
+                actionButton.setOnMouseEntered(event -> {
+                    NodeUtil.applyFadeTransition(actionButton, 1, 0.7, 300, () -> {
+                    });
+                    NodeUtil.applyScaleTransition(actionButton, 1, 1.1, 1, 1.1, 300, () -> {
+                    });
+                });
+                actionButton.setOnMouseExited(event -> {
+                    NodeUtil.applyFadeTransition(actionButton, 0.7, 1, 300, () -> {
+                    });
+                    NodeUtil.applyScaleTransition(actionButton, 1.1, 1, 1.1, 1, 300, () -> {
+                    });
+                });
+
+                actionButton.setOnAction(event -> {
+                    NhaCungCap ncc = getTableView().getItems().get(getIndex());
+
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CapNhatNCC_GUI.fxml"));
+                        Parent root = loader.load();
+                        CapNhatNCC_GUI controller = loader.getController();
+
+                        try {
+                            controller.setUpForm(ncc);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+
+                        Stage popupStage = new Stage();
+                        popupStage.initOwner(actionButton.getScene().getWindow());
+                        popupStage.getIcons()
+                                .add(new Image(getClass().getResource("/images/update-icon.png").toString()));
+                        popupStage.initModality(Modality.APPLICATION_MODAL);
+                        popupStage.setTitle("Cập nhật nhà cung cấp - " + ncc.getTenNCC());
+                        popupStage.setResizable(false);
+                        Scene scene = new Scene(root);
+                        popupStage.setScene(scene);
+                        popupStage.show();
+
+                        popupStage.setOnHidden(ev -> {
+                            showLoadingAnimation();
+
+                            new Thread(() -> {
+                                try {
+                                    Thread.sleep(800);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                Platform.runLater(() -> {
+                                    renderNhaCungCap();
+                                    setupTablePlaceholder();
+                                });
+                            }).start();
+                        });
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+
+                actionButton.getStyleClass().add("action-button");
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+
+                HBox hBox = new HBox(actionButton);
+                hBox.setAlignment(Pos.CENTER);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(hBox);
+                }
+            }
+
+            @Override
+            public void updateIndex(int i) {
+                super.updateIndex(i);
+                if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
+                    TableRow<NhaCungCap> currentRow = getTableRow();
+                    currentRow.setOnMouseEntered(event -> {
+                        actionButton.setVisible(true);
+                        NodeUtil.applyFadeTransition(actionButton, 0, 1, 300, () -> {
+                        });
+                    });
+                    currentRow.setOnMouseExited(event -> NodeUtil.applyFadeTransition(actionButton, 1, 0, 300, () -> {
+                        actionButton.setVisible(false);
+                    }));
+                }
+            }
+        });
+    }
+
 
     @FXML
     public void renderNhaCungCap() {
@@ -125,9 +248,9 @@ public class NhaCungCap_GUI {
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("diaChi"));
         phoneColumn.setCellValueFactory(new PropertyValueFactory<>("soDienThoai"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        addIconToActionColumn();
 
         supplierList.addAll(new NhaCungCap_BUS().getAllNhaCungCap());
-        handleSearchSupplierAction(supplierList);
         // Set data to the TableView
         supplierTable.setItems(supplierList);
     }
@@ -410,4 +533,22 @@ public class NhaCungCap_GUI {
         });
     }
 
+    @FXML
+    public void showLoadingAnimation() {
+        supplierList.clear();
+        supplierTable.getItems().clear();
+
+        ImageView loadingImageView = new ImageView(
+                new Image(getClass().getClassLoader().getResource("images/loading-icon.png").toString()));
+        loadingImageView.setFitHeight(50);
+        loadingImageView.setFitWidth(50);
+        supplierTable.setPlaceholder(loadingImageView);
+
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.8), loadingImageView);
+        rotateTransition.setCycleCount(Animation.INDEFINITE);
+        rotateTransition.setFromAngle(0);
+        rotateTransition.setToAngle(360);
+        rotateTransition.play();
+    }
+    
 }

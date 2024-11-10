@@ -41,7 +41,7 @@ public class KhachHang_DAO implements KhachHang_Interface {
 
     @Override
     public boolean createKhachHang(KhachHang customer) {
-        String query = "INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gioiTinh,  ghiChu) "
+        query = "INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gioiTinh, ghiChu) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
@@ -153,18 +153,27 @@ public class KhachHang_DAO implements KhachHang_Interface {
     }
 
     @Override
-    public int countKhachHang() {
-        String query = "SELECT COUNT(*) FROM KhachHang";
-        int count = 0;
-        try (Connection connection = DatabaseConnection.getConnection(); Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(query)) {
+    public KhachHang getKhachHangByPhone(String phone) {
+        query = "SELECT * FROM KhachHang WHERE soDienThoai = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, phone);
+            ResultSet rs = statement.executeQuery();
 
             if (rs.next()) {
-                count = rs.getInt(1);
+                String maKhachHang = rs.getString("maKhachHang");
+                String hoTen = rs.getString("hoTen");
+                String soDienThoai = rs.getString("soDienThoai");
+                LocalDate namSinh = rs.getDate("namSinh").toLocalDate();
+                int diemTichLuy = rs.getInt("diemTichLuy");
+                String ghiChu = rs.getString("ghiChu");
+                String gioiTinh = rs.getString("gioiTinh");
+
+                return new KhachHang(maKhachHang, hoTen, soDienThoai, diemTichLuy, namSinh, ghiChu, gioiTinh);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return count;
+        return null;
     }
 
     @Override
@@ -269,22 +278,20 @@ public class KhachHang_DAO implements KhachHang_Interface {
     }
 
     @Override
-    public void refreshKhachHang() {
-        String updateThanThiet = "UPDATE KhachHang SET ghiChu = N'Khách hàng thân thiết' WHERE diemTichLuy > ?";
-        String updateLe = "UPDATE KhachHang SET ghiChu = N'Khách hàng lẻ' WHERE diemTichLuy < ?";
-
+    public int countCustomer() {
+        String query = "SELECT COUNT(*) FROM KhachHang";
+        int count = 0;
         try {
+            Connection connection = DatabaseConnection.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
 
-            statement = connection.prepareStatement(updateThanThiet);
-
-            statement.executeUpdate();
-
-            statement = connection.prepareStatement(updateLe);
-            statement.executeUpdate();
-
-        } catch (SQLException e) {
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        return count;
     }
-
 }

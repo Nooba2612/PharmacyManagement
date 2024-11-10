@@ -1,6 +1,7 @@
 package pharmacy.dao;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,20 +118,25 @@ public class NhaCungCap_DAO implements NhaCungCap_Interface {
         }
     }
     
+   
+
+    @Override
     public int countNhaCungCap() {
         String query = "SELECT COUNT(*) FROM NhaCungCap";
         int count = 0;
-        try (Connection connection = DatabaseConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet rs = statement.executeQuery(query)) {
+        try {
+            Connection connection = DatabaseConnection.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
 
-            if (rs.next()) {
+            if (rs.next()){
                 count = rs.getInt(1);
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return count;
     }
+
 
 }

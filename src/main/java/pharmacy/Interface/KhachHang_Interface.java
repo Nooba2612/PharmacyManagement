@@ -5,23 +5,25 @@ import java.util.List;
 import pharmacy.entity.KhachHang;
 
 public interface KhachHang_Interface {
-	boolean addKhachHang(KhachHang kh);
 
-	boolean updateKhachHang(KhachHang kh);
+    boolean addKhachHang(KhachHang kh);
 
-	boolean deleteKhachHang(String maKhachHang);
+    boolean updateKhachHang(KhachHang kh);
 
-	List<KhachHang> getAllKhachHang();
+    boolean deleteKhachHang(String maKhachHang);
 
-	KhachHang getKhachHangById(String maKhachHang);
-	
-	int countKhachHang();
+    List<KhachHang> getAllKhachHang();
 
-	List<KhachHang> getNewCustomerByDate(String date) ;
+    KhachHang getKhachHangById(String maKhachHang);
 
-	List<KhachHang> getTopCustomer();
+    KhachHang getKhachHangByPhone(String phone);
 
-	boolean createKhachHang(KhachHang customer);
+    int countCustomer();
 
-	void refreshKhachHang();
+    List<KhachHang> getNewCustomerByDate(String date);
+
+    List<KhachHang> getTopCustomer();
+
+    boolean createKhachHang(KhachHang customer);
+
 }

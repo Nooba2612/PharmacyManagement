@@ -8,123 +8,128 @@ import java.util.List;
 import pharmacy.bus.SanPham_BUS;
 
 public class HoaDon {
-	private String maHoaDon;
-	private KhachHang khachHang;
-	private NhanVien nhanVien;
-	private LocalDateTime ngayTao;
-	private double tienKhachDua;
-	private double diemSuDung;
-	private String loaiThanhToan;
-	private List<ChiTietHoaDon> chiTietHoaDonList;
-	private Double tienThua;
-	private Double tongTien;
 
-	public HoaDon() {
-		chiTietHoaDonList = new ArrayList<>();
-	}
+    private String maHoaDon;
+    private KhachHang khachHang;
+    private NhanVien nhanVien;
+    private LocalDateTime ngayTao;
+    private double tienKhachDua;
+    private double diemSuDung;
+    private String loaiThanhToan;
+    private List<ChiTietHoaDon> chiTietHoaDonList;
+    private Double tienThua;
+    private Double tongTien;
 
-	public HoaDon(String maHoaDon, KhachHang khachHang, NhanVien nhanVien, LocalDateTime ngayTao, double tienKhachDua,
-			double diemSuDung, String loaiThanhToan, List<ChiTietHoaDon> chiTietHoaDonList) throws SQLException {
-		this.maHoaDon = maHoaDon;
-		this.khachHang = khachHang;
-		this.nhanVien = nhanVien;
-		this.ngayTao = ngayTao;
-		this.tienKhachDua = tienKhachDua;
-		this.diemSuDung = diemSuDung;
-		this.loaiThanhToan = loaiThanhToan;
-		this.chiTietHoaDonList = chiTietHoaDonList != null ? chiTietHoaDonList : new ArrayList<>();
-		this.tongTien = 0.0;
-		if (chiTietHoaDonList != null && !chiTietHoaDonList.isEmpty()) {
-			for (ChiTietHoaDon cthd : chiTietHoaDonList) {
-				if (cthd != null && cthd.getMaSanPham() != null) {
-					SanPham sp = new SanPham_BUS().getSanPhamByMaSanPham(cthd.getMaSanPham());
-					if (sp != null) {
-						this.tongTien += (sp.getDonGiaBan() * cthd.getSoLuong())
-								- (sp.getDonGiaBan() * cthd.getSoLuong() * cthd.getThue());
-					}
-				}
-			}
-		}
+    public HoaDon() {
+        chiTietHoaDonList = new ArrayList<>();
+    }
 
-		this.tienThua = tienKhachDua - tongTien;
-	}
+    public HoaDon(String maHoaDon, KhachHang khachHang, NhanVien nhanVien, LocalDateTime ngayTao, double tienKhachDua,
+            double diemSuDung, String loaiThanhToan, List<ChiTietHoaDon> chiTietHoaDonList) throws SQLException {
+        this.maHoaDon = maHoaDon;
+        this.khachHang = khachHang;
+        this.nhanVien = nhanVien;
+        this.ngayTao = ngayTao;
+        this.tienKhachDua = tienKhachDua;
+        this.diemSuDung = diemSuDung;
+        this.loaiThanhToan = loaiThanhToan;
+        this.chiTietHoaDonList = chiTietHoaDonList != null ? chiTietHoaDonList : new ArrayList<>();
+        this.tongTien = 0.0;
+        if (chiTietHoaDonList != null && !chiTietHoaDonList.isEmpty()) {
+            for (ChiTietHoaDon cthd : chiTietHoaDonList) {
+                if (cthd != null && cthd.getMaSanPham() != null) {
+                    SanPham sp = new SanPham_BUS().getSanPhamByMaSanPham(cthd.getMaSanPham());
+                    if (sp != null) {
+                        this.tongTien += (sp.getDonGiaBan() * cthd.getSoLuong())
+                                - (sp.getDonGiaBan() * cthd.getSoLuong() * cthd.getThue());
+                    }
+                }
+            }
+        }
 
-	public Double getTienThua() {
-		return tienThua;
-	}
+        if (tienKhachDua - tongTien >= 0) {
+            this.tienThua = tienKhachDua - tongTien;
+        } else {
+            this.tienThua = 0.0;
+        }
+    }
 
-	public Double getTongTien() {
-		return tongTien;
-	}
+    public Double getTienThua() {
+        return tienThua;
+    }
 
-	public String getMaHoaDon() {
-		return maHoaDon;
-	}
+    public Double getTongTien() {
+        return tongTien;
+    }
 
-	public void setMaHoaDon(String maHoaDon) {
-		this.maHoaDon = maHoaDon;
-	}
+    public String getMaHoaDon() {
+        return maHoaDon;
+    }
 
-	public KhachHang getKhachHang() {
-		return khachHang;
-	}
+    public void setMaHoaDon(String maHoaDon) {
+        this.maHoaDon = maHoaDon;
+    }
 
-	public void setKhachHang(KhachHang khachHang) {
-		this.khachHang = khachHang;
-	}
+    public KhachHang getKhachHang() {
+        return khachHang;
+    }
 
-	public NhanVien getNhanVien() {
-		return nhanVien;
-	}
+    public void setKhachHang(KhachHang khachHang) {
+        this.khachHang = khachHang;
+    }
 
-	public void setNhanVien(NhanVien nhanVien) {
-		this.nhanVien = nhanVien;
-	}
+    public NhanVien getNhanVien() {
+        return nhanVien;
+    }
 
-	public LocalDateTime getNgayTao() {
-		return ngayTao;
-	}
+    public void setNhanVien(NhanVien nhanVien) {
+        this.nhanVien = nhanVien;
+    }
 
-	public void setNgayTao(LocalDateTime ngayTao) {
-		this.ngayTao = ngayTao;
-	}
+    public LocalDateTime getNgayTao() {
+        return ngayTao;
+    }
 
-	public double getTienKhachDua() {
-		return tienKhachDua;
-	}
+    public void setNgayTao(LocalDateTime ngayTao) {
+        this.ngayTao = ngayTao;
+    }
 
-	public void setTienKhachDua(double tienKhachDua) {
-		this.tienKhachDua = tienKhachDua;
-	}
+    public double getTienKhachDua() {
+        return tienKhachDua;
+    }
 
-	public double getDiemSuDung() {
-		return diemSuDung;
-	}
+    public void setTienKhachDua(double tienKhachDua) {
+        this.tienKhachDua = tienKhachDua;
+    }
 
-	public void setDiemSuDung(double diemSuDung) {
-		this.diemSuDung = diemSuDung;
-	}
+    public double getDiemSuDung() {
+        return diemSuDung;
+    }
 
-	public String getLoaiThanhToan() {
-		return loaiThanhToan;
-	}
+    public void setDiemSuDung(double diemSuDung) {
+        this.diemSuDung = diemSuDung;
+    }
 
-	public void setLoaiThanhToan(String loaiThanhToan) {
-		this.loaiThanhToan = loaiThanhToan;
-	}
+    public String getLoaiThanhToan() {
+        return loaiThanhToan;
+    }
 
-	public List<ChiTietHoaDon> getChiTietHoaDonList() {
-		return chiTietHoaDonList;
-	}
+    public void setLoaiThanhToan(String loaiThanhToan) {
+        this.loaiThanhToan = loaiThanhToan;
+    }
 
-	public void setChiTietHoaDonList(List<ChiTietHoaDon> chiTietHoaDonList) {
-		this.chiTietHoaDonList = chiTietHoaDonList;
-	}
+    public List<ChiTietHoaDon> getChiTietHoaDonList() {
+        return chiTietHoaDonList;
+    }
 
-	@Override
-	public String toString() {
-		return "HoaDon{" + "maHoaDon='" + maHoaDon + '\'' + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
-				+ ", ngayTao=" + ngayTao + ", tienKhachDua=" + tienKhachDua + ", diemSuDung=" + diemSuDung
-				+ ", loaiThanhToan='" + loaiThanhToan + '\'' + ", chiTietHoaDonList=" + chiTietHoaDonList + '}';
-	}
+    public void setChiTietHoaDonList(List<ChiTietHoaDon> chiTietHoaDonList) {
+        this.chiTietHoaDonList = chiTietHoaDonList;
+    }
+
+    @Override
+    public String toString() {
+        return "HoaDon{" + "maHoaDon='" + maHoaDon + '\'' + ", khachHang=" + khachHang + ", nhanVien=" + nhanVien
+                + ", ngayTao=" + ngayTao + ", tienKhachDua=" + tienKhachDua + ", diemSuDung=" + diemSuDung
+                + ", loaiThanhToan='" + loaiThanhToan + '\'' + ", chiTietHoaDonList=" + chiTietHoaDonList + '}';
+    }
 }

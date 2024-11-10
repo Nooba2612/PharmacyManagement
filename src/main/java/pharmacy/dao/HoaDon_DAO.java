@@ -1,11 +1,9 @@
 package pharmacy.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,18 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pharmacy.Interface.HoaDon_Interface;
-import pharmacy.bus.ChiTietHoaDon_BUS;
-import pharmacy.bus.KhachHang_BUS;
-import pharmacy.bus.NhanVien_BUS;
-import pharmacy.bus.SanPham_BUS;
 import pharmacy.connections.DatabaseConnection;
 import pharmacy.entity.ChiTietHoaDon;
 import pharmacy.entity.HoaDon;
 import pharmacy.entity.KhachHang;
 import pharmacy.entity.NhanVien;
-import pharmacy.entity.SanPham;
 
 public class HoaDon_DAO implements HoaDon_Interface {
+
     private Connection connection;
     private PreparedStatement statement;
     private ResultSet rs;
@@ -36,18 +30,47 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
     @Override
     public boolean createHoaDon(HoaDon hoaDon) {
-        query = "INSERT INTO HoaDon (maHoaDon, maKhachHang, maNhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        query = "INSERT INTO HoaDon (maHoaDon, maKhachHang, maNhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan, tongTien, tienThua, isTemp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             statement = connection.prepareStatement(query);
             statement.setString(1, hoaDon.getMaHoaDon());
-            statement.setString(2, hoaDon.getKhachHang().getMaKhachHang());
+            statement.setString(2, hoaDon.getKhachHang() == null ? "KH0000" : hoaDon.getKhachHang().getMaKhachHang());
             statement.setString(3, hoaDon.getNhanVien().getMaNhanVien());
             LocalDateTime now = hoaDon.getNgayTao();
             statement.setTimestamp(4, Timestamp.valueOf(now));
             statement.setDouble(5, hoaDon.getTienKhachDua());
             statement.setDouble(6, hoaDon.getDiemSuDung());
             statement.setString(7, hoaDon.getLoaiThanhToan());
+            statement.setDouble(8, hoaDon.getTongTien());
+            statement.setDouble(9, hoaDon.getTienThua());
+            statement.setInt(10, 0);
+
+            return statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean createHoaDonTam(HoaDon hoaDon) {
+        query = "INSERT INTO HoaDon (maHoaDon, maKhachHang, maNhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan, tongTien, tienThua, isTemp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, hoaDon.getMaHoaDon());
+            statement.setString(2, hoaDon.getKhachHang() == null ? "KH0000" : hoaDon.getKhachHang().getMaKhachHang());
+            statement.setString(3, hoaDon.getNhanVien().getMaNhanVien());
+            LocalDateTime now = hoaDon.getNgayTao();
+            statement.setTimestamp(4, Timestamp.valueOf(now));
+            statement.setDouble(5, hoaDon.getTienKhachDua());
+            statement.setDouble(6, hoaDon.getDiemSuDung());
+            statement.setString(7, hoaDon.getLoaiThanhToan());
+            statement.setDouble(8, hoaDon.getTongTien());
+            statement.setDouble(9, hoaDon.getTienThua());
+            statement.setDouble(10, 1);
 
             return statement.executeUpdate() > 0;
 
@@ -59,7 +82,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
     @Override
     public HoaDon getHoaDonById(String maHoaDon) {
-        query = "SELECT * FROM HoaDon WHERE maHoaDon = ?";
+        query = "SELECT * FROM HoaDon WHERE maHoaDon = ? AND isTemp = 0";
         try {
             statement = connection.prepareStatement(query);
             statement.setString(1, maHoaDon);
@@ -88,7 +111,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
     @Override
     public List<HoaDon> getAllHoaDon() {
         List<HoaDon> hoaDonList = new ArrayList<>();
-        query = "SELECT * FROM HoaDon";
+        query = "SELECT * FROM HoaDon WHERE isTemp = 0";
 
         try {
             statement = connection.prepareStatement(query);
@@ -171,9 +194,9 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
     @Override
     public String calculateTotalRevenue() {
-        query = "SELECT SUM(c.soLuong * h.tongTien) AS TotalRevenue " +
-                "FROM ChiTietHoaDon c " +
-                "JOIN HoaDon h ON c.maHoaDon = h.maHoaDon";
+        query = "SELECT SUM(c.soLuong * h.tongTien) AS TotalRevenue "
+                + "FROM ChiTietHoaDon c "
+                + "JOIN HoaDon h ON c.maHoaDon = h.maHoaDon WHERE isTemp = 0";
         double totalRevenue = 0;
 
         try {
@@ -199,9 +222,9 @@ public class HoaDon_DAO implements HoaDon_Interface {
     }
 
     public double calculateRevenueByDate(String date) {
-        query = "SELECT SUM(tongTien) AS RevenueByDate " +
-                "FROM HoaDon " +
-                "WHERE CAST(ngayTao AS DATE) = ?";
+        query = "SELECT SUM(tongTien) AS RevenueByDate "
+                + "FROM HoaDon "
+                + "WHERE CAST(ngayTao AS DATE) = ? AND isTemp = 0";
         double revenueByDate = 0;
 
         try {
@@ -221,9 +244,9 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
     @Override
     public double calculateRevenueByMonth(int month, int year) {
-        query = "SELECT SUM(tongTien) AS RevenueByMonth " +
-                "FROM HoaDon " +
-                "WHERE YEAR(ngayTao) = ? AND MONTH(ngayTao) = ?";
+        query = "SELECT SUM(tongTien) AS RevenueByMonth "
+                + "FROM HoaDon "
+                + "WHERE YEAR(ngayTao) = ? AND MONTH(ngayTao) = ? AND isTemp = 0";
         double revenueByMonth = 0;
 
         try {
@@ -244,9 +267,9 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
     @Override
     public double calculateRevenueByYear(int year) {
-        query = "SELECT SUM(tongTien) AS RevenueByYear " +
-                "FROM HoaDon " +
-                "WHERE YEAR(ngayTao) = ?";
+        query = "SELECT SUM(tongTien) AS RevenueByYear "
+                + "FROM HoaDon "
+                + "WHERE YEAR(ngayTao) = ? AND isTemp = 0";
         double revenueByYear = 0;
 
         try {
@@ -270,7 +293,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
         try {
             if (date == null || date.length() == 0) {
-                query = "SELECT SUM(tongTien) AS RevenueByEmployee FROM HoaDon WHERE maNhanVien = ?";
+                query = "SELECT SUM(tongTien) AS RevenueByEmployee FROM HoaDon WHERE maNhanVien = ? AND isTemp = 0";
                 try {
                     statement = connection.prepareStatement(query);
                     statement.setString(1, maNhanVien);
@@ -284,7 +307,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
             } else {
                 String[] dateParts = date.split("[-/]");
                 if (dateParts.length == 3) { // date
-                    query = "SELECT SUM(tongTien) AS RevenueByEmployee FROM HoaDon WHERE maNhanVien = ? AND CAST(ngayTao AS DATE) = ?";
+                    query = "SELECT SUM(tongTien) AS RevenueByEmployee FROM HoaDon WHERE maNhanVien = ? AND CAST(ngayTao AS DATE) = ? AND isTemp = 0";
                     try {
                         statement = connection.prepareStatement(query);
                         statement.setString(1, maNhanVien);
@@ -297,7 +320,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
                         e.printStackTrace();
                     }
                 } else if (dateParts.length == 2) { // month
-                    query = "SELECT SUM(tongTien) AS RevenueByEmployee FROM HoaDon WHERE maNhanVien = ? AND MONTH(ngayTao) = ?";
+                    query = "SELECT SUM(tongTien) AS RevenueByEmployee FROM HoaDon WHERE maNhanVien = ? AND MONTH(ngayTao) = ? AND isTemp = 0";
                     try {
                         statement = connection.prepareStatement(query);
                         statement.setString(1, maNhanVien);
@@ -310,7 +333,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
                         e.printStackTrace();
                     }
                 } else if (dateParts.length == 1) { // year
-                    query = "SELECT SUM(tongTien) AS RevenueByEmployee FROM HoaDon WHERE maNhanVien = ? AND YEAR(ngayTao) = ?";
+                    query = "SELECT SUM(tongTien) AS RevenueByEmployee FROM HoaDon WHERE maNhanVien = ? AND YEAR(ngayTao) = ? AND isTemp = 0";
                     try {
                         statement = connection.prepareStatement(query);
                         statement.setString(1, maNhanVien);
@@ -331,15 +354,16 @@ public class HoaDon_DAO implements HoaDon_Interface {
         return revenueByEmployee;
     }
 
+    @Override
     public List<HoaDon> getInvoiceByDate(LocalDate fromDate, LocalDate toDate) {
         List<HoaDon> invoiceList = new ArrayList<>();
-        query = "SELECT * FROM HoaDon WHERE ngayTao BETWEEN ? AND ?";
+        query = "SELECT * FROM HoaDon WHERE (ngayTao >= ? AND ngayTao < ?) AND isTemp = 0";
 
         try {
             statement = connection.prepareStatement(query);
 
-            statement.setDate(1, java.sql.Date.valueOf(fromDate));
-            statement.setDate(2, java.sql.Date.valueOf(toDate));
+            statement.setTimestamp(1, Timestamp.valueOf(fromDate.atStartOfDay()));
+            statement.setTimestamp(2, Timestamp.valueOf(toDate.plusDays(1).atStartOfDay()));
 
             ResultSet rs = statement.executeQuery();
 

@@ -17,6 +17,9 @@ public class HoaDon_BUS {
 	public boolean createHoaDon(HoaDon hoaDon) {
 		return hoaDonDAO.createHoaDon(hoaDon);
 	}
+	public boolean createHoaDonTam(HoaDon hoaDon) {
+		return hoaDonDAO.createHoaDonTam(hoaDon);
+	}
 
 	public HoaDon getHoaDonById(String maHoaDon) {
 		return hoaDonDAO.getHoaDonById(maHoaDon);
