@@ -95,11 +95,10 @@ public class HoaDon_DAO implements HoaDon_Interface {
                 LocalDateTime ngayTao = rs.getTimestamp("ngayTao").toLocalDateTime();
                 double tienKhachDua = rs.getDouble("tienKhachDua");
                 double diemSuDung = rs.getDouble("diemSuDung");
+                double tongTien = rs.getDouble("tongTien");
                 String loaiThanhToan = rs.getString("loaiThanhToan");
-                List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_DAO().getChiTietHoaDonByMaHoaDon(maHoaDon);
 
-                return new HoaDon(maHoaDon, khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan,
-                        chiTietHoaDonList);
+                return new HoaDon(maHoaDon, khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan, tongTien);
             }
 
         } catch (SQLException e) {
@@ -111,7 +110,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
     @Override
     public List<HoaDon> getAllHoaDon() {
         List<HoaDon> hoaDonList = new ArrayList<>();
-        query = "SELECT * FROM HoaDon WHERE isTemp = 0";
+        query = "SELECT * FROM HoaDon";
 
         try {
             statement = connection.prepareStatement(query);
@@ -125,10 +124,43 @@ public class HoaDon_DAO implements HoaDon_Interface {
                 double tienKhachDua = rs.getDouble("tienKhachDua");
                 double diemSuDung = rs.getDouble("diemSuDung");
                 String loaiThanhToan = rs.getString("loaiThanhToan");
+                double tongTien = rs.getDouble("tongTien");
                 List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_DAO().getChiTietHoaDonByMaHoaDon(maHoaDon);
 
                 HoaDon hoaDon = new HoaDon(maHoaDon, khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung,
-                        loaiThanhToan, chiTietHoaDonList);
+                        loaiThanhToan, tongTien);
+
+                hoaDonList.add(hoaDon);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hoaDonList;
+    }
+
+    @Override
+    public List<HoaDon> getHoaDonTam() {
+        List<HoaDon> hoaDonList = new ArrayList<>();
+        query = "SELECT * FROM HoaDon WHERE isTemp = 1";
+
+        try {
+            statement = connection.prepareStatement(query);
+            rs = statement.executeQuery();
+
+            while (rs.next()) {
+                String maHoaDon = rs.getString("maHoaDon");
+                KhachHang khachHang = new KhachHang_DAO().getKhachHangById(rs.getString("maKhachHang"));
+                NhanVien nhanVien = new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
+                LocalDateTime ngayTao = rs.getTimestamp("ngayTao").toLocalDateTime();
+                double tienKhachDua = rs.getDouble("tienKhachDua");
+                double diemSuDung = rs.getDouble("diemSuDung");
+                String loaiThanhToan = rs.getString("loaiThanhToan");
+                double tongTien = rs.getDouble("tongTien");
+                List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_DAO().getChiTietHoaDonByMaHoaDon(maHoaDon);
+
+                HoaDon hoaDon = new HoaDon(maHoaDon, khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung,
+                        loaiThanhToan, tongTien);
 
                 hoaDonList.add(hoaDon);
             }
@@ -375,10 +407,10 @@ public class HoaDon_DAO implements HoaDon_Interface {
                 double tienKhachDua = rs.getDouble("tienKhachDua");
                 double diemSuDung = rs.getDouble("diemSuDung");
                 String loaiThanhToan = rs.getString("loaiThanhToan");
-                List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_DAO().getChiTietHoaDonByMaHoaDon(maHoaDon);
+                double tongTien = rs.getDouble("tongTien");
 
                 HoaDon hoaDon = new HoaDon(maHoaDon, khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung,
-                        loaiThanhToan, chiTietHoaDonList);
+                        loaiThanhToan, tongTien);
 
                 invoiceList.add(hoaDon);
             }

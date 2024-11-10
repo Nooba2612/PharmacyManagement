@@ -1,3 +1,4 @@
+
 package pharmacy.bus;
 
 import java.sql.SQLException;
@@ -6,6 +7,7 @@ import java.util.List;
 
 import pharmacy.dao.HoaDon_DAO;
 import pharmacy.entity.HoaDon;
+
 
 public class HoaDon_BUS {
 	private final HoaDon_DAO hoaDonDAO;
@@ -27,6 +29,9 @@ public class HoaDon_BUS {
 
 	public List<HoaDon> getAllHoaDon() {
 		return hoaDonDAO.getAllHoaDon();
+	}
+	public List<HoaDon> getHoaDonTam() {
+		return hoaDonDAO.getHoaDonTam();
 	}
 
 	public boolean updateHoaDon(HoaDon hoaDon) {

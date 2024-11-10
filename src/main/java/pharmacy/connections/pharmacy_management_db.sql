@@ -179,6 +179,7 @@ CREATE TABLE HoaDon (
     CONSTRAINT FK_HoaDon_NhanVien FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
     CONSTRAINT FK_HoaDon_KhachHang FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang)
 );
+
 CREATE TABLE ChiTietHoaDon (
     maHoaDon NVARCHAR(50) NOT NULL,
     maSanPham NVARCHAR(50) NOT NULL,
@@ -188,6 +189,7 @@ CREATE TABLE ChiTietHoaDon (
         thue >= 0
         AND thue <= 1
     ),
+	lieuLuong NVARCHAR(255),
     FOREIGN KEY (maHoaDon) REFERENCES HoaDon(maHoaDon),
     FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham),
     PRIMARY KEY (maHoaDon, maSanPham)
@@ -216,6 +218,8 @@ CREATE TABLE NhatKyThayDoiNhaCungCap (
     maNhanVien NVARCHAR(50) NOT NULL,
 	CONSTRAINT FK_NhatKyThayDoiNhaCungCap_NhanVien FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
 );
+
+select * from HoaDon
 
 CREATE TABLE PhieuNhap (
     maPhieuNhap NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maPhieuNhap LIKE 'PN____'),

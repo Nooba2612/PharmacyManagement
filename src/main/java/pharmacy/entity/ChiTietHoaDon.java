@@ -10,18 +10,20 @@ public class ChiTietHoaDon {
     private String maHoaDon;
     private String maSanPham;
     private int soLuong;
+    private double donGiaNhap;
     private Float thue;
     private String lieuLuong;
 
     public ChiTietHoaDon() {
     }
 
-    public ChiTietHoaDon(String maHoaDon, String maSanPham, int soLuong, Float thue, String lieuLuong) {
+    public ChiTietHoaDon(String maHoaDon, String maSanPham, int soLuong, Float thue, String lieuLuong, double donGiaNhap) {
         this.maHoaDon = maHoaDon;
         this.maSanPham = maSanPham;
         this.soLuong = soLuong;
         this.thue = thue;
         this.lieuLuong = lieuLuong;
+        this.donGiaNhap = donGiaNhap;
     }
 
     public int getSoLuong() {
@@ -30,6 +32,14 @@ public class ChiTietHoaDon {
 
     public void setSoLuong(int soLuong) {
         this.soLuong = soLuong;
+    }
+
+    public double getDonGiaNhap() {
+        return donGiaNhap;
+    }
+
+    public void setDonGiaNhap(double donGiaNhap) {
+        this.donGiaNhap = donGiaNhap;
     }
 
     public String getLieuLuong() {
@@ -82,6 +92,10 @@ public class ChiTietHoaDon {
 
     public LocalDate getHanSuDung() throws SQLException {
         return new SanPham_BUS().getSanPhamByMaSanPham(maSanPham).getHanSuDung();
+    }
+
+    public double getTongTien() throws SQLException {
+        return getDonGiaBan() * soLuong;
     }
 
     @Override
