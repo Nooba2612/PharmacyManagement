@@ -29,14 +29,13 @@ public class SanPham_BUS {
         this.sanPhamDao = new SanPham_DAO();
     }
 
-    public boolean createSanPham(SanPham sanPham, Connection connection) {
+    public boolean createSanPham(SanPham sanPham) {
         if (sanPham == null) {
             return false;
         }
 
         System.out.println(sanPham);
 
-        // Kiểm tra các trường hợp không hợp lệ
         if (sanPham.getTenSanPham() == null || sanPham.getTenSanPham().trim().isEmpty()) {
             return false;
         }
@@ -89,11 +88,7 @@ public class SanPham_BUS {
             return false;
         }
 
-        if (connection == null) {
-            return sanPhamDao.createSanPham(sanPham, null);
-        }
-
-        return sanPhamDao.createSanPham(sanPham, connection);
+        return sanPhamDao.createSanPham(sanPham);
     }
 
 

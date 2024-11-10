@@ -13,8 +13,6 @@ import pharmacy.entity.SanPham;
 public interface SanPham_Interface {
 	boolean createSanPham(SanPham thuoc);
 
-	boolean createSanPham(SanPham product, Connection connection);
-
 	SanPham getSanPhamByMaSanPham(String maSanPham);
 
 	boolean updateSanPham(SanPham thuoc);
