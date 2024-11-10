@@ -424,13 +424,18 @@
                </font>
             </Label>
             
-            <VBox layoutX="629.0" layoutY="294.0" spacing="5.0">
+            <VBox layoutX="630.0" layoutY="294.0" prefWidth="201.0" spacing="5.0">
                 <children>
                     <DatePicker fx:id="manufactureDateField" prefHeight="43.0" prefWidth="202.0" promptText="Chọn ngày sản xuất" style="-fx-background-color:#f0f0f0; -fx-border-color: #000; -fx-border-radius: 4px; -fx-text-fill: #f2f2f2;">
                         <cursor>
                             <Cursor fx:constant="HAND" />
                         </cursor>
                     </DatePicker>
+                  <Label text="Ngày sản xuất">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
                     <!-- Label alert ngay dưới ComboBox -->
                     <Label fx:id="manufactureDateAlert" text="Ngày sản xuất không được rỗng." textFill="#e12626" visible="false">
                         <font>
@@ -449,6 +454,11 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                     </DatePicker>
+                  <Label text="Ngày hết hạn">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Label>
                     <!-- Label alert ngay dưới ComboBox -->
                     <Label fx:id="expirationDateAlert" text="Ngày hết hạn không được rỗng." textFill="#e12626" visible="false">
                         <font>
