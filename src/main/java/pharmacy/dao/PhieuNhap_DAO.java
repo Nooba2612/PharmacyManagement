@@ -49,8 +49,14 @@ public class PhieuNhap_DAO implements PhieuNhap_Interface {
             SanPham sanPham = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
 
             // Truyền đối tượng phieuNhap vào ChiTietPhieuNhap thay vì lấy lại từ cơ sở dữ liệu
-            ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(sanPham, phieuNhap, rs.getInt("soLuong"),
-                    rs.getDouble("donGia"), rs.getFloat("thue"));
+            ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(
+				sanPham, 
+				phieuNhap, 
+				rs.getInt("soLuong"),
+                rs.getDouble("donGia"), 
+				rs.getFloat("thue"),
+				rs.getDate("ngaySX").toLocalDate(), 
+				rs.getDate("hanSuDung").toLocalDate());
             chiTietList.add(chiTiet);
         }
 
@@ -64,7 +70,7 @@ public class PhieuNhap_DAO implements PhieuNhap_Interface {
 
 public List<PhieuNhap> getAllPhieuNhap() {
     List<PhieuNhap> phieuNhapList = new ArrayList<>();
-    String query = "SELECT * FROM PhieuNhap";
+    String query = "SELECT * FROM PhieuNhap ORDER BY thoiGianNhap desc";
 
     try (Connection connection = DatabaseConnection.getConnection();
          PreparedStatement statement = connection.prepareStatement(query);
