@@ -117,7 +117,7 @@
                         <Cursor fx:constant="HAND" />
                     </cursor>
                 </ComboBox> -->
-                <Button fx:id="exportIRecieptBtn" alignment="CENTER" layoutX="971.0" layoutY="681.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="236.0" style="-fx-background-color: #339933;" text="Xuất phiếu nhập" textAlignment="CENTER" textFill="WHITE">
+                <Button fx:id="exportIRecieptBtn" alignment="CENTER" layoutX="971.0" layoutY="681.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="236.0" style="-fx-background-color: #339933;" text="Lưu và Xuất" textAlignment="CENTER" textFill="WHITE">
                     <graphic>
                         <ImageView fitHeight="28.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                             <image>
