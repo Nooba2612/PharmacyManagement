@@ -1,4 +1,5 @@
-﻿
+﻿create database medkit_pharmacy_management
+use medkit_pharmacy_management
 -- Nhân Viên
 CREATE TABLE NhanVien (
     maNhanVien NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maNhanVien LIKE 'MK____'),
@@ -152,7 +153,6 @@ CREATE TABLE KhachHang (
     gioiTinh NVARCHAR(15) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác')),
     ghiChu NVARCHAR(255)
 );
-select * from NhatKyThayDoiKhachHang
 CREATE TABLE NhatKyThayDoiKhachHang (
     maKhachHang NVARCHAR(50) NOT NULL,
     hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),
@@ -179,6 +179,8 @@ CREATE TABLE HoaDon (
     CONSTRAINT FK_HoaDon_NhanVien FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
     CONSTRAINT FK_HoaDon_KhachHang FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang)
 );
+
+alter table HoaDon add isTemp int default 0
 
 CREATE TABLE ChiTietHoaDon (
     maHoaDon NVARCHAR(50) NOT NULL,
@@ -219,7 +221,6 @@ CREATE TABLE NhatKyThayDoiNhaCungCap (
 	CONSTRAINT FK_NhatKyThayDoiNhaCungCap_NhanVien FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
 );
 
-select * from HoaDon
 
 CREATE TABLE PhieuNhap (
     maPhieuNhap NVARCHAR(50) PRIMARY KEY NOT NULL CHECK (maPhieuNhap LIKE 'PN____'),
@@ -458,6 +459,8 @@ INSERT INTO KhachHang (maKhachHang, hoTen, soDienThoai, namSinh, diemTichLuy, gi
 ('KH0008', N'Bùi Quốc Huy', '0989123457', '1994-09-16', 90331, N'Nam', N'Khách hàng thân thiết'),
 ('KH0009', N'Đỗ Minh Tuấn', '0991234568', '1987-02-05', 210222, N'Nam', N'Khó tiêu'),
 ('KH0010', N'Vũ Ngọc Lan', '0902345679', '1991-04-18', 6022919, N'Nữ', N'Đau dạ dày');
+
+insert KhachHang ('KH0000', N'Khách hàng lẻ', '0000000000', '1111-11-11', 0, N'Khác', N'Khách hàng lẻ')
 
 -- Thêm dữ liệu vào bảng HoaDon
 INSERT INTO HoaDon (maHoaDon, maKhachHang, maNhanVien, ngayTao, tienKhachDua, tongTien, tienThua, diemSuDung, loaiThanhToan) VALUES 
