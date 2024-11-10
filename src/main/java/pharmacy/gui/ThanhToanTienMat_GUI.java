@@ -9,9 +9,12 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -129,32 +132,65 @@ public class ThanhToanTienMat_GUI {
             try {
                 handleCheckoutConfirmation(hoaDon, cthd);
 
-                int currentPoints = (int) (khachHang.getDiemTichLuy() - diemSuDung + (amountPaid / 100));
-                KhachHang customer = new KhachHang(khachHang.getMaKhachHang(), khachHang.getHoTen(), khachHang.getSoDienThoai(), currentPoints, khachHang.getNamSinh(), khachHang.getGhiChu(), khachHang.getGioiTinh());
-                new KhachHang_BUS().updateCustomer(customer);
+                if (Double.parseDouble(givenMoney.getText()) > Double.parseDouble(amountPaidField.getText())) {
+                    int currentPoints = (int) (khachHang.getDiemTichLuy() - diemSuDung + (amountPaid / 100));
+                    KhachHang customer = new KhachHang(khachHang.getMaKhachHang(), khachHang.getHoTen(), khachHang.getSoDienThoai(), currentPoints, khachHang.getNamSinh(), khachHang.getGhiChu(), khachHang.getGioiTinh());
+                    new KhachHang_BUS().updateCustomer(customer);
 
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/InHoaDon_GUI.fxml"));
-                    Parent popupContent = loader.load();
-                    InHoaDon_GUI controller = loader.getController();
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/InHoaDon_GUI.fxml"));
+                        Parent popupContent = loader.load();
+                        InHoaDon_GUI controller = loader.getController();
 
-                    controller.initialize(hoaDon);
+                        controller.initialize(hoaDon);
 
-                    Stage popupStage = new Stage();
-                    popupStage.initModality(Modality.APPLICATION_MODAL);
-                    popupStage.setTitle("Thêm khách hàng");
-                    popupStage.getIcons().add(new Image(getClass().getResource("/images/money-icon.png").toExternalForm()));
-                    popupStage.setScene(new Scene(popupContent));
-                    popupStage.setResizable(false);
+                        Stage popupStage = new Stage();
+                        popupStage.initModality(Modality.APPLICATION_MODAL);
+                        popupStage.setTitle("Thêm khách hàng");
+                        popupStage.getIcons().add(new Image(getClass().getResource("/images/money-icon.png").toExternalForm()));
+                        popupStage.setScene(new Scene(popupContent));
+                        popupStage.setResizable(false);
 
-                    popupStage.showAndWait();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                        popupStage.showAndWait();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    showErrorDialog("Số tiền của khách hàng đưa không hợp lệ");
                 }
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    @FXML
+    private void showErrorDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Lỗi");
+        alert.setHeaderText(message);
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+
+        ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
+        alert.setGraphic(icon);
+
+        alert.getButtonTypes().clear();
+
+        ButtonType confirmButton = new ButtonType("Xác nhận");
+        alert.getButtonTypes().add(confirmButton);
+
+        Node confirmBtn = alert.getDialogPane().lookupButton(confirmButton);
+        confirmBtn.setStyle(
+                "-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/alert-icon.png")));
+        stage.setMinWidth(200);
+
+        alert.showAndWait();
     }
 
     @FXML

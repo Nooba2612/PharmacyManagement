@@ -1,3 +1,4 @@
+
 package pharmacy.gui;
 
 import java.beans.PropertyDescriptor;
@@ -68,10 +69,11 @@ import pharmacy.entity.NhanVien;
 import pharmacy.entity.SanPham;
 import pharmacy.utils.NodeUtil;
 
+
 public class BanHang_GUI {
 
     @FXML
-    private TableColumn<SanPham, Void> actionColumn;
+    private TableColumn<ChiTietHoaDon, Void> actionColumn;
 
     @FXML
     private Button addCustomerBtn;
@@ -367,18 +369,17 @@ public class BanHang_GUI {
     }
 
     public void calulateTotalPrice() throws SQLException {
-        if (currentDetailInvoice != null && !currentDetailInvoice.isEmpty()) {
-            for (ChiTietHoaDon cthd : currentDetailInvoice) {
+        checkoutPrice = 0;
+        if (addedProductList != null && !addedProductList.isEmpty()) {
+            for (ChiTietHoaDon cthd : addedProductList) {
                 if (cthd != null && cthd.getMaSanPham() != null) {
-                    // SanPham sp = new SanPham_BUS().getSanPhamByMaSanPham(cthd.getMaSanPham());
-                    // if (sp != null) {
                     checkoutPrice += (cthd.getDonGiaBan() * cthd.getSoLuong());
-                    // - (sp.getDonGiaBan() * cthd.getSoLuong() * cthd.getThue());
-                    // }
+
                 }
             }
         }
         checkoutPrice -= usePointField.getValue();
+        System.out.println(checkoutPrice);
     }
 
     @FXML
@@ -401,6 +402,7 @@ public class BanHang_GUI {
         discountPrice.setText("0");
         loyaltyPoint.setText("0");
         checkoutPrice = 0;
+        addedProductList.clear();
     }
 
     @FXML
@@ -465,6 +467,10 @@ public class BanHang_GUI {
                         e.printStackTrace();
                     }
                 });
+            } else {
+                customerName.setText("Khách hàng lẻ");
+                loyaltyPoint.setText("0");
+                usePointField.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 0));
             }
         });
     }
@@ -779,10 +785,10 @@ public class BanHang_GUI {
 
     @FXML
     public void renderTotalInvoice() throws SQLException {
-
+        calulateTotalPrice();
         int quantity = 0;
-        if (currentDetailInvoice != null && !currentDetailInvoice.isEmpty()) {
-            for (ChiTietHoaDon cthd : currentDetailInvoice) {
+        if (addedProductList != null && !addedProductList.isEmpty()) {
+            for (ChiTietHoaDon cthd : addedProductList) {
                 if (cthd != null && cthd.getMaSanPham() != null) {
                     quantity += cthd.getSoLuong();
                 }
@@ -844,6 +850,14 @@ public class BanHang_GUI {
                 break;
             }
         }
+
+        // for (ChiTietHoaDon detail : currentDetailInvoice) {
+        //     if (detail.getMaSanPham().equals(cthd.getMaSanPham())) {
+        //         detail.setSoLuong(detail.getSoLuong() + cthd.getSoLuong());
+        //         isProductExists = true;
+        //         break;
+        //     }
+        // }
 
         if (!isProductExists) {
             addedProductList.add(cthd);
@@ -947,6 +961,11 @@ public class BanHang_GUI {
                 }
                 if (isConfirmed) {
                     cthd.setSoLuong((Integer) newValue);
+                    try {
+                        calulateTotalPrice();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     column.getTableView().refresh();
                 }
             }
@@ -1067,12 +1086,13 @@ public class BanHang_GUI {
         }));
 
         Optional<ButtonType> result = alert.showAndWait();
+
         event.consume();
         return result.isPresent() && result.get() == confirmButton;
     }
 
     @FXML
-    public <T> void showDeleteProductConfirmationPopup(TableView<SanPham> table, SanPham product) {
+    public <T> void showDeleteProductConfirmationPopup(TableView<ChiTietHoaDon> table, ChiTietHoaDon product) throws SQLException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Xác nhận xóa");
         alert.setHeaderText("Xóa sản phẩm ra khỏi giỏ hàng " + product.getTenSanPham());
@@ -1122,6 +1142,8 @@ public class BanHang_GUI {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == confirmButton) {
+            currentDetailInvoice.remove(product);
+            addedProductList.remove(product);
             table.getItems().remove(product);
         }
     }
@@ -1129,7 +1151,7 @@ public class BanHang_GUI {
     @FXML
     public void handleAddDeleteButtonToColumn() {
         actionColumn.setCellFactory(column -> {
-            return new TableCell<SanPham, Void>() {
+            return new TableCell<ChiTietHoaDon, Void>() {
                 private final Button deleteButton = new Button();
 
                 {
@@ -1145,8 +1167,12 @@ public class BanHang_GUI {
                     deleteButton.setVisible(false);
 
                     deleteButton.setOnAction(event -> {
-                        SanPham product = getTableView().getItems().get(getIndex());
-                        showDeleteProductConfirmationPopup(getTableView(), product);
+                        ChiTietHoaDon product = getTableView().getItems().get(getIndex());
+                        try {
+                            showDeleteProductConfirmationPopup(getTableView(), product);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
                     });
 
                     deleteButton.setOnMouseEntered(event -> {
@@ -1178,7 +1204,7 @@ public class BanHang_GUI {
                 public void updateIndex(int i) {
                     super.updateIndex(i);
                     if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
-                        TableRow<SanPham> currentRow = getTableRow();
+                        TableRow<ChiTietHoaDon> currentRow = getTableRow();
 
                         currentRow.setOnMouseEntered(event -> {
                             deleteButton.setVisible(true);
