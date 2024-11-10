@@ -32,7 +32,7 @@
                         <Line endX="1150.800048828125" endY="-1.52587890625E-5" layoutX="-9.0" layoutY="93.0" startX="48.59999084472656" startY="-1.52587890625E-5" stroke="#cccccc" strokeWidth="2.0" />
                         <ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="35.0" layoutY="119.0" prefHeight="421.0" prefWidth="1117.0" style="-fx-background-color: #fff;">
                             <content>
-                                <TableView fx:id="phieuNhapTable" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/InvoiceTableStyles.css" tableMenuButtonVisible="true">
+                                <TableView fx:id="phieuNhapTable" minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="880.0" style="-fx-background-color: #FFF;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
                                     <columns>
                                         <TableColumn fx:id="idColumn" prefWidth="104.80001145601273" text="Mã phiếu nhập" />
                                         <TableColumn fx:id="supplierColumn" prefWidth="146.4000244140625" text="Nhà cung cấp" />
