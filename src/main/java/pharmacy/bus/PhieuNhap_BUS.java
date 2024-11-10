@@ -1,6 +1,7 @@
 package pharmacy.bus;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class PhieuNhap_BUS {
 		return phieuNhapDAO.createPhieuNhap(phieuNhap, connection);
 	}
 
-	public PhieuNhap getPhieuNhapByMaPhieuNhap(String maPhieuNhap) {
+	public PhieuNhap getPhieuNhapByMaPhieuNhap(String maPhieuNhap) throws SQLException {
 		return phieuNhapDAO.getPhieuNhapByMaPhieuNhap(maPhieuNhap);
 	}
 

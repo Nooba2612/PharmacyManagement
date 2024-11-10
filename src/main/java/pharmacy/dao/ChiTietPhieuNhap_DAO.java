@@ -109,7 +109,6 @@ public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 			while (rs.next()) {
 				SanPham thuoc = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
 				PhieuNhap phieuNhap = new PhieuNhap_DAO().getPhieuNhapByMaPhieuNhap(rs.getString("maPhieuNhap"));
-
 				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(
 					thuoc, 
 					phieuNhap, 
