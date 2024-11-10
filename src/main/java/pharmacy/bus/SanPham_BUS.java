@@ -1,13 +1,26 @@
 package pharmacy.bus;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.itextpdf.io.exceptions.IOException;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
+
 import pharmacy.dao.SanPham_DAO;
 import pharmacy.entity.SanPham;
+import java.util.Date;
+import java.text.ParseException;
 
 public class SanPham_BUS {
     private final SanPham_DAO sanPhamDao;
@@ -16,11 +29,14 @@ public class SanPham_BUS {
         this.sanPhamDao = new SanPham_DAO();
     }
 
-    public boolean createSanPham(SanPham sanPham) {
+    public boolean createSanPham(SanPham sanPham, Connection connection) {
         if (sanPham == null) {
             return false;
         }
 
+        System.out.println(sanPham);
+
+        // Kiểm tra các trường hợp không hợp lệ
         if (sanPham.getTenSanPham() == null || sanPham.getTenSanPham().trim().isEmpty()) {
             return false;
         }
@@ -35,11 +51,11 @@ public class SanPham_BUS {
 
         if (sanPham.getDonViTinh() == null ||
                 (!sanPham.getDonViTinh().equals("Viên") &&
-                        !sanPham.getDonViTinh().equals("Vỉ") &&
-                        !sanPham.getDonViTinh().equals("Hộp") &&
-                        !sanPham.getDonViTinh().equals("Chai") &&
-                        !sanPham.getDonViTinh().equals("Ống") &&
-                        !sanPham.getDonViTinh().equals("Gói"))) {
+                !sanPham.getDonViTinh().equals("Vỉ") &&
+                !sanPham.getDonViTinh().equals("Hộp") &&
+                !sanPham.getDonViTinh().equals("Chai") &&
+                !sanPham.getDonViTinh().equals("Ống") &&
+                !sanPham.getDonViTinh().equals("Gói"))) {
             return false;
         }
 
@@ -53,7 +69,7 @@ public class SanPham_BUS {
 
         if ((sanPham.getNgayCapNhat() == null && sanPham.getNgayTao() == null) ||
                 (sanPham.getNgayCapNhat() != null && sanPham.getNgayTao() != null &&
-                        sanPham.getNgayCapNhat().isBefore(sanPham.getNgayTao().atStartOfDay()))) {
+                sanPham.getNgayCapNhat().isBefore(sanPham.getNgayTao().atStartOfDay()))) {
             return false;
         }
 
@@ -73,8 +89,13 @@ public class SanPham_BUS {
             return false;
         }
 
-        return sanPhamDao.createSanPham(sanPham);
+        if (connection == null) {
+            return sanPhamDao.createSanPham(sanPham, null);
+        }
+
+        return sanPhamDao.createSanPham(sanPham, connection);
     }
+
 
     public SanPham getSanPhamByMaSanPham(String maSanPham) {
         return sanPhamDao.getSanPhamByMaSanPham(maSanPham);
@@ -245,10 +266,149 @@ public class SanPham_BUS {
         return sanPhamDao.getTop20SanPhamTheoSLTon();
     }
 
-    public boolean updateProductStock(String maSanPham, int newQuantity, Connection connection) {
-        return sanPhamDao.updateProductStock(maSanPham, newQuantity, connection);
+    public boolean updateProductStock(String maSanPham, String tenSP, String nsx, int newQuantity, Connection connection) {
+        return sanPhamDao.updateProductStock(maSanPham, tenSP, nsx, newQuantity, connection);
     }
 
-   
+//    public void importSanPhamFromCSV(File file) throws FileNotFoundException, java.io.IOException {
+//         try (CSVReader csvReader = new CSVReader(new FileReader(file))) {
+//             String[] line;
+//             csvReader.readNext(); // Bỏ qua dòng tiêu đề
+
+//             while ((line = csvReader.readNext()) != null) {
+//                 SanPham sanPham = parseSanPhamFromCSV(line);
+//                                 sanPhamDao.createSanPham(sanPham);
+//                             }
+//                         } catch (IOException | CsvValidationException e) {
+//                             e.printStackTrace();
+//                         }
+//                     }
+                
+//                     private static SanPham parseSanPhamFromCSV(String[] data) {
+//         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//         SanPham sanPham = new SanPham();
+
+//         try {
+//             sanPham.setMaSanPham(data[0]);
+//             sanPham.setTenSanPham(data[1]);
+//             sanPham.setDanhMuc(data[2]);
+//             sanPham.setLoaiSanPham(data[3]);
+//             Date ngaySXDate = (Date) dateFormat.parse(data[4]);
+//             sanPham.setNgaySX(ngaySXDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());            sanPham.setNhaSX(data[5]);
+//             Date ngayTaoDate = (Date) dateFormat.parse(data[6]);
+//             sanPham.setNgayTao(ngayTaoDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());            sanPham.setSoLuongTon(Integer.parseInt(data[7]));
+//             sanPham.setDonGiaBan(Double.parseDouble(data[8]));
+//             sanPham.setThue(Float.parseFloat(data[9]));
+//             Date hanSuDungDate = (Date) dateFormat.parse(data[10]);
+//             sanPham.setHanSuDung(hanSuDungDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());            sanPham.setDonViTinh(data[11]);
+//             sanPham.setMoTa(data[12]);
+//             sanPham.setTrangThai(data[13]);
+//         } catch (ParseException | NumberFormatException e) {
+//             e.printStackTrace();
+//         }
+
+//         return sanPham;
+//     }
+
+//     public class SanPham_BUS {
+//     private final SanPham_DAO sanPhamDao = new SanPham_DAO();
+
+    // public Void importSanPhamFromCSV(File file) throws FileNotFoundException, java.io.IOException {
+    //     List<SanPham> sanPhamList = new ArrayList<>();
+    //     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+    //     try (CSVReader csvReader = new CSVReader(new FileReader(file))) {
+    //         String[] line;
+    //         csvReader.readNext(); // Bỏ qua dòng tiêu đề
+
+    //         while ((line = csvReader.readNext()) != null) {
+    //             SanPham sanPham = new SanPham();
+    //             sanPham.setMaSanPham(line[0]);
+    //             sanPham.setTenSanPham(line[1]);
+    //             sanPham.setDanhMuc(line[2]);
+    //             sanPham.setLoaiSanPham(line[3]);
+                
+    //             try {
+    //                 Date ngaySX = dateFormat.parse(line[4]);
+    //                 sanPham.setNgaySX(ngaySX.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+    //             } catch (ParseException e) {
+    //                 System.out.println("Lỗi định dạng ngày sản xuất: " + line[4]);
+    //             }
+
+    //             sanPham.setNhaSX(line[5]);
+    //             sanPham.setSoLuongTon(Integer.parseInt(line[7]));
+    //             sanPham.setDonGiaBan(Double.parseDouble(line[8]));
+    //             sanPham.setThue(Float.parseFloat(line[9]));
+    //             try {
+    //                 Date hsd = dateFormat.parse(line[10]);
+    //                 sanPham.setHanSuDung(hsd.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+    //             } catch (ParseException e) {
+    //                 System.out.println("Lỗi định dạng hạn sử dụng: " + line[10]);
+    //             }
+    //             sanPham.setDonViTinh(line[11]);
+    //             sanPham.setMoTa(line[12]);
+    //             sanPham.setTrangThai(line[13]);
+
+    //             sanPhamList.add(sanPham);
+    //         }
+
+    //         return sanPhamDao.batchInsertSanPham(sanPhamList);
+    //         // System.out.println("Đã nhập thành công dữ liệu từ file CSV.");
+
+    //     } catch (IOException | CsvValidationException e) {
+    //         System.out.println("Lỗi khi đọc file CSV: " + e.getMessage());
+    //     }
+    //     return null;
+    // }
+
+    public List<SanPham> importSanPhamFromCSV(File file) throws IOException, CsvValidationException, java.io.IOException {
+        List<SanPham> sanPhamList = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        try (CSVReader csvReader = new CSVReader(new FileReader(file))) {
+            String[] line;
+
+            while ((line = csvReader.readNext()) != null) {
+                SanPham sanPham = new SanPham();
+                sanPham.setMaSanPham(line[0]);
+                sanPham.setTenSanPham(line[1]);
+                sanPham.setDanhMuc(line[2]);
+                sanPham.setLoaiSanPham(line[3]);
+                try {
+                    Date ngaySX = dateFormat.parse(line[4]);
+                    sanPham.setNgaySX(ngaySX.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+                } catch (ParseException e) {
+                    System.out.println("Lỗi định dạng ngày sản xuất: " + line[4]);
+                }
+                
+                sanPham.setNhaSX(line[5]);
+                try {
+                    Date ngayTao = dateFormat.parse(line[6]);
+                    sanPham.setNgayTao(ngayTao.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+                } catch (ParseException e) {
+                    System.out.println("Lỗi định dạng ngày tạo " + line[6]);
+                }
+                sanPham.setSoLuongTon(Integer.parseInt(line[7]));
+                sanPham.setDonGiaBan(Double.parseDouble(line[8]));
+                sanPham.setThue(Float.parseFloat(line[9]));
+                try {
+                    Date hsd = dateFormat.parse(line[10]);
+                    sanPham.setHanSuDung(hsd.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+                } catch (ParseException e) {
+                    System.out.println("Lỗi định dạng hạn sử dụng " + line[10]);
+                }
+                sanPham.setDonViTinh(line[11]);
+                sanPham.setMoTa(line[12]);
+                sanPham.setTrangThai(line[13]);
+
+                sanPhamList.add(sanPham);
+            }
+        }
+        return sanPhamList; // Trả về danh sách sản phẩm để hiển thị trên bảng
+    }
+
+    public boolean checkProductExist(String maSanPham, String tenSP, String nsx){
+        return sanPhamDao.checkProductExist(maSanPham, tenSP, nsx);
+    }
 
 }

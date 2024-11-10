@@ -13,3 +13,4 @@
 *.yml
 .metadata
 bin
+*.csv

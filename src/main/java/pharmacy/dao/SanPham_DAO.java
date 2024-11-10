@@ -1,5 +1,9 @@
 package pharmacy.dao;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -8,8 +12,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 
 import pharmacy.Interface.SanPham_Interface;
 import pharmacy.connections.DatabaseConnection;
@@ -60,6 +68,81 @@ public class SanPham_DAO implements SanPham_Interface {
 			}
 		}
 	}
+
+	public boolean createSanPham(SanPham product, Connection connection) {
+		String query = "INSERT INTO SanPham (maSanPham, tenSanPham, danhMuc, loaiSanPham, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setString(1, product.getMaSanPham());
+			statement.setString(2, product.getTenSanPham());
+			statement.setString(3, product.getDanhMuc());
+			statement.setString(4, product.getDanhMuc());
+			statement.setDate(5, Date.valueOf(product.getNgaySX()));
+			statement.setString(6, product.getNhaSX());
+			statement.setInt(7, product.getSoLuongTon());
+			statement.setDouble(8, product.getDonGiaBan());
+			statement.setFloat(9, product.getThue());
+			statement.setDate(10, Date.valueOf(product.getHanSuDung()));
+			statement.setString(11, product.getDonViTinh());
+			statement.setString(12, product.getMoTa());
+
+			int result = statement.executeUpdate();
+			return result > 0;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	// public Void batchInsertSanPham(List<SanPham> sanPhamList) {
+	//     String insertSQL = "INSERT INTO SanPham (maSanPham, tenSanPham, danhMuc, loaiSanPham, ngaySX, nhaSX, soLuongTon, donGiaBan, thue, hanSuDung, donViTinh, moTa, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+	// 	try {
+	//     statement = connection.prepareStatement(insertSQL);
+
+	//         for (SanPham sanPham : sanPhamList) {
+	//             statement.setString(1, sanPham.getMaSanPham());
+	//             statement.setString(2, sanPham.getTenSanPham());
+	//             statement.setString(3, sanPham.getDanhMuc());
+	//             statement.setString(4, sanPham.getLoaiSanPham());
+	//             statement.setDate(5, java.sql.Date.valueOf(sanPham.getNgaySX()));
+	//             statement.setString(6, sanPham.getNhaSX());
+	//             statement.setInt(7, sanPham.getSoLuongTon());
+	//             statement.setDouble(8, sanPham.getDonGiaBan());
+	//             statement.setFloat(9, sanPham.getThue());
+	// 			statement.setDate(10, java.sql.Date.valueOf(sanPham.getHanSuDung()));
+	//             statement.setString(11, sanPham.getDonViTinh());
+	//             statement.setString(12, sanPham.getMoTa());
+	//             statement.setString(13, sanPham.getTrangThai());
+
+	//             statement.addBatch();
+	//         }
+
+	//         statement.executeBatch();
+	//     } catch (SQLException e) {
+	// 		e.printStackTrace();
+	// 		return null;
+	// 	} finally {
+	// 		if (statement != null) {
+	// 			try {
+	// 				statement.close();
+	// 			} catch (SQLException e) {
+	// 				e.printStackTrace();
+	// 			}
+	// 		}
+	// 	}
+	// 			return null;
+	// }
 
 	@Override
 	public SanPham getSanPhamByMaSanPham(String maSanPham) {
@@ -521,12 +604,14 @@ public class SanPham_DAO implements SanPham_Interface {
 		return thuocs;
 	}
 
-	public boolean updateProductStock(String maSanPham, int newQuantity, Connection connection) {
-		query = "UPDATE SanPham SET soLuongTon = soLuongTon + ? WHERE maSanPham = ?";
+	public boolean updateProductStock(String maSanPham, String tenSP, String nsx, int newQuantity, Connection connection) {
+		query = "UPDATE SanPham SET soLuongTon = soLuongTon + ? WHERE maSanPham = ? and tenSanPham = ? and nhaSX = ?";
 
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setInt(1, newQuantity);
-            statement.setString(2, maSanPham);
+			statement.setString(2, maSanPham);
+			statement.setString(3, tenSP);
+			statement.setString(4, nsx);
 
 			int result = statement.executeUpdate();
 			return result > 0;
@@ -537,9 +622,39 @@ public class SanPham_DAO implements SanPham_Interface {
 		}
 	}
 
+	public boolean checkProductExist(String maSanPham, String tenSP, String nsx) {
+		query = "SELECT COUNT(*) FROM SanPham WHERE maSanPham = ? and tenSanPham = ? and nhaSX = ?";
+
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setString(1, maSanPham);
+			statement.setString(2, tenSP);
+			statement.setString(3, nsx);
+
+			ResultSet resultSet = statement.executeQuery();
+        
+			if (resultSet.next()) {
+				int count = resultSet.getInt(1); 
+				return count > 0;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+
+
 	@Override
-	public boolean updateProductStock(String maSanPham, int newQuantity) {
+	public boolean updateProductStock(String maSanPham, String tenSP, String nsx, int newQuantity) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'updateProductStock'");
+	}
+
+	@Override
+	public List<SanPham> importSanPhamFromCSV(File file)
+			throws com.itextpdf.io.exceptions.IOException, CsvValidationException, IOException {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'importSanPhamFromCSV'");
 	}
 }

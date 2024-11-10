@@ -39,6 +39,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -57,9 +58,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import javafx.util.converter.LocalDateStringConverter;
 import pharmacy.bus.PhieuNhap_BUS;
 import pharmacy.bus.SanPham_BUS;
-import pharmacy.bus.TaiKhoan_BUS;
 import pharmacy.entity.ChiTietPhieuNhap;
 import pharmacy.entity.PhieuNhap;
 import pharmacy.entity.SanPham;
@@ -70,6 +71,9 @@ public class PhieuNhap_GUI {
 
     @FXML
     private Button addPhieuNhapBtn;
+
+	@FXML
+    private Button importAddButton;
 
     @FXML
     private TableColumn<PhieuNhap, String> idColumn;
@@ -123,7 +127,7 @@ public class PhieuNhap_GUI {
 
     @FXML
     public void initialize() throws SQLException {
-        addPhieuNhapBtn.setOnAction(event -> {
+		addPhieuNhapBtn.setOnAction(event -> {
             try {
                 Parent addPhieuNhapFrame = FXMLLoader.load(getClass().getResource("/fxml/ThemPhieuNhap_GUI.fxml"));
                 root.getChildren().clear();
@@ -134,6 +138,19 @@ public class PhieuNhap_GUI {
             }
         });
 
+        // Nút thêm phiếu nhập từ file
+        importAddButton.setOnAction(event -> {
+            try {
+                Parent addPhieuNhapFrame = FXMLLoader.load(getClass().getResource("/fxml/ThemPhieuNhapImportFile_GUI.fxml"));
+                root.getChildren().clear();
+                root.getChildren().add(addPhieuNhapFrame);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+		initFormatDate();
         setUpPhieuNhapTableAction();
         handleSearchPhieuNhapAction();
     }
@@ -202,89 +219,121 @@ public class PhieuNhap_GUI {
         // handleSearchSanPhamAction(productList);
     }
 
-    @FXML
-	public void handleAddDetailButtonToColumn() {
-		chiTietPhieuNhapColumn.setCellFactory(column -> {
-			return new TableCell<PhieuNhap, Void>() {
-				private final Button detailButton = new Button();
+	@FXML
+public void handleAddDetailButtonToColumn() {
+    chiTietPhieuNhapColumn.setCellFactory(column -> {
+        return new TableCell<PhieuNhap, Void>() {
+            private final Button detailButton = new Button();
 
-				{
-					// Handle detail button actions
-					detailButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white;");
+            {
+                // Handle detail button actions
+                detailButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white;");
 
-					detailButton.setOnAction(event -> {
-						PhieuNhap phieuNhap = getTableView().getItems().get(getIndex());
-						System.out.println("Detail button clicked for ChiTietPhieuNhap: " + phieuNhap.getMaPhieuNhap());
-						handleShowDetails(phieuNhap);
-					});
+                detailButton.setOnAction(event -> {
+                    PhieuNhap phieuNhap = getTableView().getItems().get(getIndex());
+                    System.out.println("Detail button clicked for PhieuNhap: " + phieuNhap.getMaPhieuNhap());
+                    handleShowDetails(phieuNhap);
+                });
 
-					Image image = new Image(getClass().getResourceAsStream("/images/detail-icon.png"));
-					ImageView imageView = new ImageView(image);
+                Image image = new Image(getClass().getResourceAsStream("/images/detail-icon.png"));
+                ImageView imageView = new ImageView(image);
 
-					imageView.setFitWidth(20);
-					imageView.setFitHeight(20);
-					imageView.setPreserveRatio(true);
-					detailButton.setGraphic(imageView);
-					detailButton.setStyle("-fx-background-color: transparent;");
-					detailButton.setVisible(false);
+                imageView.setFitWidth(20);
+                imageView.setFitHeight(20);
+                imageView.setPreserveRatio(true);
+                detailButton.setGraphic(imageView);
+                detailButton.setStyle("-fx-background-color: transparent;");
+                detailButton.setVisible(false);
 
-					detailButton.setOnMouseEntered(event -> {
-						NodeUtil.applyFadeTransition(detailButton, 1, 0.7, 300, () -> {
-						});
-						NodeUtil.applyScaleTransition(detailButton, 1, 1.1, 1, 1.1, 300, () -> {
-						});
-					});
-					detailButton.setOnMouseExited(event -> {
-						NodeUtil.applyFadeTransition(detailButton, 0.7, 1, 300, () -> {
-						});
-						NodeUtil.applyScaleTransition(detailButton, 1.1, 1, 1.1, 1, 300, () -> {
-						});
-					});
+                detailButton.setOnMouseEntered(event -> {
+                    NodeUtil.applyFadeTransition(detailButton, 1, 0.7, 300, () -> {
+                    });
+                    NodeUtil.applyScaleTransition(detailButton, 1, 1.1, 1, 1.1, 300, () -> {
+                    });
+                });
+                detailButton.setOnMouseExited(event -> {
+                    NodeUtil.applyFadeTransition(detailButton, 0.7, 1, 300, () -> {
+                    });
+                    NodeUtil.applyScaleTransition(detailButton, 1.1, 1, 1.1, 1, 300, () -> {
+                    });
+                });
+            }
 
-				}
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(detailButton);
+                    setStyle("-fx-alignment: CENTER;");
+                }
+            }
 
-				@Override
-				protected void updateItem(Void item, boolean empty) {
-					super.updateItem(item, empty);
-					if (empty) {
-						setGraphic(null);
-					} else {
-						setGraphic(detailButton);
-						setStyle("-fx-alignment: CENTER;");
-					}
-				}
+            @Override
+            public void updateIndex(int i) {
+                super.updateIndex(i);
+                if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
+                    TableRow<PhieuNhap> currentRow = getTableRow();
 
-				@Override
-				public void updateIndex(int i) {
-					super.updateIndex(i);
-					if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
-						TableRow<PhieuNhap> currentRow = getTableRow();
+                    currentRow.setOnMouseEntered(event -> {
+                        detailButton.setVisible(true);
+                        NodeUtil.applyFadeTransition(detailButton, 0, 1, 300, () -> {
+                        });
+                    });
+                    currentRow.setOnMouseExited(event -> NodeUtil.applyFadeTransition(detailButton, 1, 0, 300, () -> {
+                        detailButton.setVisible(false);
+                    }));
+                }
+            }
+        };
+    });
+}
 
-						currentRow.setOnMouseEntered(event -> {
-							detailButton.setVisible(true);
-							NodeUtil.applyFadeTransition(detailButton, 0, 1, 300, () -> {
-							});
-						});
-						currentRow
-								.setOnMouseExited(event -> NodeUtil.applyFadeTransition(detailButton, 1, 0, 300, () -> {
-									detailButton.setVisible(false);
-								}));
-					}
-				}
-			};
-		});
-	}
-
-    @FXML
+	@FXML
 	public void handleShowDetails(PhieuNhap phieuNhap) {
-		try {
-			exportInvoiceToPdf("src/main/resources/pdf/ChiTietPhieuNhap.pdf", phieuNhap);
-			PDFUtil.showPdfPreview(
-					new File(getClass().getClassLoader().getResource("pdf/ChiTietPhieuNhap.pdf").toURI()));
-		} catch (com.itextpdf.io.exceptions.IOException | URISyntaxException | IOException | SQLException e) {
-			Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, null, e);
+		File pdfFile = new File("src/main/resources/pdf/ChiTietPhieuNhap.pdf");
+		if (pdfFile.exists()) {
+			pdfFile.delete();
 		}
+
+		Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				try {
+					exportInvoiceToPdf("src/main/resources/pdf/ChiTietPhieuNhap.pdf", phieuNhap);
+
+					Platform.runLater(() -> {
+						try {
+							File generatedPdfFile = new File("src/main/resources/pdf/ChiTietPhieuNhap.pdf");
+
+							while (!generatedPdfFile.exists()) {
+								try {
+									Thread.sleep(100); // Đợi một chút trước khi thử lại
+								} catch (InterruptedException e) {
+									Thread.currentThread().interrupt();
+								}
+							}
+
+							if (generatedPdfFile.exists()) {
+								PDFUtil.showPdfPreview(generatedPdfFile);
+							} else {
+								Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, "File PDF không tồn tại sau khi xuất!");
+							}
+						} catch (Exception e) {
+							Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, "Lỗi khi xử lý file PDF: ", e);
+						}
+					});
+				} catch (com.itextpdf.io.exceptions.IOException | SQLException e) {
+					Logger.getLogger(SanPham_GUI.class.getName()).log(Level.SEVERE, "Lỗi khi xuất PDF: ", e);
+				}
+				return null;
+			}
+		};
+		new Thread(task).start();
 	}
+
+
 
     private void exportInvoiceToPdf(String outputPdfPath, PhieuNhap phieuNhap) throws SQLException {
 		try (PdfWriter writer = new PdfWriter(new FileOutputStream(outputPdfPath));
@@ -316,63 +365,100 @@ public class PhieuNhap_GUI {
 					.setTextAlignment(TextAlignment.CENTER));
 
 			// phieuNhap Header
-			document.add(new Paragraph("Hóa Đơn Bán Hàng")
+			document.add(new Paragraph("Phiếu Nhập Hàng")
 					.setFont(font)
 					.setFontSize(14)
 					.setBold()
 					.setTextAlignment(TextAlignment.CENTER)
 					.setMarginTop(20));
 
-			// Customer and Date Information
-			document.add(
-					new Paragraph("Thu ngân: " + new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getHoTen())
-							.setFont(font)
-							.setFontSize(10)
-							.setMarginTop(10));
-
 			LocalDateTime now = LocalDateTime.now();
 			DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 			String formattedDateTime = now.format(dateTimeFormatter);
 
-			document.add(new Paragraph("Ngày: " + formattedDateTime)
+			document.add(new Paragraph("Thời gian: " + formattedDateTime)
+			.setFont(font)
+			.setFontSize(10)
+			.setTextAlignment(TextAlignment.CENTER));
+			
+			document.add(new Paragraph("Mã số: " + phieuNhap.getMaPhieuNhap())
+			.setFont(font)
+			.setFontSize(10)
+			.setTextAlignment(TextAlignment.CENTER));
+
+			// Customer and Date Information
+			document.add(
+					new Paragraph("Nhân viên tạo: " + phieuNhap.getTenNhanVien())
+					.setFont(font)
+					.setFontSize(10)
+					.setMarginTop(10));
+				
+			document.add(new Paragraph("Ngày tạo: " + phieuNhap.getThoiGianNhap().format(dateTimeFormatter))
+					.setFont(font)
+					.setFontSize(10));
+
+			document.add(
+				new Paragraph("Nhập hàng từ nhà cung cấp: " + phieuNhap.getTenNhaCungCap() + ", địa điểm: " + phieuNhap.getNhaCungCap().getDiaChi())
 					.setFont(font)
 					.setFontSize(10));
 
 			// Table Header
-			Table table = new Table(new float[] { 1, 3, 1, 1, 2, 2 });
+			Table table = new Table(new float[] { 1, 1, 3, 1, 2, 1, 2, 1, 2 });  // Điều chỉnh lại tỷ lệ cột
 			table.setWidth(UnitValue.createPercentValue(100));
 
+			// Tiêu đề bảng
 			table.addHeaderCell(new Cell().add(new Paragraph("STT").setFont(font).setFontSize(8))
-					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
-			table.addHeaderCell(new Cell().add(new Paragraph("Tên thuốc").setFont(font).setFontSize(8))
-					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
-			table.addHeaderCell(new Cell().add(new Paragraph("SL").setFont(font).setFontSize(8))
-					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
-			table.addHeaderCell(new Cell().add(new Paragraph("Đơn giá").setFont(font).setFontSize(8))
-					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
+			table.addHeaderCell(new Cell().add(new Paragraph("Mã sản phẩm").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
+			table.addHeaderCell(new Cell().add(new Paragraph("Tên sản phẩm").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
+			table.addHeaderCell(new Cell().add(new Paragraph("Ngày sản xuất").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
 			table.addHeaderCell(new Cell().add(new Paragraph("Hạn sử dụng").setFont(font).setFontSize(8))
-					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
+			table.addHeaderCell(new Cell().add(new Paragraph("SL").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
+			table.addHeaderCell(new Cell().add(new Paragraph("Đơn giá").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
+			table.addHeaderCell(new Cell().add(new Paragraph("Thuế").setFont(font).setFontSize(8))
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
 			table.addHeaderCell(new Cell().add(new Paragraph("Thành Tiền").setFont(font).setFontSize(8))
-					.setBackgroundColor(ColorConstants.LIGHT_GRAY));
+					.setBackgroundColor(ColorConstants.LIGHT_GRAY)
+					.setTextAlignment(TextAlignment.CENTER));  // Căn giữa tiêu đề
 
 			double totalInvoiceAmount = 0;
 			DateTimeFormatter formatterSanPham = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 			for (int i = 0; i < phieuNhap.getChiTietPhieuNhapList().size(); i++) {
 				ChiTietPhieuNhap detail = phieuNhap.getChiTietPhieuNhapList().get(i);
-				SanPham product = new SanPham_BUS().getSanPhamByMaSanPham(detail.getMaSanPham());
-				double itemTotal = product.getDonGiaBan() * detail.getSoLuong();
-				totalInvoiceAmount += itemTotal;
+				SanPham sanpham = detail.getSanPham();
+				totalInvoiceAmount += detail.calculateThanhTien();
 
-				table.addCell(new Paragraph(String.valueOf(i + 1)).setFont(font).setFontSize(8));
-				table.addCell(new Paragraph(product.getTenSanPham()).setFont(font).setFontSize(8));
-				table.addCell(new Paragraph(String.valueOf(detail.getSoLuong())).setFont(font).setFontSize(8));
-				table.addCell(new Paragraph(String.valueOf(String.format("%,.0f", product.getDonGiaBan())))
-						.setFont(font).setFontSize(8));
-				table.addCell(new Paragraph(String.valueOf(formatterSanPham.format(product.getHanSuDung()))).setFont(font)
-						.setFontSize(8));
+				table.addCell(new Paragraph(String.valueOf(i + 1)).setFont(font).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+				table.addCell(new Paragraph(sanpham.getMaSanPham()).setFont(font).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+				table.addCell(new Paragraph(sanpham.getTenSanPham()).setFont(font).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+				table.addCell(new Paragraph(String.valueOf(formatterSanPham.format(sanpham.getNgaySX()))).setFont(font)
+						.setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+				table.addCell(new Paragraph(String.valueOf(formatterSanPham.format(sanpham.getHanSuDung()))).setFont(font)
+						.setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+				table.addCell(new Paragraph(String.valueOf(detail.getSoLuong())).setFont(font).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+				table.addCell(new Paragraph(String.valueOf(String.format("%,.0f", detail.getDonGia())))
+						.setFont(font).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
+				double tax = detail.getThue();
+				String formattedTax = String.format("%.0f%%", tax * 100);
+				table.addCell(new Paragraph(formattedTax)
+						.setFont(font).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
 				table.addCell(
-						new Paragraph(String.valueOf(String.format("%,.0f", itemTotal))).setFont(font).setFontSize(8));
+						new Paragraph(String.valueOf(String.format("%,.0f", detail.calculateThanhTien()))).setFont(font).setFontSize(8).setTextAlignment(TextAlignment.CENTER));
 			}
 
 			document.add(table.setMarginTop(20));
@@ -451,24 +537,22 @@ public class PhieuNhap_GUI {
             showLoadingAnimation();
 
             new Thread(() -> {
-            	try {
-            		try {
-            			Thread.sleep(800);
-            		} catch (InterruptedException e) {
-            			e.printStackTrace();
-            		}
-            		new SanPham_BUS().refreshSanPham();
-
-            		Platform.runLater(() -> {
-            			phieuNhapTable
-                        		.setItems(FXCollections.observableArrayList(new PhieuNhap_BUS().getAllPhieuNhap()));
-                        setupTablePlaceholder();
-            		});
-
-            	} catch (SQLException e) {
-            		e.printStackTrace();
-            	}
-            }).start();
+				try {
+					// Lấy dữ liệu đã lọc theo ngày
+					var filteredData = new PhieuNhap_BUS().getPhieuNhapByDate(fromDate.getValue(), toDate.getValue());
+		
+					// Cập nhật bảng trên UI thread sau khi truy vấn xong
+					Platform.runLater(() -> {
+						phieuNhapTable.setItems(FXCollections.observableArrayList(filteredData));
+					});
+		
+					// Cập nhật lại sản phẩm trong một luồng nền khác nếu cần
+					new SanPham_BUS().refreshSanPham();
+		
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}).start();
 		});
 
 		toDate.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -497,6 +581,22 @@ public class PhieuNhap_GUI {
             	}
             }).start();
 		});
+	}
+
+	@FXML
+	void initFormatDate() {
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        // Set up a TextFormatter for fromDate and toDate
+        fromDate.setEditable(true);
+        toDate.setEditable(true);
+
+        fromDate.setConverter(new LocalDateStringConverter(dateFormatter, dateFormatter));
+        toDate.setConverter(new LocalDateStringConverter(dateFormatter, dateFormatter));
+        
+        // Set initial values
+        fromDate.setValue(LocalDate.now().withDayOfMonth(1));
+        toDate.setValue(LocalDate.now().with(TemporalAdjusters.lastDayOfMonth()));
 	}
 
     @FXML

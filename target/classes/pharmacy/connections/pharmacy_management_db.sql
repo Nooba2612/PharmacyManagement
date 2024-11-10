@@ -564,3 +564,13 @@ VALUES ('SP0001', 'PN0001', 50, 50000, 0.08),
 INSERT INTO LichLamViec (maLichLamViec, maNhanVien, caLam, ngayLam)
 VALUES ('LLV0001', 'MK0001', N'Ca 1', '2024-11-06'),
     ('LLV0002', 'MK0002', N'Ca 2', '2024-11-07');
+
+ALTER TABLE ChiTietPhieuNhap
+ADD 
+    ngaySX datetime,
+    hanSuDung datetime; 
+
+UPDATE ChiTietPhieuNhap
+SET 
+    ngaySX = '2024-01-01',
+    hanSuDung = '2025-01-01'

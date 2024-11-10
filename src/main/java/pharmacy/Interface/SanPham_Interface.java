@@ -1,11 +1,19 @@
 package pharmacy.Interface;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.sql.Connection;
 import java.util.List;
+
+import com.itextpdf.io.exceptions.IOException;
+import com.opencsv.exceptions.CsvValidationException;
 
 import pharmacy.entity.SanPham;
 
 public interface SanPham_Interface {
 	boolean createSanPham(SanPham thuoc);
+
+	boolean createSanPham(SanPham product, Connection connection);
 
 	SanPham getSanPhamByMaSanPham(String maSanPham);
 
@@ -43,6 +51,10 @@ public interface SanPham_Interface {
 
 	List<SanPham> getTop20SanPhamTheoSLTon();
 
-	boolean updateProductStock(String maSanPham, int newQuantity);
+	boolean checkProductExist(String maSanPham, String tenSP, String nsx);
+
+	boolean updateProductStock(String maSanPham, String tenSP, String nsx, int newQuantity);
+
+	List<SanPham> importSanPhamFromCSV(File file) throws IOException, CsvValidationException, java.io.IOException;
 
 }

@@ -319,7 +319,7 @@ public class ThemSanPham_GUI {
 					hanSuDung, moTa, donViTinh, trangThai, loaiSanPham);
 			try {
 				if (validateForm()) {
-					new SanPham_BUS().createSanPham(sanPham);
+					new SanPham_BUS().createSanPham(sanPham, null);
 					showAddProductSuccessModal("Thêm thuốc thành công");
 					clearForm();
 					addedProductList.add(sanPham);

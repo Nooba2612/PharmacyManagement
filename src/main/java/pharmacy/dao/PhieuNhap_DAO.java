@@ -49,8 +49,14 @@ public class PhieuNhap_DAO implements PhieuNhap_Interface {
             SanPham sanPham = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
 
             // Truyền đối tượng phieuNhap vào ChiTietPhieuNhap thay vì lấy lại từ cơ sở dữ liệu
-            ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(sanPham, phieuNhap, rs.getInt("soLuong"),
-                    rs.getDouble("donGia"), rs.getFloat("thue"));
+            ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(
+				sanPham, 
+				phieuNhap, 
+				rs.getInt("soLuong"),
+                rs.getDouble("donGia"), 
+				rs.getFloat("thue"),
+				rs.getDate("ngaySX").toLocalDate(), 
+				rs.getDate("hanSuDung").toLocalDate());
             chiTietList.add(chiTiet);
         }
 
@@ -64,7 +70,7 @@ public class PhieuNhap_DAO implements PhieuNhap_Interface {
 
 public List<PhieuNhap> getAllPhieuNhap() {
     List<PhieuNhap> phieuNhapList = new ArrayList<>();
-    String query = "SELECT * FROM PhieuNhap";
+    String query = "SELECT * FROM PhieuNhap ORDER BY thoiGianNhap desc";
 
     try (Connection connection = DatabaseConnection.getConnection();
          PreparedStatement statement = connection.prepareStatement(query);
@@ -96,6 +102,42 @@ public List<PhieuNhap> getAllPhieuNhap() {
     }
     return phieuNhapList;
 }
+
+public PhieuNhap getPhieuNhapByMaPhieuNhap(String maPhieuNhap) throws SQLException {
+    PhieuNhap phieuNhap = null;
+    String query = "SELECT * FROM PhieuNhap WHERE maPhieuNhap = ?";
+
+    try (Connection connection = DatabaseConnection.getConnection();
+         PreparedStatement statement = connection.prepareStatement(query)) {
+        
+        statement.setString(1, maPhieuNhap);  // Gán giá trị cho tham số truy vấn
+
+        ResultSet rs = statement.executeQuery();
+        
+        if (rs.next()) {
+            String maPhieuNhapResult = rs.getString("maPhieuNhap");
+
+            // Lấy danh sách chi tiết phiếu nhập
+            List<ChiTietPhieuNhap> chiTietPhieuNhapList = new ChiTietPhieuNhap_DAO().getChiTietPhieuNhapByMa(maPhieuNhapResult);
+            
+            // Lấy thông tin thời gian nhập, nhân viên và nhà cung cấp
+            Timestamp thoiGianNhapTimestamp = rs.getTimestamp("thoiGianNhap");
+            LocalDateTime thoiGianNhap = (thoiGianNhapTimestamp != null) ? thoiGianNhapTimestamp.toLocalDateTime() : null;
+
+            NhanVien nhanVien = new NhanVien_DAO().getEmployeeByMaNhanVien(rs.getString("maNhanVien"));
+            NhaCungCap nhaCungCap = new NhaCungCap_DAO().getNhaCungCapByMaNCC(rs.getString("maNhaCungCap"));
+            
+            // Tạo đối tượng PhieuNhap
+            phieuNhap = new PhieuNhap(maPhieuNhapResult, nhanVien, nhaCungCap, thoiGianNhap, chiTietPhieuNhapList);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        throw e;  // Ném ngoại lệ để xử lý ở lớp gọi
+    }
+    
+    return phieuNhap;  // Trả về phiếu nhập nếu tìm thấy, null nếu không tìm thấy
+}
+
 
 
 	public boolean updatePhieuNhap(PhieuNhap phieuNhap) {
@@ -196,11 +238,5 @@ public List<PhieuNhap> getAllPhieuNhap() {
 	public boolean createPhieuNhap(PhieuNhap phieuNhap) {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'createPhieuNhap'");
-	}
-
-	@Override
-	public PhieuNhap getPhieuNhapByMaPhieuNhap(String maPhieuNhap) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'getPhieuNhapByMaPhieuNhap'");
 	}
 }

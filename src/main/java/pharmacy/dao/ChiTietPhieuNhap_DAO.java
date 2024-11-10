@@ -13,13 +13,15 @@ import pharmacy.entity.SanPham;
 public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 
 	public boolean createChiTietPhieuNhap(ChiTietPhieuNhap chiTietPhieuNhap, Connection connection) {
-		String query = "INSERT INTO ChiTietPhieuNhap ( maSanPham, maPhieuNhap, soLuong, donGia, thue) VALUES (?, ?, ?, ?, ?)";
+		String query = "INSERT INTO ChiTietPhieuNhap ( maSanPham, maPhieuNhap, soLuong, donGia, thue, ngaySX, hanSuDung) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, chiTietPhieuNhap.getSanPham().getMaSanPham());
 			statement.setString(2, chiTietPhieuNhap.getPhieuNhap().getMaPhieuNhap());
 			statement.setInt(3, chiTietPhieuNhap.getSoLuong());
 			statement.setDouble(4, chiTietPhieuNhap.getDonGia());
 			statement.setDouble(5, chiTietPhieuNhap.getThue());
+			statement.setDate(6, Date.valueOf(chiTietPhieuNhap.getNgaySX()));
+			statement.setDate(7, Date.valueOf(chiTietPhieuNhap.getHanSuDung()));
 
 			return statement.executeUpdate() > 0;
 
@@ -78,8 +80,14 @@ public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 	
 			while (rs.next()) {
 				SanPham sanPham = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
-				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(sanPham, null, rs.getInt("soLuong"),
-						rs.getDouble("donGia"), rs.getFloat("thue"));
+				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(
+					sanPham, 
+					null, 
+					rs.getInt("soLuong"),
+					rs.getDouble("donGia"), 
+					rs.getFloat("thue"), 
+					rs.getDate("ngaySX").toLocalDate(), 
+					rs.getDate("hanSuDung").toLocalDate());
 				chiTietList.add(chiTiet);
 			}
 	
@@ -101,9 +109,14 @@ public class ChiTietPhieuNhap_DAO implements ChiTietPhieuNhap_Interface {
 			while (rs.next()) {
 				SanPham thuoc = new SanPham_DAO().getSanPhamByMaSanPham(rs.getString("maSanPham"));
 				PhieuNhap phieuNhap = new PhieuNhap_DAO().getPhieuNhapByMaPhieuNhap(rs.getString("maPhieuNhap"));
-
-				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(thuoc, phieuNhap, rs.getInt("soLuong"),
-						rs.getDouble("donGia"), rs.getFloat("thue"));
+				ChiTietPhieuNhap chiTiet = new ChiTietPhieuNhap(
+					thuoc, 
+					phieuNhap, 
+					rs.getInt("soLuong"),
+					rs.getDouble("donGia"), 
+					rs.getFloat("thue"),
+					rs.getDate("ngaySX").toLocalDate(), 
+					rs.getDate("hanSuDung").toLocalDate());
 				list.add(chiTiet);
 			}
 

@@ -1,5 +1,6 @@
 package pharmacy.Interface;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import pharmacy.entity.PhieuNhap;
 public interface PhieuNhap_Interface {
 	boolean createPhieuNhap(PhieuNhap phieuNhap);
 
-	PhieuNhap getPhieuNhapByMaPhieuNhap(String maPhieuNhap);
+	PhieuNhap getPhieuNhapByMaPhieuNhap(String maPhieuNhap) throws SQLException;
 
 	List<PhieuNhap> getAllPhieuNhap();
 
