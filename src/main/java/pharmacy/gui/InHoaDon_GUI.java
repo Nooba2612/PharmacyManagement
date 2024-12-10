@@ -1,17 +1,11 @@
+
 package pharmacy.gui;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import javax.print.PrintService;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.printing.PDFPrintable;
-
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -27,12 +21,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import pharmacy.entity.ChiTietHoaDon;
 import pharmacy.entity.HoaDon;
 import pharmacy.utils.NodeUtil;
+
 
 public class InHoaDon_GUI {
 
@@ -61,7 +57,7 @@ public class InHoaDon_GUI {
     private Label givenMoney;
 
     @FXML
-    private Pane root;
+    private HBox root;
 
     @FXML
     private TableColumn<ChiTietHoaDon, String> nameColumn;
@@ -101,6 +97,24 @@ public class InHoaDon_GUI {
     @FXML
     public void initialize(HoaDon hoaDon) {
 
+        DecimalFormat decimalFormat = new DecimalFormat("#.#");
+        employeeName.setText(hoaDon.getNhanVien().getHoTen());
+        createDate.setText(formatter.format(hoaDon.getNgayTao()));
+        customerName.setText(hoaDon.getKhachHang().getHoTen());
+
+        setUpTable(hoaDon);
+
+        int tongSoLuong = hoaDon.getChiTietHoaDonList()
+                .stream()
+                .mapToInt(ChiTietHoaDon::getSoLuong)
+                .sum();
+
+        totalAmountProduct.setText(String.valueOf(tongSoLuong));
+        checkoutPrice.setText(decimalFormat.format(hoaDon.getTongTien()).replace(".0", ""));
+        paymentMethod.setText(hoaDon.getLoaiThanhToan());
+        givenMoney.setText(String.valueOf(hoaDon.getTienKhachDua()).replace(".0", ""));
+        change.setText(String.valueOf(Math.ceil(hoaDon.getTienThua())).replace(".0", ""));
+        currentLoyalPoints.setText(String.valueOf(hoaDon.getKhachHang().getDiemTichLuy()));
 
         rejectBtn.setOnMouseEntered(event -> {
             NodeUtil.applyFadeTransition(rejectBtn, 1, 0.7, 300, () -> {
@@ -121,26 +135,6 @@ public class InHoaDon_GUI {
             NodeUtil.applyFadeTransition(exportListBtn, 0.7, 1, 300, () -> {
             });
         });
-
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        employeeName.setText(hoaDon.getNhanVien().getHoTen());
-        createDate.setText(formatter.format(hoaDon.getNgayTao()));
-        customerName.setText(hoaDon.getKhachHang().getHoTen());
-
-        System.out.println(hoaDon.getChiTietHoaDonList());
-        setUpTable(hoaDon);
-
-        int tongSoLuong = hoaDon.getChiTietHoaDonList()
-                .stream()
-                .mapToInt(ChiTietHoaDon::getSoLuong)
-                .sum();
-
-        totalAmountProduct.setText(String.valueOf(tongSoLuong));
-        checkoutPrice.setText(decimalFormat.format(hoaDon.getTongTien()).replace(".0", ""));
-        paymentMethod.setText(hoaDon.getLoaiThanhToan());
-        givenMoney.setText(String.valueOf(hoaDon.getTienKhachDua()).replace(".0", ""));
-        change.setText(String.valueOf(Math.ceil(hoaDon.getTienThua())).replace(".0", ""));
-        currentLoyalPoints.setText(String.valueOf(hoaDon.getKhachHang().getDiemTichLuy()));
 
         rejectBtn.setOnAction(event -> {
             rejectBtn.getScene().getWindow().hide();
@@ -179,29 +173,39 @@ public class InHoaDon_GUI {
     }
 
     @FXML
-    public void handlePrintInvoice(HoaDon hoaDon) {
-        exportListBtn.setOnAction(event -> {
-            try {
-                String invoiceContent = generateInvoiceContent(hoaDon);
-                Text printText = new Text(invoiceContent);
-                PrinterJob printerJob = PrinterJob.createPrinterJob();
+public void handlePrintInvoice(HoaDon hoaDon) {
+    exportListBtn.setOnAction(event -> {
+        PrinterJob printerJob = PrinterJob.createPrinterJob();
 
-                if (printerJob != null) {
+        if (printerJob != null) {
+            new Thread(() -> {
+                try {
+                    String invoiceContent = generateInvoiceContent(hoaDon);
+                    Text printText = new Text(invoiceContent);
+
                     boolean proceed = printerJob.showPrintDialog(exportListBtn.getScene().getWindow());
+
                     if (proceed) {
                         boolean printed = printerJob.printPage(printText);
                         if (!printed) {
                             showErrorDialog("Có lỗi xảy ra khi in hóa đơn.");
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showErrorDialog("Có lỗi xảy ra khi xuất hóa đơn.");
+                } finally {
                     printerJob.endJob();
+                    
+                    Platform.runLater(() -> exportListBtn.getScene().getWindow().hide());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                showErrorDialog("Có lỗi xảy ra khi xuất hóa đơn.");
-            }
-        });
-    }
+            }).start();
+        } else {
+            showErrorDialog("Không thể tạo công việc in.");
+        }
+    });
+}
+
 
     private String generateInvoiceContent(HoaDon hoaDon) {
         return "HoaDon{" + "maHoaDon='" + hoaDon.getMaHoaDon() + '\'' + ", khachHang=" + hoaDon.getKhachHang() + ", nhanVien=" + hoaDon.getNhanVien()

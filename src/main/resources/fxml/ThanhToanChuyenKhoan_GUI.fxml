@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.web.WebView?>
+
+
+<Pane xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.ThanhToanChuyenKhoan_GUI">
+   <children>
+      <WebView fx:id="webView" prefHeight="725.0" prefWidth="925.0" />
+   </children>
+</Pane>

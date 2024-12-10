@@ -186,17 +186,8 @@ public class ThemNhanVien_GUI {
             return null;
         });
 
-        TextFormatter<String> salaryFormatter = new TextFormatter<>(change -> {
-            String newText = change.getControlNewText();
-            if (newText.matches("\\d*")) {
-                return change;
-            }
-            return null;
-        });
-
         phoneField.setTextFormatter(phoneFormatter);
         cccdField.setTextFormatter(cccdFormatter);
-		salaryField.getEditor().setTextFormatter(salaryFormatter);
 
         clearDataBtn.setOnMouseEntered(event -> {
             NodeUtil.applyFadeTransition(clearDataBtn, 1, 0.6, 200, () -> {
@@ -312,7 +303,7 @@ public class ThemNhanVien_GUI {
         Stage modalStage = new Stage();
         modalStage.setResizable(false);
         modalStage.initModality(Modality.APPLICATION_MODAL);
-        modalStage.initStyle(StageStyle.UNDECORATED);
+        modalStage.setResizable(false);
 
         ImageView icon = new ImageView(new Image(
                 getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));

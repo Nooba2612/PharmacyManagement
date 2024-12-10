@@ -82,7 +82,7 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
     @Override
     public HoaDon getHoaDonById(String maHoaDon) {
-        query = "SELECT * FROM HoaDon WHERE maHoaDon = ? AND isTemp = 0";
+        query = "SELECT * FROM HoaDon WHERE maHoaDon = ?";
         try {
             statement = connection.prepareStatement(query);
             statement.setString(1, maHoaDon);
@@ -125,7 +125,6 @@ public class HoaDon_DAO implements HoaDon_Interface {
                 double diemSuDung = rs.getDouble("diemSuDung");
                 String loaiThanhToan = rs.getString("loaiThanhToan");
                 double tongTien = rs.getDouble("tongTien");
-                List<ChiTietHoaDon> chiTietHoaDonList = new ChiTietHoaDon_DAO().getChiTietHoaDonByMaHoaDon(maHoaDon);
 
                 HoaDon hoaDon = new HoaDon(maHoaDon, khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung,
                         loaiThanhToan, tongTien);
@@ -173,17 +172,47 @@ public class HoaDon_DAO implements HoaDon_Interface {
 
     @Override
     public boolean updateHoaDon(HoaDon hoaDon) {
-        query = "UPDATE HoaDon SET maKhachHang = ?, maNhanVien = ?, ngayTao = ?, tienKhachDua = ?, diemSuDung = ?, loaiThanhToan = ? WHERE maHoaDon = ?";
-
+        query = "UPDATE HoaDon SET maKhachHang = ?, maNhanVien = ?, ngayTao = ?, tienKhachDua = ?, diemSuDung = ?, loaiThanhToan = ?, tongTien = ?, tienThua = ?, isTemp = ? WHERE maHoaDon = ?";
         try {
             statement = connection.prepareStatement(query);
-            statement.setString(1, hoaDon.getKhachHang().getMaKhachHang());
+            statement.setString(1, hoaDon.getKhachHang() == null ? "KH0000" : hoaDon.getKhachHang().getMaKhachHang());
+
             statement.setString(2, hoaDon.getNhanVien().getMaNhanVien());
             statement.setTimestamp(3, Timestamp.valueOf(hoaDon.getNgayTao()));
             statement.setDouble(4, hoaDon.getTienKhachDua());
             statement.setDouble(5, hoaDon.getDiemSuDung());
             statement.setString(6, hoaDon.getLoaiThanhToan());
-            statement.setString(7, hoaDon.getMaHoaDon());
+            statement.setDouble(7, hoaDon.getTongTien());
+            statement.setDouble(8, hoaDon.getTienThua());
+            statement.setInt(9, 0);
+
+            statement.setString(10, hoaDon.getMaHoaDon());
+
+            return statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateHoaDonTam(HoaDon hoaDonTam) {
+        query = "UPDATE HoaDon SET maKhachHang = ?, maNhanVien = ?, ngayTao = ?, tienKhachDua = ?, diemSuDung = ?, loaiThanhToan = ?, tongTien = ?, tienThua = ?, isTemp = ? WHERE maHoaDon = ?";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1, hoaDonTam.getKhachHang() == null ? "KH0000" : hoaDonTam.getKhachHang().getMaKhachHang());
+
+            statement.setString(2, hoaDonTam.getNhanVien().getMaNhanVien());
+            statement.setTimestamp(3, Timestamp.valueOf(hoaDonTam.getNgayTao()));
+            statement.setDouble(4, hoaDonTam.getTienKhachDua());
+            statement.setDouble(5, hoaDonTam.getDiemSuDung());
+            statement.setString(6, hoaDonTam.getLoaiThanhToan());
+            statement.setDouble(7, hoaDonTam.getTongTien());
+            statement.setDouble(8, hoaDonTam.getTienThua());
+            statement.setInt(9, 1);
+
+            statement.setString(10, hoaDonTam.getMaHoaDon());
 
             return statement.executeUpdate() > 0;
 

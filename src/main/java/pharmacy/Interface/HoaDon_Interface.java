@@ -34,5 +34,6 @@ public interface HoaDon_Interface {
 
 	List<HoaDon> getInvoiceByDate(LocalDate fromDate, LocalDate toDate);
 
+	boolean updateHoaDonTam(HoaDon hoaDonTam);
 
 }

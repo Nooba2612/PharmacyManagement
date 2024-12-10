@@ -12,6 +12,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application {
+
     private final Screen screen = Screen.getPrimary();
     private final Rectangle2D bounds = screen.getBounds();
     private final double screenWidth = bounds.getWidth();

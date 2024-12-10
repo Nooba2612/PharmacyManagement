@@ -1073,7 +1073,7 @@ public class SanPham_GUI {
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
-        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setResizable(false);
 
         ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/confirmation-icon.png")));
         icon.setFitHeight(48);
