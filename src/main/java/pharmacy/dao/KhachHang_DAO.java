@@ -108,8 +108,8 @@ public class KhachHang_DAO implements KhachHang_Interface {
     @Override
     public List<KhachHang> getAllKhachHang() {
         List<KhachHang> khachHangList = new ArrayList<>();
-        String query = "SELECT * FROM KhachHang";
-        try (Connection connection = DatabaseConnection.getConnection(); Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(query)) {
+        query = "SELECT * FROM KhachHang WHERE maKhachHang != 'KH0000'";
+        try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(query)) {
 
             while (rs.next()) {
                 String maKhachHang = rs.getString("maKhachHang");

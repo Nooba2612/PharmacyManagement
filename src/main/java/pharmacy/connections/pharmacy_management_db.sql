@@ -18,6 +18,8 @@ CREATE TABLE NhanVien (
     tienLuong FLOAT NOT NULL
 );
 
+select * from KhachHang
+
 -- Tài khoản
 CREATE TABLE TaiKhoan (
     tenDangNhap NVARCHAR(50) NOT NULL UNIQUE,
@@ -120,6 +122,9 @@ CREATE TABLE NhatKyThayDoiSanPham (
 	CONSTRAINT FK_NhatKyThayDoiSanPham_NhanVien FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
 );
 
+update HoaDon set tienKhachDua = 0
+ALTER TABLE HoaDon
+DROP CONSTRAINT CK__HoaDon__tienKhac__6D0D32F4;
 
 -- Cập nhật trạng thái sản phẩm
 /*
@@ -153,6 +158,9 @@ CREATE TABLE KhachHang (
     gioiTinh NVARCHAR(15) CHECK (gioiTinh IN (N'Nam', N'Nữ', N'Khác')),
     ghiChu NVARCHAR(255)
 );
+
+update TaiKhoan set isLoggedIn = 1
+
 CREATE TABLE NhatKyThayDoiKhachHang (
     maKhachHang NVARCHAR(50) NOT NULL,
     hoTen NVARCHAR(255) NOT NULL CHECK (hoTen LIKE '%[A-Z]%'),

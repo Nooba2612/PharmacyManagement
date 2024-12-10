@@ -132,7 +132,7 @@ public class ThanhToanTienMat_GUI {
             try {
                 handleCheckoutConfirmation(hoaDon, cthd);
 
-                if (Double.parseDouble(givenMoney.getText()) > Double.parseDouble(amountPaidField.getText())) {
+                if (Double.parseDouble(givenMoney.getText()) >= Double.parseDouble(amountPaidField.getText())) {
                     int currentPoints = (int) (khachHang.getDiemTichLuy() - diemSuDung + (amountPaid / 100));
                     KhachHang customer = new KhachHang(khachHang.getMaKhachHang(), khachHang.getHoTen(), khachHang.getSoDienThoai(), currentPoints, khachHang.getNamSinh(), khachHang.getGhiChu(), khachHang.getGioiTinh());
                     new KhachHang_BUS().updateCustomer(customer);
@@ -146,7 +146,7 @@ public class ThanhToanTienMat_GUI {
 
                         Stage popupStage = new Stage();
                         popupStage.initModality(Modality.APPLICATION_MODAL);
-                        popupStage.setTitle("Thêm khách hàng");
+                        popupStage.setTitle("Thanh toán tiền mặt");
                         popupStage.getIcons().add(new Image(getClass().getResource("/images/money-icon.png").toExternalForm()));
                         popupStage.setScene(new Scene(popupContent));
                         popupStage.setResizable(false);
@@ -207,18 +207,28 @@ public class ThanhToanTienMat_GUI {
             return;
         }
 
-        if (new HoaDon_BUS().createHoaDon(hoaDon)) {
+        if (new HoaDon_BUS().getHoaDonById(hoaDon.getMaHoaDon()) == null) {
             showSuccessfulModal("Thanh toán thành công");
-            if (cthd != null) {
-                for (ChiTietHoaDon chiTietHoaDon : cthd) {
-                    new ChiTietHoaDon_BUS().createChiTietHoaDon(chiTietHoaDon);
-                }
-            } else {
-                System.out.println("Danh sách chi tiết hóa đơn trống!");
-            }
+            new HoaDon_BUS().createHoaDon(hoaDon);
             isSuccess = true;
-
             submitBtn.getScene().getWindow().hide();
+        } else {
+            showSuccessfulModal("Thanh toán thành công");
+            new HoaDon_BUS().updateHoaDon(hoaDon);
+            isSuccess = true;
+            submitBtn.getScene().getWindow().hide();
+        }
+
+        if (cthd != null) {
+            for (ChiTietHoaDon chiTietHoaDon : cthd) {
+                if (new ChiTietHoaDon_BUS().getChiTietHoaDonByMaHoaDon(chiTietHoaDon.getMaHoaDon()).isEmpty()) {
+                    new ChiTietHoaDon_BUS().createChiTietHoaDon(chiTietHoaDon);
+                } else {
+                    new ChiTietHoaDon_BUS().updateChiTietHoaDon(chiTietHoaDon);
+                }
+            }
+        } else {
+            System.out.println("Danh sách chi tiết hóa đơn trống!");
         }
         givenMoneyAlert.setVisible(false);
     }

@@ -177,78 +177,7 @@ public class KhachHang_GUI {
         handleEditableCustomerTable();
     }
 
-    // xóa khách hàng
-//	@FXML
-//	public void handleAddButtonToActionColumn() {
-//		actionColumn.setCellFactory(column -> {
-//			return new TableCell<KhachHang, Void>() {
-//				private final Button deleteButton = new Button();
-//
-//				{
-//					// Style the delete button
-//					deleteButton.setStyle("-fx-background-color: #D23617; -fx-text-fill: #FFF;");
-//
-//					// Action for the delete button
-//					deleteButton.setOnAction(event -> {
-//						KhachHang customer = getTableView().getItems().get(getIndex());
-//						getTableView().getItems().remove(customer);
-//					});
-//
-//					Image image = new Image(getClass().getResourceAsStream("/images/x-icon.png"));
-//					ImageView imageView = new ImageView(image);
-//
-//					imageView.setFitWidth(20);
-//					imageView.setFitHeight(20);
-//					imageView.setPreserveRatio(true);
-//					deleteButton.setGraphic(imageView);
-//					deleteButton.setStyle("-fx-background-color: transparent;");
-//					deleteButton.setVisible(false);
-//
-//					deleteButton.setOnMouseEntered(event -> {
-//						NodeUtil.applyFadeTransition(deleteButton, 1, 0.7, 300, () -> {
-//						});
-//						NodeUtil.applyScaleTransition(deleteButton, 1, 1.1, 1, 1.1, 300, () -> {
-//						});
-//					});
-//					deleteButton.setOnMouseExited(event -> {
-//						NodeUtil.applyFadeTransition(deleteButton, 0.7, 1, 300, () -> {
-//						});
-//						NodeUtil.applyScaleTransition(deleteButton, 1.1, 1, 1.1, 1, 300, () -> {
-//						});
-//					});
-//				}
-//
-//				@Override
-//				protected void updateItem(Void item, boolean empty) {
-//					super.updateItem(item, empty);
-//					if (empty) {
-//						setGraphic(null);
-//					} else {
-//						setGraphic(deleteButton);
-//						// Center the delete button in the cell
-//						setStyle("-fx-alignment: CENTER;");
-//					}
-//				}
-//
-//				@Override
-//				public void updateIndex(int i) {
-//					super.updateIndex(i);
-//					if (getIndex() >= 0 && getIndex() < getTableView().getItems().size()) {
-//						TableRow<KhachHang> currentRow = getTableRow();
-//						currentRow.setOnMouseEntered(event -> {
-//							deleteButton.setVisible(true);
-//							NodeUtil.applyFadeTransition(deleteButton, 0, 1, 300, () -> {
-//							});
-//						});
-//						currentRow
-//								.setOnMouseExited(event -> NodeUtil.applyFadeTransition(deleteButton, 1, 0, 300, () -> {
-//									deleteButton.setVisible(false);
-//								}));
-//					}
-//				}
-//			};
-//		});
-//	}
+   
     private void addIconToActionColumn() {
         actionColumn.setCellFactory(column -> new TableCell<KhachHang, Void>() {
             private final Button actionButton = new Button();
@@ -621,7 +550,7 @@ public class KhachHang_GUI {
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
-        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setResizable(false);
 
         ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/confirmation-icon.png")));
         icon.setFitHeight(48);

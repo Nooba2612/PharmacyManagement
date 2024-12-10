@@ -1,4 +1,3 @@
-
 package pharmacy.gui;
 
 import java.io.File;
@@ -10,17 +9,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.itextpdf.commons.bouncycastle.asn1.IASN1EncodableVector;
 import com.itextpdf.io.font.PdfEncodings;
-import com.itextpdf.io.image.ImageDataFactory;
-import com.itextpdf.kernel.colors.Color;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.colors.DeviceRgb;
 import com.itextpdf.kernel.font.PdfFont;
@@ -29,28 +25,22 @@ import com.itextpdf.kernel.font.PdfFontFactory.EmbeddingStrategy;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.List;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import com.itextpdf.layout.properties.VerticalAlignment;
 
-import javafx.collections.FXCollections;
-import javafx.animation.Animation;
-import javafx.animation.RotateTransition;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -62,36 +52,23 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
-import pharmacy.entity.*;
-import pharmacy.utils.NodeUtil;
-import pharmacy.utils.PDFUtil;
-import javafx.scene.Node;
-import javafx.scene.Parent;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import pharmacy.bus.HoaDon_BUS;
 import pharmacy.bus.SanPham_BUS;
 import pharmacy.bus.TaiKhoan_BUS;
+import pharmacy.entity.ChiTietHoaDon;
+import pharmacy.entity.HoaDon;
+import pharmacy.entity.KhachHang;
+import pharmacy.entity.SanPham;
+import pharmacy.bus.ChiTietHoaDon_BUS;
+import pharmacy.utils.NodeUtil;
+import pharmacy.utils.PDFUtil;
 
-
-public class HoaDon_GUI {
-
-    @FXML
-    private TableView<HoaDon> invoiceTable;
-
-    @FXML
-    private TableColumn<HoaDon, String> idColumn;
-
-    @FXML
-    private TableColumn<HoaDon, String> customerNameColumn;
+public class HoaDonTam_GUI {
 
     @FXML
-    private TableColumn<HoaDon, String> employeeNameColumn;
-
-    @FXML
-    private TableColumn<HoaDon, LocalDateTime> createDateColumn;
-
-    @FXML
-    private TableColumn<HoaDon, Double> totalColumn;
+    private TableColumn<HoaDon, Void> actionColumn;
 
     @FXML
     private TableColumn<HoaDon, Double> amountPaidColumn;
@@ -100,54 +77,58 @@ public class HoaDon_GUI {
     private TableColumn<HoaDon, Double> changeColumn;
 
     @FXML
-    private TableColumn<HoaDon, Double> usedPointsColumn;
+    private TableColumn<HoaDon, LocalDateTime> createDateColumn;
+
+    @FXML
+    private TableColumn<HoaDon, String> customerNameColumn;
+
+    @FXML
+    private TableColumn<HoaDon, String> employeeNameColumn;
+
+    @FXML
+    private TableColumn<HoaDon, String> idColumn;
+
+    @FXML
+    private TableView<HoaDon> invoiceTable;
 
     @FXML
     private TableColumn<HoaDon, String> paymentMethodColumn;
 
     @FXML
-    private TableColumn<HoaDon, Void> detailColumn;
-
-    @FXML
-    private DatePicker fromDate;
-
-    @FXML
-    private DatePicker toDate;
-
-    @FXML
-    private TextField searchField;
+    private HBox root;
 
     @FXML
     private Button searchBtn;
 
     @FXML
-    private Button refreshBtn;
+    private TextField searchField;
 
     @FXML
     private Pane searchPane;
 
     @FXML
-    private HBox root;
+    private TableColumn<HoaDon, Double> totalColumn;
+
+    @FXML
+    private TableColumn<HoaDon, Double> usedPointsColumn;
 
     private final ObservableList<HoaDon> invoiceList = FXCollections.observableArrayList();
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private FilteredList<HoaDon> filteredList;
+    private HoaDon currentInvoice;
 
     @FXML
     public void initialize() throws SQLException {
-        handleFilterInvoiceByDate();
         renderTable();
         setupTablePlaceholder();
-        handleRefreshBtn();
     }
 
     @FXML
     public void renderTable() throws SQLException {
         DecimalFormat decimalFormat = new DecimalFormat("#.#");
         invoiceList.clear();
-        invoiceList.addAll(new HoaDon_BUS().getInvoiceByDate(fromDate.getValue(), toDate.getValue()));
+        invoiceList.addAll(new HoaDon_BUS().getHoaDonTam());
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("maHoaDon"));
         customerNameColumn
@@ -162,7 +143,7 @@ public class HoaDon_GUI {
         changeColumn.setCellValueFactory(new PropertyValueFactory<>("tienThua"));
         paymentMethodColumn.setCellValueFactory(new PropertyValueFactory<>("loaiThanhToan"));
         usedPointsColumn.setCellValueFactory(new PropertyValueFactory<>("diemSuDung"));
-        handleAddDetailButtonToColumn();
+        handleAddActionButtonsToColumn();
 
         totalColumn.setCellFactory(column -> new TableCell<HoaDon, Double>() {
             @Override
@@ -226,34 +207,91 @@ public class HoaDon_GUI {
 
         invoiceTable.setItems(invoiceList);
 
-        handleSearchHoaDonAction();
     }
 
     @FXML
-    public void handleAddDetailButtonToColumn() {
-        detailColumn.setCellFactory(column -> {
+    public <T> void showImportTempInvoiceConfirmationPopup(HoaDon hoaDon) throws SQLException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Xác nhận nhập hóa đơn tạm");
+        alert.setHeaderText("Nhập hóa đơn tạm");
+        alert.setContentText("Mã hóa đơn tạm: " + hoaDon.getMaHoaDon());
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
+        stage.setResizable(false);
+
+        ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/confirmation-icon.png")));
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
+        alert.setGraphic(icon);
+
+        ButtonType confirmButton = new ButtonType("Xác nhận", ButtonData.OK_DONE);
+        ButtonType cancelButton = new ButtonType("Hủy", ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(confirmButton, cancelButton);
+
+        Node confirmBtn = alert.getDialogPane().lookupButton(confirmButton);
+        Node cancelBtn = alert.getDialogPane().lookupButton(cancelButton);
+
+        confirmBtn.setStyle(
+                "-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+        cancelBtn.setStyle(
+                "-fx-background-color: red; -fx-font-size: 16px; -fx-text-fill: white; -fx-border-radius: 10px; -fx-cursor: hand;");
+
+        confirmBtn.setOnMouseEntered(e -> {
+            NodeUtil.applyFadeTransition(confirmBtn, 1, 0.6, 300, () -> {
+            });
+        });
+
+        confirmBtn.setOnMouseExited(e -> {
+            NodeUtil.applyFadeTransition(confirmBtn, 0.6, 1, 300, () -> {
+            });
+        });
+
+        cancelBtn.setOnMouseEntered(e -> {
+            NodeUtil.applyFadeTransition(cancelBtn, 1, 0.6, 300, () -> {
+            });
+        });
+
+        cancelBtn.setOnMouseExited(e -> {
+            NodeUtil.applyFadeTransition(cancelBtn, 0.6, 1, 300, () -> {
+            });
+        });
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == confirmButton) {
+            currentInvoice = hoaDon;
+            root.getScene().getWindow().hide();
+        }
+    }
+
+    @FXML
+    public HoaDon getCurrentInvoice() {
+        return currentInvoice;
+    }
+
+    @FXML
+    public void handleAddActionButtonsToColumn() {
+        actionColumn.setCellFactory(column -> {
             return new TableCell<HoaDon, Void>() {
                 private final Button detailButton = new Button();
+                private final Button importButton = new Button();
+                private final HBox buttonContainer = new HBox(2);
 
                 {
-                    // Handle detail button actions
-                    detailButton.setStyle("-fx-background-color: #007bff; -fx-text-fill: white;");
+                    Image detailImage = new Image(getClass().getResourceAsStream("/images/detail-icon.png"));
+                    ImageView detailImageView = new ImageView(detailImage);
+                    detailImageView.setFitWidth(23);
+                    detailImageView.setFitHeight(23);
+                    detailButton.setGraphic(detailImageView);
+                    detailButton.setStyle("-fx-background-color: transparent;");
+                    detailButton.setVisible(false);
 
                     detailButton.setOnAction(event -> {
                         HoaDon invoice = getTableView().getItems().get(getIndex());
                         System.out.println("Detail button clicked for HoaDon: " + invoice.getMaHoaDon());
                         handleShowDetails(invoice);
                     });
-
-                    Image image = new Image(getClass().getResourceAsStream("/images/detail-icon.png"));
-                    ImageView imageView = new ImageView(image);
-
-                    imageView.setFitWidth(20);
-                    imageView.setFitHeight(20);
-                    imageView.setPreserveRatio(true);
-                    detailButton.setGraphic(imageView);
-                    detailButton.setStyle("-fx-background-color: transparent;");
-                    detailButton.setVisible(false);
 
                     detailButton.setOnMouseEntered(event -> {
                         NodeUtil.applyFadeTransition(detailButton, 1, 0.7, 300, () -> {
@@ -268,6 +306,37 @@ public class HoaDon_GUI {
                         });
                     });
 
+                    Image deleteImage = new Image(getClass().getResourceAsStream("/images/blue-import-icon.png"));
+                    ImageView deleteImageView = new ImageView(deleteImage);
+                    deleteImageView.setFitWidth(23);
+                    deleteImageView.setFitHeight(23);
+                    importButton.setGraphic(deleteImageView);
+                    importButton.setStyle("-fx-background-color: transparent;");
+                    importButton.setVisible(false);
+
+                    importButton.setOnAction(event -> {
+                        HoaDon invoice = getTableView().getItems().get(getIndex());
+                        try {
+                            showImportTempInvoiceConfirmationPopup(invoice);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    });
+
+                    importButton.setOnMouseEntered(event -> {
+                        NodeUtil.applyFadeTransition(importButton, 1, 0.7, 300, () -> {
+                        });
+                        NodeUtil.applyScaleTransition(importButton, 1, 1.1, 1, 1.1, 300, () -> {
+                        });
+                    });
+                    importButton.setOnMouseExited(event -> {
+                        NodeUtil.applyFadeTransition(importButton, 0.7, 1, 300, () -> {
+                        });
+                        NodeUtil.applyScaleTransition(importButton, 1.1, 1, 1.1, 1, 300, () -> {
+                        });
+                    });
+
+                    buttonContainer.getChildren().addAll(detailButton, importButton);
                 }
 
                 @Override
@@ -276,7 +345,7 @@ public class HoaDon_GUI {
                     if (empty) {
                         setGraphic(null);
                     } else {
-                        setGraphic(detailButton);
+                        setGraphic(buttonContainer);
                         setStyle("-fx-alignment: CENTER;");
                     }
                 }
@@ -289,182 +358,18 @@ public class HoaDon_GUI {
 
                         currentRow.setOnMouseEntered(event -> {
                             detailButton.setVisible(true);
-                            NodeUtil.applyFadeTransition(detailButton, 0, 1, 300, () -> {
+                            importButton.setVisible(true);
+                            NodeUtil.applyFadeTransition(buttonContainer, 0, 1, 300, () -> {
                             });
                         });
-                        currentRow
-                                .setOnMouseExited(event -> NodeUtil.applyFadeTransition(detailButton, 1, 0, 300, () -> {
+                        currentRow.setOnMouseExited(event -> NodeUtil.applyFadeTransition(buttonContainer, 1, 0, 300, () -> {
                             detailButton.setVisible(false);
+                            importButton.setVisible(false);
                         }));
                     }
                 }
             };
         });
-    }
-
-    @FXML
-    public void setupTablePlaceholder() {
-        Label noContentLabel = new Label("Không có hóa đơn.");
-        noContentLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #339933;");
-        invoiceTable.setPlaceholder(noContentLabel);
-    }
-
-    @FXML
-    public void handleSearchHoaDonAction() {
-        filteredList = new FilteredList<>(invoiceList, b -> true);
-
-        searchBtn.setOnAction(event -> {
-            filteredList.setPredicate(invoice -> {
-                if (searchField.getText() == null || searchField.getText().isEmpty()) {
-                    return true;
-                }
-
-                String lowerCaseFilter = searchField.getText().toLowerCase();
-                return invoice.getMaHoaDon().toLowerCase().contains(lowerCaseFilter)
-                        || invoice.getKhachHang().getHoTen().toLowerCase().contains(lowerCaseFilter)
-                        || invoice.getNhanVien().getHoTen().toLowerCase().contains(lowerCaseFilter);
-
-            });
-        });
-
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredList.setPredicate(invoice -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                String lowerCaseFilter = newValue.toLowerCase();
-                return invoice.getMaHoaDon().toLowerCase().contains(lowerCaseFilter)
-                        || invoice.getKhachHang().getHoTen().toLowerCase().contains(lowerCaseFilter)
-                        || invoice.getNhanVien().getHoTen().toLowerCase().contains(lowerCaseFilter);
-
-            });
-        });
-
-        invoiceTable.setItems(filteredList.isEmpty() ? invoiceList : filteredList);
-    }
-
-    @FXML
-    public void handleRefreshBtn() {
-        refreshBtn.setOnMouseEntered(event -> {
-            NodeUtil.applyFadeTransition(refreshBtn, 1, 0.7, 300, () -> {
-            });
-        });
-
-        refreshBtn.setOnMouseExited(event -> {
-            NodeUtil.applyFadeTransition(refreshBtn, 0.7, 1, 300, () -> {
-            });
-        });
-
-        refreshBtn.setOnAction(event -> {
-            showLoadingAnimation();
-            searchField.setText("");
-            new Thread(() -> {
-                try {
-                    Thread.sleep(800);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                Platform.runLater(() -> {
-                    try {
-                        toDate.setValue(LocalDate.now());
-                        fromDate.setValue(toDate.getValue().minusDays(30));
-                        invoiceList.clear();
-                        invoiceList.addAll(new HoaDon_BUS().getInvoiceByDate(fromDate.getValue(), toDate.getValue()));
-                        setupTablePlaceholder();
-                        renderTable();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-            }).start();
-        });
-    }
-
-    @FXML
-    public void showLoadingAnimation() {
-        invoiceList.clear();
-        invoiceTable.getItems().clear();
-
-        ImageView loadingImageView = new ImageView(
-                new Image(getClass().getClassLoader().getResource("images/loading-icon.png").toString()));
-        loadingImageView.setFitHeight(50);
-        loadingImageView.setFitWidth(50);
-        invoiceTable.setPlaceholder(loadingImageView);
-
-        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(0.8), loadingImageView);
-        rotateTransition.setCycleCount(Animation.INDEFINITE);
-        rotateTransition.setFromAngle(0);
-        rotateTransition.setToAngle(360);
-        rotateTransition.play();
-    }
-
-    @FXML
-    public void handleFilterInvoiceByDate() {
-        toDate.setValue(LocalDate.now());
-        fromDate.setValue(toDate.getValue().minusDays(30));
-
-        fromDate.setDayCellFactory(datePicker -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-                setDisable(item.isAfter(toDate.getValue()));
-            }
-        });
-
-        toDate.setDayCellFactory(datePicker -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-                setDisable(item.isBefore(fromDate.getValue()) || item.isAfter(LocalDate.now()));
-            }
-        });
-
-        fromDate.valueProperty().addListener((observable, oldValue, newValue) -> {
-            toDate.setDayCellFactory(datePicker -> new DateCell() {
-                @Override
-                public void updateItem(LocalDate item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setDisable(item.isBefore(newValue) || item.isAfter(LocalDate.now()));
-                }
-            });
-            updateInvoiceTable();
-        });
-
-        toDate.valueProperty().addListener((observable, oldValue, newValue) -> {
-            fromDate.setDayCellFactory(datePicker -> new DateCell() {
-                @Override
-                public void updateItem(LocalDate item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setDisable(item.isAfter(newValue));
-                }
-            });
-            updateInvoiceTable();
-        });
-    }
-
-    private void updateInvoiceTable() {
-        showLoadingAnimation();
-
-        new Thread(() -> {
-            try {
-                Thread.sleep(800);
-
-                Platform.runLater(() -> {
-                    try {
-                        setupTablePlaceholder();
-                        renderTable();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
     }
 
     @FXML
@@ -613,4 +518,10 @@ public class HoaDon_GUI {
         System.out.println("\n\nPDF generated at: " + outputPdfPath + "\n\n");
     }
 
+    @FXML
+    public void setupTablePlaceholder() {
+        Label noContentLabel = new Label("Không có hóa đơn tạm.");
+        noContentLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: #339933;");
+        invoiceTable.setPlaceholder(noContentLabel);
+    }
 }

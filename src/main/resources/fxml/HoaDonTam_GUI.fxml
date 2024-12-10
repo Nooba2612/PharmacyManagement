@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<HBox fx:id="root" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.HoaDonTam_GUI">
+	<children>
+		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="513.0" prefWidth="1179.0">
+			<children>
+				<Text id="mainTitle" fill="#9e9e9e" layoutX="479.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Nhập hóa đơn tạm" textAlignment="CENTER">
+					<font>
+						<Font name="Arial Bold" size="25.0" />
+					</font>
+				</Text>
+				<Pane layoutY="53.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="465.0" prefWidth="1179.0" style="-fx-background-color: #fff;">
+					<children>
+						<ScrollPane id="expiredMedicinesTablePane" fitToHeight="true" fitToWidth="true" layoutX="35.0" layoutY="133.0" prefHeight="284.0" prefWidth="1117.0" style="-fx-background-color: transparent;">
+							<content>
+								<TableView fx:id="invoiceTable" minHeight="-Infinity" minWidth="-Infinity" prefHeight="279.0" prefWidth="1116.0" style="-fx-background-color: transparent;" stylesheets="@../css/TableStyles.css" tableMenuButtonVisible="true">
+									<columns>
+										<TableColumn fx:id="idColumn" prefWidth="104.80001145601273" text="Mã hóa đơn" />
+										<TableColumn fx:id="customerNameColumn" prefWidth="126.40000915527344" text="Tên khách hàng" />
+										<TableColumn fx:id="employeeNameColumn" prefWidth="114.39999389648438" sortable="false" text="Tên nhân viên" />
+										<TableColumn fx:id="totalColumn" prefWidth="121.59991455078125" sortable="false" text="Tổng hóa đơn" />
+										<TableColumn fx:id="amountPaidColumn" prefWidth="131.199951171875" text="Tiền khách đưa" />
+										<TableColumn fx:id="changeColumn" prefWidth="90.39996337890625" text="Tiền thừa" />
+										<TableColumn fx:id="paymentMethodColumn" prefWidth="144.00006103515625" text="Hình thức thanh toán" />
+                              <TableColumn fx:id="usedPointsColumn" prefWidth="98.4000244140625" text="Điểm sử dụng" />
+										<TableColumn fx:id="createDateColumn" prefWidth="90.39996337890625" text="Thời gian tạo" />
+										<TableColumn fx:id="actionColumn" editable="false" prefWidth="117.59991455078125" sortable="false" text="Hành động" />
+									</columns>
+									<columnResizePolicy>
+										<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+									</columnResizePolicy>
+									<cursor>
+										<Cursor fx:constant="TEXT" />
+									</cursor>
+								</TableView>
+							</content>
+						</ScrollPane>
+						<Pane fx:id="searchPane" layoutX="39.0" layoutY="31.0" prefHeight="46.0" prefWidth="1117.0" style="-fx-background-color: #f0f0f0;">
+							<children>
+								<TextField fx:id="searchField" layoutX="7.0" layoutY="6.0" prefHeight="34.0" prefWidth="1068.0" promptText="Nhập nội dung cần tìm" style="-fx-background-color: transparent;">
+									<font>
+										<Font size="13.0" />
+									</font>
+								</TextField>
+								<Button fx:id="searchBtn" layoutX="1075.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="53.0" prefWidth="42.0" style="-fx-background-color: transparent;" textAlignment="CENTER">
+									<graphic>
+										<ImageView fitHeight="20.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+											<image>
+												<Image url="@../images/search-icon.png" />
+											</image>
+										</ImageView>
+									</graphic>
+									<cursor>
+										<Cursor fx:constant="HAND" />
+									</cursor>
+								</Button>
+							</children>
+						</Pane>
+                  <Text fill="#918f8f" layoutX="96.0" layoutY="114.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Danh sách hóa đơn tạm">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Text>
+                  <Line endX="813.7999267578125" layoutX="333.0" layoutY="108.0" startX="-12.60003662109375" stroke="#cccccc" strokeWidth="2.0" />
+                  <Line endX="-49.40003967285156" layoutX="125.0" layoutY="107.0" startX="-88.60002136230469" stroke="#cccccc" strokeWidth="2.0" />
+					</children>
+					<effect>
+						<DropShadow height="10.0" radius="4.5" width="10.0">
+							<color>
+								<Color opacity="0.6907294988632202" />
+							</color>
+						</DropShadow>
+					</effect>
+				</Pane>
+			</children>
+		</Pane>
+	</children>
+</HBox>

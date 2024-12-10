@@ -2,6 +2,7 @@ package pharmacy.gui;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -45,19 +46,22 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.StringConverter;
+import javafx.scene.web.WebView;
 import pharmacy.bus.ChiTietHoaDon_BUS;
 import pharmacy.bus.HoaDon_BUS;
 import pharmacy.bus.KhachHang_BUS;
 import pharmacy.bus.SanPham_BUS;
 import pharmacy.bus.TaiKhoan_BUS;
+import pharmacy.connections.VNPay.PaymentController;
 import pharmacy.dao.ChiTietHoaDon_DAO;
 import pharmacy.dao.KhachHang_DAO;
 import pharmacy.dao.NhanVien_DAO;
@@ -66,6 +70,10 @@ import pharmacy.entity.HoaDon;
 import pharmacy.entity.KhachHang;
 import pharmacy.entity.NhanVien;
 import pharmacy.entity.SanPham;
+import pharmacy.gui.HoaDonTam_GUI;
+import pharmacy.gui.ThanhToanChuyenKhoan_GUI;
+import pharmacy.gui.ThanhToanTienMat_GUI;
+import pharmacy.gui.ThemKhachHangNhanh_GUI;
 import pharmacy.utils.NodeUtil;
 
 public class BanHang_GUI {
@@ -226,12 +234,9 @@ public class BanHang_GUI {
     @FXML
     private Label phoneAlert;
 
-    @FXML
-    private Label paymentMethodAlert;
-
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-    private ObservableList<ChiTietHoaDon> addedProductList = FXCollections.observableArrayList();
+    private final ObservableList<ChiTietHoaDon> addedProductList = FXCollections.observableArrayList();
 
     private final List<ChiTietHoaDon> currentDetailInvoice = new ArrayList<>();
 
@@ -248,8 +253,9 @@ public class BanHang_GUI {
         handleHoverBtn();
         handleAddProduct();
         handleSearchCustomer();
-        handleSaveInvoiceTemp();
+        handleSaveTempInvoice();
         handleCheckoutProduct();
+        handleImportTempInvoice();
     }
 
     @FXML
@@ -275,12 +281,51 @@ public class BanHang_GUI {
                         e.printStackTrace();
                     }
                 }
-                // case "Chuyển khoản" ->
-                //     handleBankTransfer();
+                case "Chuyển khoản" -> {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThanhToanChuyenKhoan_GUI.fxml"));
+
+                        Pane webView = loader.load();
+                        ThanhToanChuyenKhoan_GUI thanhToanChuyenKhoanGUI = loader.getController();
+                        thanhToanChuyenKhoanGUI.initialize(Double.valueOf(totalPrice.getText()));
+
+                        Stage stage = new Stage();
+                        Scene scene = new Scene(webView);
+                        stage.getIcons().addAll(new Image(getClass().getResource("/images/payment-icon.png").toString()));
+                        stage.initModality(Modality.APPLICATION_MODAL);
+                        stage.setResizable(false);
+                        stage.setScene(scene);
+                        stage.setTitle("Thanh toán chuyển khoản");
+                        stage.setMinHeight(800);
+                        stage.setMinWidth(725);
+                        stage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 default ->
                     showErrorDialog("Phương thức thanh toán không hợp lệ.");
             }
         });
+    }
+
+    @FXML
+    public void handleBankTransfer() throws UnsupportedEncodingException {
+        PaymentController vnpay = new PaymentController();
+
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+
+        popupStage.setTitle("Thanh toán VNPay");
+
+        WebView webView = new WebView();
+        webView.getEngine().load(vnpay.getPay(Double.valueOf(totalPrice.getText())));
+
+        StackPane layout = new StackPane(webView);
+        Scene popupScene = new Scene(layout, 800, 600);
+
+        popupStage.setScene(popupScene);
+        popupStage.show();
     }
 
     @FXML
@@ -301,11 +346,11 @@ public class BanHang_GUI {
 
             Stage popupStage = new Stage();
             popupStage.initModality(Modality.APPLICATION_MODAL);
-            popupStage.setTitle("Thêm khách hàng");
+            popupStage.setTitle("Thanh toán tiền mặt");
             popupStage.getIcons().add(new Image(getClass().getResource("/images/money-icon.png").toExternalForm()));
             popupStage.setScene(new Scene(popupContent));
 
-            popupStage.setOnHidden(event -> {
+            popupStage.setOnHidden(hiddenEvent -> {
                 if (controller.getStatus() == true) {
                     try {
                         refreshForm();
@@ -401,6 +446,60 @@ public class BanHang_GUI {
         loyaltyPoint.setText("0");
         checkoutPrice = 0;
         addedProductList.clear();
+        paymentMethodSelect.setValue(null);
+        paymentMethodSelect.getEditor().setText(null);
+    }
+
+    @FXML
+    public void handleImportTempInvoice() {
+        importTempInvoiceBtn.setOnAction(event -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HoaDonTam_GUI.fxml"));
+                Parent popupContent = loader.load();
+                HoaDonTam_GUI controller = loader.getController();
+
+                Stage popupStage = new Stage();
+                popupStage.initModality(Modality.APPLICATION_MODAL);
+                popupStage.setTitle("Nhập hóa đơn tạm");
+                popupStage.getIcons().add(new Image(getClass().getResource("/images/invoice-icon.png").toExternalForm()));
+                popupStage.setScene(new Scene(popupContent));
+                popupStage.setResizable(false);
+
+                popupStage.setOnHidden(e -> {
+                    HoaDon invoice = controller.getCurrentInvoice();
+                    if (invoice != null) {
+                        currentDetailInvoice.clear();
+                        currentDetailInvoice.addAll(invoice.getChiTietHoaDonList());
+                    }
+                    if (invoice != null) {
+                        invoiceId.setText(invoice.getMaHoaDon());
+                    }
+
+                    if (invoice != null && invoice.getKhachHang() != null && !invoice.getKhachHang().getMaKhachHang().equals("KH0000")) {
+                        customerPhoneField.setText(invoice.getKhachHang().getSoDienThoai());
+                    }
+
+                    if (invoice != null && invoice.getLoaiThanhToan() != null) {
+                        paymentMethodSelect.setValue(invoice.getLoaiThanhToan());
+                    } else {
+                        paymentMethodSelect.setValue(null);
+                    }
+
+                    for (ChiTietHoaDon cthd : currentDetailInvoice) {
+                        renderAddedProduct(cthd);
+                        try {
+                            renderTotalInvoice();
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+
+                popupStage.showAndWait();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @FXML
@@ -583,13 +682,6 @@ public class BanHang_GUI {
         return id;
     }
 
-    private String generateTempInvoiceId() throws SQLException {
-        int productNumber = new HoaDon_BUS().countHoaDon() + new HoaDon_BUS().countHoaDon();
-        String id = String.format("HD%04d", productNumber + 1);
-
-        return id;
-    }
-
     @FXML
     public void setupTablePlaceholder(String placeholderStr, TableView<SanPham> table) {
         Label noContentLabel = new Label(placeholderStr);
@@ -598,7 +690,7 @@ public class BanHang_GUI {
     }
 
     @FXML
-    public void handleSaveInvoiceTemp() {
+    public void handleSaveTempInvoice() {
         saveTempBtn.setOnAction(event -> {
             if (!addedProductList.isEmpty()) {
                 KhachHang khachHang = new KhachHang();
@@ -638,33 +730,36 @@ public class BanHang_GUI {
 
                 HoaDon hoaDon = new HoaDon();
                 try {
-                    hoaDon = new HoaDon(generateId(), khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan, tongTien);
+                    hoaDon = new HoaDon(invoiceId.getText(), khachHang, nhanVien, ngayTao, tienKhachDua, diemSuDung, loaiThanhToan, tongTien);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
                 try {
-                    if (new HoaDon_BUS().createHoaDonTam(hoaDon)) {
-                        showSuccessfulModal("Lưu hóa đơn tạm thành công.");
-                        refreshForm();
+                    if (new HoaDon_BUS().getHoaDonById(invoiceId.getText()) == null) {
+                        new HoaDon_BUS().createHoaDonTam(hoaDon);
+                    } else {
+                        new HoaDon_BUS().updateHoaDon(hoaDon);
                     }
+
+                    if (currentDetailInvoice != null) {
+                        for (ChiTietHoaDon chiTietHoaDon : currentDetailInvoice) {
+                            new ChiTietHoaDon_BUS().createChiTietHoaDon(chiTietHoaDon);
+                        }
+                    } else {
+                        System.out.println("Danh sách chi tiết hóa đơn trống!");
+                    }
+                    showSuccessfulModal("Lưu hóa đơn tạm thành công.");
+                    refreshForm();
                 } catch (SQLException ex) {
                 }
 
-                if (currentDetailInvoice != null) {
-                    for (ChiTietHoaDon chiTietHoaDon : currentDetailInvoice) {
-                        new ChiTietHoaDon_BUS().createChiTietHoaDon(chiTietHoaDon);
-                    }
-                } else {
-                    System.out.println("Danh sách chi tiết hóa đơn trống!");
-                }
             } else {
                 showErrorDialog("Chưa có sản phẩm trong giỏ hàng");
             }
         });
     }
 
-    @FXML
     private void showSuccessfulModal(String message) {
         Stage modalStage = new Stage();
         modalStage.setResizable(false);
@@ -1053,7 +1148,7 @@ public class BanHang_GUI {
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
-        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setResizable(false);
 
         ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/confirmation-icon.png")));
         icon.setFitHeight(48);
@@ -1097,7 +1192,7 @@ public class BanHang_GUI {
 
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/images/tick-icon.png")));
-        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setResizable(false);
 
         ImageView icon = new ImageView(new Image(getClass().getResourceAsStream("/images/confirmation-icon.png")));
         icon.setFitHeight(48);
