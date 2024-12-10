@@ -628,7 +628,7 @@ public class BanHang_GUI {
         addCustomerBtn.setOnAction(event -> {
             try {
 
-                if (!customerPhoneField.getText().matches("^09\\d{8}$")) {
+                if (!customerPhoneField.getText().matches("^0\\d{9}$")) {
                     showErrorDialog("Chưa nhập số điện thoại.");
                     phoneAlert.setText("Chưa nhập số điện thoại.");
                     phoneAlert.setVisible(true);
@@ -642,7 +642,7 @@ public class BanHang_GUI {
                     return;
                 }
 
-                if (customerPhoneField.getText().matches("^09\\d{8}$") && new KhachHang_BUS().getKhachHangByPhone(customerPhoneField.getText()) == null) {
+                if (customerPhoneField.getText().matches("^0\\d{9}$") && new KhachHang_BUS().getKhachHangByPhone(customerPhoneField.getText()) == null) {
                     phoneAlert.setVisible(false);
 
                     try {

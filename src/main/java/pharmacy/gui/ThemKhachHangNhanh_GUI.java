@@ -220,7 +220,7 @@ public class ThemKhachHangNhanh_GUI {
             phoneAlert.setText("Số điện thoại không được để trống.");
             phoneAlert.setVisible(true);
             isValid = false;
-        } else if (!phoneText.matches("^09\\d{8}$")) {
+        } else if (!phoneText.matches("^0\\d{9}$")) {
             phoneAlert.setText("Số điện thoại không hợp lệ.");
             phoneAlert.setVisible(true);
             isValid = false;

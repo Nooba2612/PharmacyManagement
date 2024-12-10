@@ -16,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -28,6 +29,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import pharmacy.bus.KhachHang_BUS;
 import pharmacy.entity.KhachHang;
 import pharmacy.utils.NodeUtil;
@@ -140,6 +142,25 @@ public class ThemKhachHang_GUI {
             customerTable.setPlaceholder(noMedicineLabel);
         }
 
+        birthdayField.setDayCellFactory((Callback<DatePicker, DateCell>) new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        
+                        // Vô hiệu hóa các ngày trong tương lai
+                        if (item.isAfter(LocalDate.now())) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #ffc0cb;"); // Tùy chọn màu cho ngày không hợp lệ
+                        }
+                    }
+                };
+            }
+        });
+
+
         handleAddCustomer();
     }
 
@@ -166,13 +187,6 @@ public class ThemKhachHang_GUI {
                 String gioiTinh = genderSelect.getValue();
                 String ghiChu = noteField.getText();
 
-                if (namSinh == null) {
-                    birthdayAlert.setText("Ngày sinh không được để trống.");
-                    birthdayAlert.setVisible(true);
-                } else {
-                    birthdayAlert.setVisible(false);
-                }
-
                 KhachHang khachHang = new KhachHang(maKhachHang, hoTen, soDienThoai, 0, namSinh, ghiChu, gioiTinh);
 
                 try {
@@ -180,6 +194,7 @@ public class ThemKhachHang_GUI {
                         showAddCustomerSuccessModal("Thêm khách hàng thành công");
                     } else {
                         showErrorDialog();
+                        return;
                     }
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -244,7 +259,7 @@ public class ThemKhachHang_GUI {
             phoneAlert.setText("Số điện thoại không được để trống.");
             phoneAlert.setVisible(true);
             isValid = false;
-        } else if (!phoneText.matches("^09\\d{8}$")) {
+        } else if (!phoneText.matches("^0\\d{9}$")) {
             phoneAlert.setText("Số điện thoại không hợp lệ.");
             phoneAlert.setVisible(true);
             isValid = false;
@@ -269,15 +284,19 @@ public class ThemKhachHang_GUI {
             genderAlert.setVisible(false);
         }
 
-        // Validate Birthday field
-        if (birthdayField.getValue() == null) {
-            birthdayAlert.setText("Ngày sinh không được rỗng.");
+        LocalDate namSinh = birthdayField.getValue();
+        if (namSinh == null) {
+            birthdayAlert.setText("Ngày sinh không được để trống.");
             birthdayAlert.setVisible(true);
+            isValid = false;
+        } else if (namSinh.isAfter(LocalDate.now())) {
+            birthdayAlert.setText("Ngày sinh không thể lớn hơn ngày hiện tại.");
+            birthdayAlert.setVisible(true);
+            birthdayField.setValue(null); // Reset lại nếu ngày không hợp lệ
             isValid = false;
         } else {
             birthdayAlert.setVisible(false);
         }
-
         return isValid;
     }
 
