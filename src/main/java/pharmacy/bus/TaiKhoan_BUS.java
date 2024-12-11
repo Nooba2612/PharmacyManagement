@@ -44,4 +44,8 @@ public class TaiKhoan_BUS {
 		taiKhoanDAO.logoutAccount(tenDangNhap);
 	}
 
+	public void changePassword(String username, String newPasswordHashed) {
+		taiKhoanDAO.changePassword(username, newPasswordHashed);
+	}
+
 }

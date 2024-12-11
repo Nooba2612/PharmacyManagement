@@ -16,4 +16,6 @@ public interface TaiKhoan_Interface {
 	TaiKhoan getCurrentAccount();
 
 	void logoutAccount(String tenDangNhap);
+
+	void changePassword(String username, String newPasswordHashed);
 }
