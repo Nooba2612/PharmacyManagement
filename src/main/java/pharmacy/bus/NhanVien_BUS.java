@@ -16,6 +16,10 @@ public class NhanVien_BUS {
     public NhanVien getEmployeeByMaNhanVien(String maNhanVien) {
         return nhanVienDAO.getEmployeeByMaNhanVien(maNhanVien);
     }
+    
+    public NhanVien getEmployeeByEmail(String email) {
+    	return nhanVienDAO.getEmployeeByEmail(email);
+    }
 
     public boolean updateEmployee(NhanVien nhanVien) {
         if (nhanVien == null) {

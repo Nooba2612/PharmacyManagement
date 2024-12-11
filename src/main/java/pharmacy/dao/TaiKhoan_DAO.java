@@ -1,10 +1,13 @@
 package pharmacy.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
+import javafx.scene.media.VideoTrack;
 import pharmacy.Interface.TaiKhoan_Interface;
 import pharmacy.connections.DatabaseConnection;
 import pharmacy.entity.NhanVien;
@@ -53,6 +56,20 @@ public class TaiKhoan_DAO implements TaiKhoan_Interface {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    public void changePassword(String username, String newPasswordHashed) {
+    	query = "UPDATE TaiKhoan SET matKhau = ? WHERE tenDangNhap = ?";
+    	try {
+			statement = connection.prepareStatement(query);
+			statement.setString(1, newPasswordHashed);
+			statement.setString(2, username);
+
+			statement.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
     }
 
     public boolean createAccount(TaiKhoan taiKhoan) {

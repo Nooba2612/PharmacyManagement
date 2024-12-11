@@ -18,7 +18,8 @@ CREATE TABLE NhanVien (
     tienLuong FLOAT NOT NULL
 );
 
-select * from KhachHang
+select * from NhanVien
+update NhanVien set email = 'vnguyendangv@gmail.com' where maNhanVien = 'MK0001'
 
 -- Tài khoản
 CREATE TABLE TaiKhoan (
@@ -27,6 +28,18 @@ CREATE TABLE TaiKhoan (
     isLoggedIn BIT NOT NULL DEFAULT 0,
     CONSTRAINT FK_TaiKhoan_NhanVien FOREIGN KEY (tenDangNhap) REFERENCES NhanVien(maNhanVien)
 );
+
+-- OTP
+CREATE TABLE OTP (
+    otpId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,                             
+    tenDangNhap NVARCHAR(50) NOT NULL,
+    otpCode VARCHAR(6) NOT NULL, 
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+	expiresAt DATETIME NOT NULL,
+    CONSTRAINT FK_OTP_TaiKhoan FOREIGN KEY (tenDangNhap) REFERENCES TaiKhoan(tenDangNhap)
+);
+
+
 -- ISLOGGEDIN : 1
 UPDATE TaiKhoan
 SET isLoggedIn = 1

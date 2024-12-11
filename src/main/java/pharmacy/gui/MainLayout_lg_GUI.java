@@ -358,6 +358,7 @@ public class MainLayout_lg_GUI {
                 loginStage.setScene(scene);
                 loginStage.setMaximized(false);
                 loginStage.sizeToScene();
+                loginStage.setResizable(false);
                 loginStage.setTitle("Medkit - Pharmacy Management System");
                 loginStage.getIcons()
                         .add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));

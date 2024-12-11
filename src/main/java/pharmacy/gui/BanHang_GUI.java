@@ -315,6 +315,7 @@ public class BanHang_GUI {
 
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
+        
 
         popupStage.setTitle("Thanh toán VNPay");
 
@@ -764,6 +765,7 @@ public class BanHang_GUI {
         Stage modalStage = new Stage();
         modalStage.setResizable(false);
         modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.getIcons().addAll(new Image(getClass().getClassLoader().getResource("images/tick-icon.png").toString()));
 
         ImageView icon = new ImageView(new Image(
                 getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));
@@ -1059,6 +1061,11 @@ public class BanHang_GUI {
                         e.printStackTrace();
                     }
                     column.getTableView().refresh();
+                    try {
+						renderTotalInvoice();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
                 }
             }
         });
@@ -1133,6 +1140,11 @@ public class BanHang_GUI {
                 if (isConfirmed) {
                     cthd.setLieuLuong(newValue.toString());
                     column.getTableView().refresh();
+                    try {
+						renderTotalInvoice();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
                 }
             }
         });

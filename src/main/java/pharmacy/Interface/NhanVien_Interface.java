@@ -22,4 +22,6 @@ public interface NhanVien_Interface {
 	int getOrderQuantityOfEmployee(String maNhanVien);
 
 	List<NhanVien> getEmployeesByStatus(String status);
+	
+	NhanVien getEmployeeByEmail(String email);
 }
