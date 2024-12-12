@@ -76,9 +76,6 @@ public class MainLayout_md_GUI {
     private Pane settingBtn;
 
     @FXML
-    private Pane categoryBtn;
-
-    @FXML
     private Pane aboutUsBtn;
 
     @FXML
@@ -93,6 +90,8 @@ public class MainLayout_md_GUI {
     @FXML
     public void initialize() throws IOException, SQLException {
         // responesiveLayout();
+        mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
+        mainContentPane.setContent(mainContent);
 
         handleMenuAction();
 
@@ -154,19 +153,38 @@ public class MainLayout_md_GUI {
         String buttonId = frameBtn.getId();
 
         switch (buttonId) {
-            case "homeBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
-            case "statisticBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThongKe_GUI.fxml"));
-            case "customersBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/KhachHang_GUI.fxml"));
-            case "employeesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhanVien_GUI.fxml"));
-            case "workScheduleBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/LichLam_GUI.fxml"));
-            case "suppliersBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhaCungCap_GUI.fxml"));
-            case "medicinesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/Thuoc_GUI.fxml"));
-            case "invoicesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/HoaDon_GUI.fxml"));
-            case "equipmentsBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThietBiYTe_GUI.fxml"));
-            case "goodsReceiptBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/PhieuNhap_GUI.fxml"));
-            case "categoryBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/DanhMuc_GUI.fxml"));
-            case "aboutUsBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/GioiThieuChung_GUI.fxml"));
-            default -> throw new IllegalArgumentException("Không có nút nào tương ứng với ID: " + buttonId);
+            case "homeBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
+            case "statisticBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThongKe_GUI.fxml"));
+            case "customersBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/KhachHang_GUI.fxml"));
+            case "employeesBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhanVien_GUI.fxml"));
+            case "workScheduleBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/LichLam_GUI.fxml"));
+            case "suppliersBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhaCungCap_GUI.fxml"));
+            case "medicinesBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/SanPham_GUI.fxml"));
+            case "invoicesBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/HoaDon_GUI.fxml"));
+            case "equipmentsBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThietBiYTe_GUI.fxml"));
+            case "goodsReceiptBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/PhieuNhap_GUI.fxml"));
+            case "categoryBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/DanhMuc_GUI.fxml"));
+            case "aboutUsBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/GioiThieuChung_GUI.fxml"));
+            case "settingBtn" -> {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CaiDat_GUI.fxml"));
+                mainContent = loader.load();
+                CaiDat_GUI caiDatGUI = loader.getController(); 
+                caiDatGUI.setStatusOfMenuBar("horizontal");
+            }
+            default ->
+                throw new IllegalArgumentException("Không có nút nào tương ứng với ID: " + buttonId);
         }
 
         mainContentPane.setContent(mainContent);
@@ -231,6 +249,15 @@ public class MainLayout_md_GUI {
         username.setText(new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getHoTen());
         userRole.setText(new TaiKhoan_BUS().getCurrentAccount().getTenDangNhap().getChucVu());
 
+        settingBtn.setOnMouseClicked(event -> {
+            try {
+                handeChangeFrame(settingBtn);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            handleProfilePopoverShowHide();
+        });
+
         userInfo.setOnMouseClicked(event -> {
             if (profilePopover.isVisible()) {
                 userInfo.setStyle("-fx-background-color: transparent;");
@@ -258,6 +285,29 @@ public class MainLayout_md_GUI {
 
             item.setOnMouseExited(event -> {
                 item.setStyle("-fx-background-color: #FFF;");
+            });
+        }
+    }
+
+    @FXML
+    public void handleProfilePopoverShowHide() {
+        Node moreIcon = userInfo.getChildren().get(2);
+
+        if (profilePopover.isVisible()) {
+            userInfo.setStyle("-fx-background-color: transparent;");
+            NodeUtil.applyFadeTransition(profilePopover, 1.0, 0.0, 300, () -> profilePopover.setVisible(false));
+            NodeUtil.applyTranslateYTransition(profilePopover, 0, -20, 300, () -> {
+            });
+            NodeUtil.applyRotateTransition(moreIcon, 180, 0, 200, () -> {
+            });
+        } else {
+            profilePopover.setVisible(true);
+            NodeUtil.applyFadeTransition(profilePopover, 0.0, 1.0, 300, () -> {
+            });
+            NodeUtil.applyTranslateYTransition(profilePopover, -20, 0, 300, () -> {
+            });
+            userInfo.setStyle("-fx-background-color: #2DCB2D;");
+            NodeUtil.applyRotateTransition(moreIcon, 0, 180, 200, () -> {
             });
         }
     }

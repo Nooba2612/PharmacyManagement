@@ -23,24 +23,23 @@ public class App extends Application {
         FXMLLoader loader;
         loader = new FXMLLoader(getClass().getResource("/fxml/DangNhap_GUI.fxml"));
 
-
         Parent root = loader.load();
 
-//        primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
-//            root.prefWidth(newVal.doubleValue());
-//        });
-//
-//        primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {
-//            root.prefHeight(newVal.doubleValue());
-//        });
+        // primaryStage.widthProperty().addListener((obs, oldVal, newVal) -> {
+        //     root.prefWidth(newVal.doubleValue());
+        // });
 
-//        primaryStage.setWidth(screenWidth);
-//        primaryStage.setHeight(screenHeight);
+        // primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> {
+        //     root.prefHeight(newVal.doubleValue());
+        // });
+
+        // primaryStage.setWidth(screenWidth);
+        // primaryStage.setHeight(screenHeight);
 
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Medkit - Pharmacy Management System");
-//        primaryStage.setMaximized(true);
+    //    primaryStage.setMaximized(true);
         primaryStage.getIcons()
                 .add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));
         primaryStage.setResizable(false);

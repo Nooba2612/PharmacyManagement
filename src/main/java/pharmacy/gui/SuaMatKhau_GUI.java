@@ -3,8 +3,6 @@ package pharmacy.gui;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,7 +22,7 @@ import pharmacy.bus.TaiKhoan_BUS;
 import pharmacy.utils.NodeUtil;
 import pharmacy.utils.PasswordUtil;
 
-public class QuenMatKhau_GUI {
+public class SuaMatKhau_GUI {
 
     @FXML
     private Button cancelBtn;
@@ -36,16 +34,22 @@ public class QuenMatKhau_GUI {
     private PasswordField newPasswordField;
 
     @FXML
-    private PasswordField passwordConfirmationField;
-
-    @FXML
-    private CheckBox showPasswordBtn;
-
-    @FXML
     private TextField newPasswordTextField;
 
     @FXML
+    private TextField oldPasswordTextField;
+
+    @FXML
+    private PasswordField oldPasswordField;
+
+    @FXML
+    private PasswordField passwordConfirmationField;
+
+    @FXML
     private TextField passwordConfirmationTextField;
+
+    @FXML
+    private CheckBox showPasswordBtn;
 
     private String username;
 
@@ -57,82 +61,30 @@ public class QuenMatKhau_GUI {
     }
 
     @FXML
-    private void handleInputPassword() {
-        confirmBtn.setOnMouseEntered(e -> {
-            NodeUtil.applyFadeTransition(confirmBtn, 1, 0.7, 300, () -> {
-            });
-        });
-
-        confirmBtn.setOnMouseExited(e -> {
-            NodeUtil.applyFadeTransition(confirmBtn, 0.7, 1, 300, () -> {
-            });
-        });
-
-        confirmBtn.setOnAction(e -> {
-            if (validatePassword() && validateConfirmationPassword()) {
-                String passwordHashed;
-                if (passwordConfirmationField.isVisible()) {
-                    passwordHashed = PasswordUtil.passwordEncoder.encode(passwordConfirmationField.getText());
-                } else {
-                    passwordHashed = PasswordUtil.passwordEncoder.encode(passwordConfirmationTextField.getText());
-                }
-
-                try {
-                    new TaiKhoan_BUS().changePassword(username, passwordHashed);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-
-                showSuccessfulModal("Đã khôi phục mật khẩu thành công.");
-
-                System.out.println("Password saved: " + passwordHashed);
-
-                confirmBtn.getScene().getWindow().hide();
-                backToLoginWindow();
-            }
-        });
-
-    }
-
-    @FXML
-    public void backToLoginWindow() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DangNhap_GUI.fxml"));
-        BorderPane borderPane = new BorderPane();
-        try {
-            borderPane = loader.load();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        Stage stage = new Stage();
-        Scene scene = new Scene(borderPane);
-        stage.setResizable(false);
-        stage.setScene(scene);
-        stage.setTitle("Medkit - Pharmacy Management System");
-        stage.getIcons()
-                .add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));
-        stage.show();
-
-        cancelBtn.getScene().getWindow().hide();
-    }
-
-    @FXML
     public void handleShowPassword() {
         showPasswordBtn.selectedProperty().addListener(e -> {
             if (showPasswordBtn.isSelected()) {
+                oldPasswordField.setVisible(false);
                 newPasswordField.setVisible(false);
                 passwordConfirmationField.setVisible(false);
+
+                oldPasswordTextField.setVisible(true);
                 newPasswordTextField.setVisible(true);
                 passwordConfirmationTextField.setVisible(true);
 
+                oldPasswordTextField.setText(oldPasswordField.getText());
                 newPasswordTextField.setText(newPasswordField.getText());
                 passwordConfirmationTextField.setText(passwordConfirmationField.getText());
             } else {
+                oldPasswordField.setVisible(true);
                 newPasswordField.setVisible(true);
                 passwordConfirmationField.setVisible(true);
+
+                oldPasswordTextField.setVisible(false);
                 newPasswordTextField.setVisible(false);
                 passwordConfirmationTextField.setVisible(false);
 
+                oldPasswordField.setText(oldPasswordTextField.getText());
                 newPasswordField.setText(newPasswordTextField.getText());
                 passwordConfirmationField.setText(passwordConfirmationTextField.getText());
             }
@@ -179,6 +131,61 @@ public class QuenMatKhau_GUI {
         modalStage.setScene(scene);
 
         modalStage.showAndWait();
+    }
+
+    @FXML
+    public boolean validateCurrentPassword() throws SQLException {
+
+        String storedPassword = new TaiKhoan_BUS().getCurrentAccount().getMatKhau();
+
+
+        if (!PasswordUtil.checkPassword(oldPasswordField.getText(), storedPassword)) {
+            showErrorModal("Mật khẩu hiện tại không đúng.");
+            return false;
+        }
+
+        return true;
+    }
+
+    @FXML
+    private void handleInputPassword() {
+        confirmBtn.setOnMouseEntered(e -> {
+            NodeUtil.applyFadeTransition(confirmBtn, 1, 0.7, 300, () -> {
+            });
+        });
+
+        confirmBtn.setOnMouseExited(e -> {
+            NodeUtil.applyFadeTransition(confirmBtn, 0.7, 1, 300, () -> {
+            });
+        });
+
+        confirmBtn.setOnAction(e -> {
+            try {
+                if (validateCurrentPassword() && validatePassword() && validateConfirmationPassword()) {
+                    String passwordHashed;
+                    if (passwordConfirmationField.isVisible()) {
+                        passwordHashed = PasswordUtil.passwordEncoder.encode(passwordConfirmationField.getText());
+                    } else {
+                        passwordHashed = PasswordUtil.passwordEncoder.encode(passwordConfirmationTextField.getText());
+                    }
+
+                    try {
+                        new TaiKhoan_BUS().changePassword(username, passwordHashed);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+
+                    showSuccessfulModal("Đã thay đổi mật khẩu thành công.");
+
+                    System.out.println("Password saved: " + passwordHashed);
+
+                    confirmBtn.getScene().getWindow().hide();
+                }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        });
+
     }
 
     @FXML

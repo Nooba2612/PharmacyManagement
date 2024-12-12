@@ -16,7 +16,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <HBox fx:id="root" prefHeight="894.0" prefWidth="1539.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.MainLayout_md_GUI">
    <children>
       <Pane prefHeight="834.0" prefWidth="1539.0">
@@ -80,18 +79,16 @@
                      <children>
                         <GridPane fx:id="menu" prefHeight="74.0" prefWidth="1542.0">
                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="9.091" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -125,35 +122,21 @@
                                     </Text>
                                  </children>
                               </VBox>
-                              <VBox fx:id="equipmentsBtn" alignment="CENTER" prefHeight="82.0" prefWidth="125.0" GridPane.columnIndex="2">
-                                 <children>
-                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
-                                       <image>
-                                          <Image url="@../images/medical-equipment-icon.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thiết bị y tế" textAlignment="CENTER" wrappingWidth="101.33672332763672">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font>
-                                    </Text>
-                                 </children>
-                              </VBox>
-                              <VBox fx:id="medicinesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
+                              <VBox fx:id="medicinesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
                                  <children>
                                     <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                                        <image>
                                           <Image url="@../images/pills-icon.png" />
                                        </image>
                                     </ImageView>
-                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Thuốc" textAlignment="CENTER" wrappingWidth="84.53671264648438">
+                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Sản phẩm" textAlignment="CENTER" wrappingWidth="84.53671264648438">
                                        <font>
                                           <Font size="15.0" />
                                        </font>
                                     </Text>
                                  </children>
                               </VBox>
-                              <VBox fx:id="employeesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4">
+                              <VBox fx:id="employeesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
                                  <children>
                                     <ImageView fx:id="employeesBtn" fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                                        <image>
@@ -167,7 +150,7 @@
                                     </Text>
                                  </children>
                               </VBox>
-                              <VBox fx:id="customersBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5">
+                              <VBox fx:id="customersBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4">
                                  <children>
                                     <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                                        <image>
@@ -181,7 +164,7 @@
                                     </Text>
                                  </children>
                               </VBox>
-                              <VBox fx:id="workScheduleBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="6">
+                              <VBox fx:id="workScheduleBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5">
                                  <children>
                                     <ImageView fx:id="employeesBtn1" fitHeight="43.0" fitWidth="52.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                                        <image>
@@ -195,7 +178,7 @@
                                     </Text>
                                  </children>
                               </VBox>
-                              <VBox fx:id="suppliersBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="7">
+                              <VBox fx:id="suppliersBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="6">
                                  <children>
                                     <ImageView fitHeight="41.0" fitWidth="50.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                                        <image>
@@ -209,7 +192,7 @@
                                     </Text>
                                  </children>
                               </VBox>
-                              <VBox fx:id="invoicesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="8">
+                              <VBox fx:id="invoicesBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="7">
                                  <children>
                                     <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                                        <image>
@@ -223,9 +206,9 @@
                                     </Text>
                                  </children>
                               </VBox>
-                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="9">
+                              <VBox fx:id="goodsReceiptBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="8">
                                  <children>
-                                    <ImageView fx:id="goodsReceiptBtn" fitHeight="41.0" fitWidth="44.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
+                                    <ImageView fitHeight="41.0" fitWidth="44.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                                        <image>
                                           <Image url="@../images/goods-receipt-icon.png" />
                                        </image>
@@ -237,21 +220,7 @@
                                     </Text>
                                  </children>
                               </VBox>
-                              <VBox fx:id="categoryBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="10">
-                                 <children>
-                                    <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
-                                       <image>
-                                          <Image url="@../images/category-icon.png" />
-                                       </image>
-                                    </ImageView>
-                                    <Text fill="#616961" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="categoryItemName" text="Danh mục" textAlignment="CENTER" wrappingWidth="84.53665161132812">
-                                       <font>
-                                          <Font size="15.0" />
-                                       </font>
-                                    </Text>
-                                 </children>
-                              </VBox>
-                              <VBox fx:id="aboutUsBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="11">
+                              <VBox fx:id="aboutUsBtn" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="9">
                                  <children>
                                     <ImageView fitHeight="40.0" fitWidth="40.0" opacity="0.6" pickOnBounds="true" preserveRatio="true" styleClass="categoryItemIcon">
                                        <image>
@@ -272,14 +241,14 @@
                         <Cursor fx:constant="HAND" />
                      </cursor>
                   </HBox>
-                  <VBox prefWidth="1538.0" GridPane.rowIndex="2">
+                  <VBox prefHeight="722.0" prefWidth="1538.0" GridPane.rowIndex="2">
                      <children>
-                        <ScrollPane fx:id="mainContentPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" pannable="true" prefHeight="674.0" prefWidth="1514.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #72C972; -fx-border: 1px 0 0 0;" />
+                        <ScrollPane fx:id="mainContentPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" pannable="true" prefHeight="747.0" prefWidth="1538.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #72C972; -fx-border: 1px 0 0 0;" />
                      </children>
                   </VBox>
                </children>
             </GridPane>
-            <VBox fx:id="profilePopover" alignment="CENTER" layoutX="1304.199951171875" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="229.0" style="-fx-background-color: #fff; -fx-border-color: #f0f0f0;">
+            <VBox fx:id="profilePopover" alignment="CENTER" layoutX="1304.199951171875" layoutY="73.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="229.0" style="-fx-background-color: #fff; -fx-border-color: #f0f0f0;" visible="false">
                <children>
                   <Pane fx:id="settingBtn" prefHeight="200.0" prefWidth="230.0">
                      <children>
