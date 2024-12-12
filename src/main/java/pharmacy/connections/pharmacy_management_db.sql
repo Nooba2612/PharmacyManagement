@@ -18,7 +18,8 @@ CREATE TABLE NhanVien (
     tienLuong FLOAT NOT NULL
 );
 
-select * from NhanVien
+select * from TaiKhoan
+update TaiKhoan set isLoggedIn = 1
 update NhanVien set email = 'vnguyendangv@gmail.com' where maNhanVien = 'MK0001'
 
 -- Tài khoản

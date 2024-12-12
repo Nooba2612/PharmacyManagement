@@ -3,6 +3,7 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -17,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="732.0" prefWidth="1018.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="root" alignment="TOP_CENTER" prefHeight="732.0" prefWidth="1018.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pharmacy.gui.CaiDat_GUI">
 	<children>
 		<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0" prefWidth="1015.0" style="-fx-background-color: #fff;">
 			<children>
@@ -112,14 +113,7 @@
                               <Font name="System Bold" size="15.0" />
                            </font>
                         </Text>
-                        <TextField fx:id="passwordField" editable="false" prefHeight="43.0" prefWidth="652.0" style="-fx-background-color: #f0f0f0;" text="**************">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="TEXT" />
-                           </cursor>
-                        </TextField>
+                        <PasswordField fx:id="passwordField" editable="false" prefHeight="43.0" style="-fx-background-color: #f0f0f0;" text="password123" />
                         <Text fx:id="passwordFieldAlert" fill="#ff2828" strokeType="OUTSIDE" strokeWidth="0.0" text="Tên nhà cung cấp không được để trống." visible="false">
                            <font>
                               <Font size="13.0" />
@@ -155,18 +149,21 @@
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Text>
-            <Text fx:id="passwordEditBtn1" fill="#339933" layoutX="719.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sửa" underline="true">
+            <Text fx:id="birthdayEditBtn" fill="#339933" layoutX="719.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sửa" underline="true">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
             </Text>
-            <Text fx:id="passwordEditBtn11" fill="#339933" layoutX="719.0" layoutY="444.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sửa" underline="true">
+            <Text fx:id="phoneEditBtn" fill="#339933" layoutX="719.0" layoutY="444.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sửa" underline="true">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
             </Text>
-            <Text fx:id="passwordEditBtn12" fill="#339933" layoutX="719.0" layoutY="544.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sửa" underline="true">
+            <Text fx:id="emailEditBtn" fill="#339933" layoutX="719.0" layoutY="544.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sửa" underline="true">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
@@ -178,16 +175,41 @@
                </font>
             </Text>
             <Line endX="897.0" layoutX="99.0" layoutY="82.0" startX="186.60000610351562" stroke="#cccccc" strokeWidth="2.0" />
-            <RadioButton layoutX="336.0" layoutY="623.0" mnemonicParsing="false" text="Thanh menu ngang">
+            <RadioButton layoutX="336.0" layoutY="623.0" mnemonicParsing="false" text="Thanh menu ngang" fx:id="xRadio">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </RadioButton>
-            <RadioButton layoutX="554.0" layoutY="623.0" mnemonicParsing="false" prefWidth="136.0" selected="true" text="Thanh menu dọc">
+            <RadioButton fx:id="yRadio" layoutX="554.0" layoutY="623.0" mnemonicParsing="false" prefWidth="136.0" text="Thanh menu dọc">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </RadioButton>
+            <TextField fx:id="passwordTextField" layoutX="312.0" layoutY="216.0" prefHeight="43.0" prefWidth="395.0" style="-fx-background-color: #f0f0f0;" visible="false" />
+            <Button fx:id="birthBtn" layoutX="719.0" layoutY="321.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="82.0" style="-fx-background-color: #339933;" text="Xác nhận" textFill="WHITE" visible="false">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="phoneBtn" layoutX="719.0" layoutY="422.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="82.0" style="-fx-background-color: #339933;" text="Xác nhận" textFill="WHITE" visible="false">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="emailBtn" layoutX="719.0" layoutY="522.0" mnemonicParsing="false" prefHeight="29.0" prefWidth="82.0" style="-fx-background-color: #339933;" text="Xác nhận" textFill="WHITE" visible="false">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
 			</children>
 		</Pane>
 	</children>

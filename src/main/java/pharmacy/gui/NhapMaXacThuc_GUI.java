@@ -1,6 +1,7 @@
 package pharmacy.gui;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
@@ -22,83 +23,102 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import pharmacy.bus.NhanVien_BUS;
 import pharmacy.bus.OTP_BUS;
+import pharmacy.entity.NhanVien;
 import pharmacy.entity.OTP;
 import pharmacy.utils.NodeUtil;
+import pharmacy.utils.SendOTP;
 
 public class NhapMaXacThuc_GUI {
 
-	@FXML
-	private Button backBtn;
+    @FXML
+    private Button backBtn;
 
-	@FXML
-	private Label email;
+    @FXML
+    private Label email;
 
-	@FXML
-	private Button nextBtn;
+    @FXML
+    private Button nextBtn;
 
-	@FXML
-	private TextField number1;
+    @FXML
+    private TextField number1;
 
-	@FXML
-	private TextField number2;
+    @FXML
+    private TextField number2;
 
-	@FXML
-	private TextField number3;
+    @FXML
+    private TextField number3;
 
-	@FXML
-	private TextField number4;
+    @FXML
+    private TextField number4;
 
-	@FXML
-	private TextField number5;
+    @FXML
+    private TextField number5;
 
-	@FXML
-	private TextField number6;
+    @FXML
+    private TextField number6;
 
-	@FXML
-	private Label resendBtn;
+    @FXML
+    private Label resendBtn;
 
-	private String otp;
-	
-	private String emailInputed;
+    private String otp;
 
-	@FXML
-	public void initialize() {
-		handleBackBtn();
-		setupOtpField(null, number1, number2);
-		setupOtpField(number1, number2, number3);
-		setupOtpField(number2, number3, number4);
-		setupOtpField(number3, number4, number5);
-		setupOtpField(number4, number5, number6);
-		setupOtpField(number5, number6, null);
+    private String emailInputed;
 
-		// If number 6 is focused and all numbers are filled, the confirmation process
-		// starts
-		number6.textProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue.matches("\\d") && areAllFieldsFilled()) {
-				validateOTP();
-			} 
-		});
-		handleConfirmationOTP();
-	}
+    @FXML
+    public void initialize() {
 
-	private void setupOtpField(TextField prevField, TextField currentField, TextField nextField) {
-		currentField.textProperty().addListener((observable, oldValue, newValue) -> {
-			if (!newValue.matches("\\d*")) {
-				currentField.setText(oldValue);
-			} else if (newValue.length() == 1 && nextField != null) {
-				nextField.requestFocus();
-			}
-		});
+        handleBackBtn();
+        setupOtpField(null, number1, number2);
+        setupOtpField(number1, number2, number3);
+        setupOtpField(number2, number3, number4);
+        setupOtpField(number3, number4, number5);
+        setupOtpField(number4, number5, number6);
+        setupOtpField(number5, number6, null);
 
-		currentField.setOnKeyPressed(event -> {
-			if (event.getCode() == KeyCode.BACK_SPACE && prevField != null) {
-				prevField.requestFocus();
-			} else if (event.getCode() == KeyCode.RIGHT && nextField != null && currentField.isFocused()) {
-				nextField.requestFocus();
-			} else if (event.getCode() == KeyCode.LEFT && prevField != null && currentField.isFocused()) {
-				prevField.requestFocus();
-			}
-		});
+        // If number 6 is focused and all numbers are filled, the confirmation process
+        // starts
+        number6.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.matches("\\d") && areAllFieldsFilled()) {
+                validateOTP();
+            }
+        });
+        handleConfirmationOTP();
+        handleResendEmail();
+    }
+
+    public static String maskEmail(String email) {
+        String[] parts = email.split("@");
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Địa chỉ email không hợp lệ.");
+        }
+
+        String username = parts[0];
+        String domain = parts[1];
+
+        String maskedUsername = username.substring(0, Math.min(3, username.length()))
+                + "*****";
+
+        return maskedUsername + "@" + domain;
+    }
+
+    private void setupOtpField(TextField prevField, TextField currentField, TextField nextField) {
+        currentField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                currentField.setText(oldValue);
+            } else if (newValue.length() == 1 && nextField != null) {
+                nextField.requestFocus();
+            }
+        });
+
+        currentField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.BACK_SPACE && prevField != null) {
+                prevField.requestFocus();
+            } else if (event.getCode() == KeyCode.RIGHT && nextField != null && currentField.isFocused()) {
+                nextField.requestFocus();
+            } else if (event.getCode() == KeyCode.LEFT && prevField != null && currentField.isFocused()) {
+                prevField.requestFocus();
+            }
+        });
 
 //		currentField.setOnKeyPressed(event -> {
 //		    if (event.isControlDown() && event.getCode() == KeyCode.V) {
@@ -122,150 +142,219 @@ public class NhapMaXacThuc_GUI {
 //		        }
 //		    }
 //		});
+    }
 
-	}
-	
-	private void showErrorModal(String message) {
-		Stage modalStage = new Stage();
-		modalStage.setResizable(false);
-		modalStage.initModality(Modality.APPLICATION_MODAL);
-		modalStage.getIcons()
-				.addAll(new Image(getClass().getClassLoader().getResource("images/x-icon.png").toString()));
+    private void showErrorModal(String message) {
+        Stage modalStage = new Stage();
+        modalStage.setResizable(false);
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.getIcons()
+                .addAll(new Image(getClass().getClassLoader().getResource("images/x-icon.png").toString()));
 
-		ImageView icon = new ImageView(
-				new Image(getClass().getClassLoader().getResource("images/x-icon.png").toExternalForm()));
-		icon.setFitWidth(40);
-		icon.setFitHeight(40);
+        ImageView icon = new ImageView(
+                new Image(getClass().getClassLoader().getResource("images/x-icon.png").toExternalForm()));
+        icon.setFitWidth(40);
+        icon.setFitHeight(40);
 
-		Label messageLabel = new Label(message);
-		messageLabel.setStyle("-fx-font-size: 15px; -fx-padding: 10px;");
+        Label messageLabel = new Label(message);
+        messageLabel.setStyle("-fx-font-size: 15px; -fx-padding: 10px;");
 
-		Button closeButton = new Button("Đóng");
-		closeButton.setStyle("-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; "
-				+ "-fx-border-radius: 10px; -fx-cursor: hand; -fx-padding: 8px 20px;");
-		closeButton.setOnAction(e -> modalStage.close());
+        Button closeButton = new Button("Đóng");
+        closeButton.setStyle("-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; "
+                + "-fx-border-radius: 10px; -fx-cursor: hand; -fx-padding: 8px 20px;");
+        closeButton.setOnAction(e -> modalStage.close());
 
-		closeButton.setOnMouseEntered(event -> {
-			NodeUtil.applyFadeTransition(closeButton, 1, 0.6, 300, () -> {
-			});
-		});
-		closeButton.setOnMouseExited(event -> {
-			NodeUtil.applyFadeTransition(closeButton, 0.6, 1, 300, () -> {
-			});
-		});
+        closeButton.setOnMouseEntered(event -> {
+            NodeUtil.applyFadeTransition(closeButton, 1, 0.6, 300, () -> {
+            });
+        });
+        closeButton.setOnMouseExited(event -> {
+            NodeUtil.applyFadeTransition(closeButton, 0.6, 1, 300, () -> {
+            });
+        });
 
-		HBox contentLayout = new HBox(10, messageLabel, icon);
-		contentLayout.setStyle("-fx-alignment: center; -fx-padding: 20px;");
+        HBox contentLayout = new HBox(10, messageLabel, icon);
+        contentLayout.setStyle("-fx-alignment: center; -fx-padding: 20px;");
 
-		VBox layout = new VBox(15, contentLayout, closeButton);
-		layout.setStyle("-fx-alignment: center; -fx-background-color: #ffffff; "
-				+ "-fx-border-color: black; -fx-border-width: 1px; -fx-padding: 20px;");
+        VBox layout = new VBox(15, contentLayout, closeButton);
+        layout.setStyle("-fx-alignment: center; -fx-background-color: #ffffff; "
+                + "-fx-border-color: black; -fx-border-width: 1px; -fx-padding: 20px;");
 
-		Scene scene = new Scene(layout, 400, 150);
-		modalStage.setScene(scene);
+        Scene scene = new Scene(layout, 400, 150);
+        modalStage.setScene(scene);
 
-		modalStage.showAndWait();
-	}
+        modalStage.showAndWait();
+    }
 
-	private boolean areAllFieldsFilled() {
-		return !number1.getText().isEmpty() && !number2.getText().isEmpty() && !number3.getText().isEmpty()
-				&& !number4.getText().isEmpty() && !number5.getText().isEmpty() && !number6.getText().isEmpty();
-	}
+    private boolean areAllFieldsFilled() {
+        return !number1.getText().isEmpty() && !number2.getText().isEmpty() && !number3.getText().isEmpty()
+                && !number4.getText().isEmpty() && !number5.getText().isEmpty() && !number6.getText().isEmpty();
+    }
 
-	@FXML
-	private void validateOTP() {
-		otp = number1.getText() + number2.getText() + number3.getText() + number4.getText() + number5.getText()
-				+ number6.getText();
-		
-		String username = new NhanVien_BUS().getEmployeeByEmail(emailInputed).getMaNhanVien();
-		
-		OTP storedOTP = new OTP_BUS().getOTPByUsername(username);
+    @FXML
+    private void validateOTP() {
+        otp = number1.getText() + number2.getText() + number3.getText() + number4.getText() + number5.getText()
+                + number6.getText();
 
-		if (otp.equals(storedOTP.getOtpCode())) {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuenMatKhau_GUI.fxml"));
-			BorderPane borderPane = new BorderPane();
-			try {
-				borderPane = loader.load();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			
-			QuenMatKhau_GUI quenMatKhauGUI = loader.getController();
-			quenMatKhauGUI.setUsername(username);
+        String username = new NhanVien_BUS().getEmployeeByEmail(emailInputed).getMaNhanVien();
 
-			backBtn.getScene().getWindow().hide();
+        OTP storedOTP = new OTP_BUS().getOTPByUsername(username);
 
-			Stage stage = new Stage();
-			Scene scene = new Scene(borderPane);
-			stage.setResizable(false);
-			stage.setMaximized(true);
-			stage.setScene(scene);
-			stage.setTitle("Medkit - Pharmacy Management System");
-			stage.getIcons()
-					.add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));
-			stage.show();
-			System.out.println("OTP is correct");
-		} else {
-			showErrorModal("OTP không đúng.");
-		}
-	}
+        if (otp.equals(storedOTP.getOtpCode())) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/QuenMatKhau_GUI.fxml"));
+            BorderPane borderPane = new BorderPane();
+            try {
+                borderPane = loader.load();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
 
-	@FXML
-	public void handleConfirmationOTP() {
-		nextBtn.setOnMouseEntered(e -> {
-			NodeUtil.applyFadeTransition(nextBtn, 1, 0.7, 300, () -> {
-			});
-		});
+            QuenMatKhau_GUI quenMatKhauGUI = loader.getController();
+            quenMatKhauGUI.setUsername(username);
 
-		nextBtn.setOnMouseExited(e -> {
-			NodeUtil.applyFadeTransition(nextBtn, 0.7, 1, 300, () -> {
-			});
-		});
+            backBtn.getScene().getWindow().hide();
 
-		nextBtn.setOnAction(e -> {
-			validateOTP();
-		});
-	}
+            Stage stage = new Stage();
+            Scene scene = new Scene(borderPane);
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.setScene(scene);
+            stage.setTitle("Medkit - Pharmacy Management System");
+            stage.getIcons()
+                    .add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));
+            stage.show();
+            System.out.println("OTP is correct");
+        } else {
+            showErrorModal("OTP không đúng.");
+        }
+    }
 
-	@FXML
-	public void handleBackBtn() {
-		backBtn.setOnMouseEntered(e -> {
-			NodeUtil.applyFadeTransition(backBtn, 1, 0.7, 300, () -> {
-			});
-		});
+    @FXML
+    public void handleConfirmationOTP() {
+        nextBtn.setOnMouseEntered(e -> {
+            NodeUtil.applyFadeTransition(nextBtn, 1, 0.7, 300, () -> {
+            });
+        });
 
-		backBtn.setOnMouseExited(e -> {
-			NodeUtil.applyFadeTransition(backBtn, 0.7, 1, 300, () -> {
-			});
-		});
+        nextBtn.setOnMouseExited(e -> {
+            NodeUtil.applyFadeTransition(nextBtn, 0.7, 1, 300, () -> {
+            });
+        });
 
-		backBtn.setOnAction(e -> {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NhapEmail_GUI.fxml"));
-			BorderPane borderPane = new BorderPane();
-			try {
-				borderPane = loader.load();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+        nextBtn.setOnAction(e -> {
+            validateOTP();
+        });
+    }
 
-			backBtn.getScene().getWindow().hide();
+    @FXML
+    public void handleBackBtn() {
+        backBtn.setOnMouseEntered(e -> {
+            NodeUtil.applyFadeTransition(backBtn, 1, 0.7, 300, () -> {
+            });
+        });
 
-			Stage stage = new Stage();
-			Scene scene = new Scene(borderPane);
-			stage.setResizable(false);
-			stage.setMaximized(true);
-			stage.setScene(scene);
-			stage.setTitle("Medkit - Pharmacy Management System");
-			stage.getIcons()
-					.add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));
-			stage.show();
-		});
-	}
-	
-	@FXML
-	public void setEmail(String emailInputed) {
-		System.out.println(emailInputed);
-		this.emailInputed = emailInputed;
-	}
+        backBtn.setOnMouseExited(e -> {
+            NodeUtil.applyFadeTransition(backBtn, 0.7, 1, 300, () -> {
+            });
+        });
+
+        backBtn.setOnAction(e -> {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NhapEmail_GUI.fxml"));
+            BorderPane borderPane = new BorderPane();
+            try {
+                borderPane = loader.load();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+            backBtn.getScene().getWindow().hide();
+
+            Stage stage = new Stage();
+            Scene scene = new Scene(borderPane);
+            stage.setResizable(false);
+            stage.setMaximized(true);
+            stage.setScene(scene);
+            stage.setTitle("Medkit - Pharmacy Management System");
+            stage.getIcons()
+                    .add(new Image(getClass().getClassLoader().getResource("images/pharmacy-icon.png").toString()));
+            stage.show();
+        });
+    }
+
+    @FXML
+    public void setEmail(String emailInputed) {
+        System.out.println(emailInputed);
+        this.emailInputed = emailInputed;
+        email.setText(maskEmail(emailInputed));
+    }
+
+    @FXML
+    public void handleResendEmail() {
+        resendBtn.setOnMouseEntered(e -> {
+            NodeUtil.applyFadeTransition(resendBtn, 1, 0.7, 300, () -> {
+            });
+        });
+
+        resendBtn.setOnMouseExited(e -> {
+            NodeUtil.applyFadeTransition(resendBtn, 0.7, 1, 300, () -> {
+            });
+        });
+
+        resendBtn.setOnMouseClicked(e -> {
+            String otp = SendOTP.generateOtp();
+            System.out.println("OTP generated: " + otp);
+            SendOTP.sendEmail(emailInputed, otp);
+            showSuccessfulModal("Đã gửi lại mã OTP");
+
+            NhanVien nhanVien = new NhanVien_BUS().getEmployeeByEmail(emailInputed);
+
+            String username = nhanVien.getMaNhanVien();
+
+            new OTP_BUS().addOTP(username, otp, LocalDateTime.now().plusMinutes(2));
+            new OTP_BUS().deleteExpiredOTP();
+        });
+    }
+
+    private void showSuccessfulModal(String message) {
+        Stage modalStage = new Stage();
+        modalStage.setResizable(false);
+        modalStage.initModality(Modality.APPLICATION_MODAL);
+        modalStage.getIcons()
+                .addAll(new Image(getClass().getClassLoader().getResource("images/tick-icon.png").toString()));
+
+        ImageView icon = new ImageView(
+                new Image(getClass().getClassLoader().getResource("images/tick-icon.png").toExternalForm()));
+        icon.setFitWidth(40);
+        icon.setFitHeight(40);
+
+        Label messageLabel = new Label(message);
+        messageLabel.setStyle("-fx-font-size: 15px; -fx-padding: 10px;");
+
+        Button closeButton = new Button("Đóng");
+        closeButton.setStyle("-fx-background-color: #339933; -fx-font-size: 16px; -fx-text-fill: white; "
+                + "-fx-border-radius: 10px; -fx-cursor: hand; -fx-padding: 8px 20px;");
+        closeButton.setOnAction(e -> modalStage.close());
+
+        closeButton.setOnMouseEntered(event -> {
+            NodeUtil.applyFadeTransition(closeButton, 1, 0.6, 300, () -> {
+            });
+        });
+        closeButton.setOnMouseExited(event -> {
+            NodeUtil.applyFadeTransition(closeButton, 0.6, 1, 300, () -> {
+            });
+        });
+
+        HBox contentLayout = new HBox(10, messageLabel, icon);
+        contentLayout.setStyle("-fx-alignment: center; -fx-padding: 20px;");
+
+        VBox layout = new VBox(15, contentLayout, closeButton);
+        layout.setStyle("-fx-alignment: center; -fx-background-color: #ffffff; "
+                + "-fx-border-color: black; -fx-border-width: 1px; -fx-padding: 20px;");
+
+        Scene scene = new Scene(layout, 400, 150);
+        modalStage.setScene(scene);
+
+        modalStage.showAndWait();
+    }
 
 }

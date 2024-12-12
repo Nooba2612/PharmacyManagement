@@ -210,20 +210,38 @@ public class MainLayout_lg_GUI {
         String buttonId = frameBtn.getId();
 
         switch (buttonId) {
-            case "homeBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
-            case "statisticBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThongKe_GUI.fxml"));
-            case "customersBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/KhachHang_GUI.fxml"));
-            case "employeesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhanVien_GUI.fxml"));
-            case "workScheduleBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/LichLam_GUI.fxml"));
-            case "suppliersBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhaCungCap_GUI.fxml"));
-            case "medicinesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/SanPham_GUI.fxml"));
-            case "invoicesBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/HoaDon_GUI.fxml"));
-            case "equipmentsBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThietBiYTe_GUI.fxml"));
-            case "goodsReceiptBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/PhieuNhap_GUI.fxml"));
-            case "saleBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/BanHang_GUI.fxml"));
-            case "aboutUsBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/GioiThieuChung_GUI.fxml"));
-            case "settingBtn" -> mainContent = FXMLLoader.load(getClass().getResource("/fxml/CaiDat_GUI.fxml"));
-            default -> throw new IllegalArgumentException("Không có nút nào tương ứng với ID: " + buttonId);
+            case "homeBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/TrangChu_GUI.fxml"));
+            case "statisticBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThongKe_GUI.fxml"));
+            case "customersBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/KhachHang_GUI.fxml"));
+            case "employeesBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhanVien_GUI.fxml"));
+            case "workScheduleBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/LichLam_GUI.fxml"));
+            case "suppliersBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/NhaCungCap_GUI.fxml"));
+            case "medicinesBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/SanPham_GUI.fxml"));
+            case "invoicesBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/HoaDon_GUI.fxml"));
+            case "equipmentsBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/ThietBiYTe_GUI.fxml"));
+            case "goodsReceiptBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/PhieuNhap_GUI.fxml"));
+            case "saleBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/BanHang_GUI.fxml"));
+            case "aboutUsBtn" ->
+                mainContent = FXMLLoader.load(getClass().getResource("/fxml/GioiThieuChung_GUI.fxml"));
+            case "settingBtn" -> {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/CaiDat_GUI.fxml"));
+                mainContent = loader.load();
+                CaiDat_GUI caiDatGUI = loader.getController(); 
+                caiDatGUI.setStatusOfMenuBar("vertical");
+            }
+            default ->
+                throw new IllegalArgumentException("Không có nút nào tương ứng với ID: " + buttonId);
         }
 
         mainContentPane.setContent(mainContent);

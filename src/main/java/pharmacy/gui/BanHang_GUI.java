@@ -315,7 +315,6 @@ public class BanHang_GUI {
 
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);
-        
 
         popupStage.setTitle("Thanh toán VNPay");
 
@@ -389,25 +388,25 @@ public class BanHang_GUI {
         addProductBtn.setOnAction(event -> {
             String dosage = dosageSelect.getValue();
             int quantity = quantityField.getValue();
-            if (validateProduct()) {
-                ChiTietHoaDon cthd = new ChiTietHoaDon(invoiceId.getText(), currentProduct.getMaSanPham(), quantity, 0.08f, dosage, 8000);
-                currentDetailInvoice.add(cthd);
-                renderAddedProduct(cthd);
-                searchProductField.setValue(null);
-                dosageSelect.setValue(null);
-                quantityField.getValueFactory().setValue(0);
-                productTable.getItems().clear();
-                currentProduct = null;
-                try {
-                    calulateTotalPrice();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            try {
+                if (validateProduct()) {
+                    ChiTietHoaDon cthd = new ChiTietHoaDon(invoiceId.getText(), currentProduct.getMaSanPham(), quantity, 0.08f, dosage, 8000);
+                    currentDetailInvoice.add(cthd);
+                    renderAddedProduct(cthd);
+                    searchProductField.setValue(null);
+                    dosageSelect.setValue(null);
+                    quantityField.getValueFactory().setValue(0);
+                    productTable.getItems().clear();
+                    currentProduct = null;
+                    try {
+                        calulateTotalPrice();
+                        renderTotalInvoice();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
-                try {
-                    renderTotalInvoice();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -504,7 +503,7 @@ public class BanHang_GUI {
     }
 
     @FXML
-    public boolean validateProduct() {
+    public boolean validateProduct() throws SQLException {
         String dosage = dosageSelect.getValue();
         int quantity = quantityField.getValue();
 
@@ -538,6 +537,27 @@ public class BanHang_GUI {
             return false;
         } else {
             dosageAlert.setVisible(false);
+        }
+
+        List<SanPham> sanPhamSapHetHan = new SanPham_BUS().getSanPhamSapHetHanSuDung();
+        for (SanPham sp : sanPhamSapHetHan) {
+            if (currentProduct == sp) {
+                showErrorDialog("Sản phẩm sắp hết hạn.");
+            }
+        }
+
+        List<SanPham> sanPhamTonKhoThap = new SanPham_BUS().getSanPhamSapHetTonKho();
+        for (SanPham sp : sanPhamTonKhoThap) {
+            if (currentProduct == sp) {
+                showErrorDialog("Sản phẩm tồn kho thấp.");
+            }
+        }
+
+        List<SanPham> sanPhamDaHetHan = new SanPham_BUS().getSanPhamDaHetHan();
+        for (SanPham sp : sanPhamDaHetHan) {
+            if (currentProduct == sp) {
+                showErrorDialog("Sản phẩm đã hếthết hạn.");
+            }
         }
 
         return true;
@@ -1062,10 +1082,10 @@ public class BanHang_GUI {
                     }
                     column.getTableView().refresh();
                     try {
-						renderTotalInvoice();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
+                        renderTotalInvoice();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -1141,10 +1161,10 @@ public class BanHang_GUI {
                     cthd.setLieuLuong(newValue.toString());
                     column.getTableView().refresh();
                     try {
-						renderTotalInvoice();
-					} catch (SQLException e) {
-						e.printStackTrace();
-					}
+                        renderTotalInvoice();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
